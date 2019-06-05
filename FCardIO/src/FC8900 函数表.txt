@@ -127,3 +127,9 @@ CommandName.put(ClearTransactionDatabase.class.getName(),"清空指定类型的�
 CommandName.put(WriteTransactionDatabaseReadIndex.class.getName(),"修改指定记录数据库的读索引");
 CommandName.put(WriteTransactionDatabaseWriteIndex.class.getName(),"修改指定记录数据库的写索引");
 CommandName.put(ReadTransactionDatabaseByIndex.class.getName(),"读取记录");
+
+CommandName.put(WriteCardListBySequence.class.getName(),"将卡片列表写入到控制器非排序区");
+CommandName.put(WriteCardListBySort.class.getName(),"将卡片列表写入到控制器排序区");
+CommandName.put(DeleteCard.class.getName(),"删除卡片");
+CommandName.put(ReadTransactionDatabaseByIndex.class.getName(),"读取记录");
+CommandName.put(ReadTransactionDatabase.class.getName(),"读取新记录");

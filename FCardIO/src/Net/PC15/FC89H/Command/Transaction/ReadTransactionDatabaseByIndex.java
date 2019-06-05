@@ -3,50 +3,36 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Net.PC15.FC8800.Command.Transaction;
+package Net.PC15.FC89H.Command.Transaction;
 
 import Net.PC15.Connector.INConnectorEvent;
 import Net.PC15.Data.AbstractTransaction;
-import Net.PC15.FC8800.Command.Data.*;
-import Net.PC15.FC8800.Command.FC8800Command;
+import Net.PC15.FC8800.Command.Data.AlarmTransaction;
+import Net.PC15.FC8800.Command.Data.ButtonTransaction;
+import Net.PC15.FC89H.Command.Data.CardTransaction;
+import Net.PC15.FC8800.Command.Data.DoorSensorTransaction;
+import Net.PC15.FC8800.Command.Data.SoftwareTransaction;
+import Net.PC15.FC8800.Command.Data.SystemTransaction;
 import Net.PC15.FC8800.Command.Transaction.Parameter.ReadTransactionDatabaseByIndex_Parameter;
 import Net.PC15.FC8800.Command.Transaction.Result.ReadTransactionDatabaseByIndex_Result;
 import Net.PC15.FC8800.Packet.FC8800PacketModel;
-import Net.PC15.Util.ByteUtil;
 import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
- * 读记录数据库<br/>
+ * 针对FC89H使用，读记录数据库<br/>
  * 按指定索引号开始读指定类型的记录数据库，并读取指定数量。<br/>
  * 成功返回结果参考 {@link ReadTransactionDatabaseByIndex_Result}
  *
- * @author 赖金杰
+ * @author 徐铭康
  */
-public class ReadTransactionDatabaseByIndex extends FC8800Command {
-
-    protected ConcurrentLinkedQueue<ByteBuf> mBufs;
-    private int mQuantity;
-
+public class ReadTransactionDatabaseByIndex extends Net.PC15.FC8800.Command.Transaction.ReadTransactionDatabaseByIndex {
+    
     public ReadTransactionDatabaseByIndex(ReadTransactionDatabaseByIndex_Parameter par) {
-        _Parameter = par;
-        ByteBuf dataBuf = ByteUtil.ALLOCATOR.buffer(9);
-        dataBuf.writeByte(par.DatabaseType.getValue());
-        dataBuf.writeInt(par.ReadIndex);
-        dataBuf.writeInt(par.Quantity);
-        mBufs = new ConcurrentLinkedQueue<ByteBuf>();
-        CreatePacket(8, 4, 0, 9, dataBuf);
-        mQuantity = par.Quantity;
-        _ProcessMax = mQuantity;
-
+        super(par);
     }
-
-    @Override
-    protected void Release0() {
-        return;
-    }
-
+    
+    
     @Override
     protected boolean _CommandStep(INConnectorEvent oEvent, FC8800PacketModel model) {
         if (CheckResponse_Cmd(model, 8, 4, 0)) {
@@ -92,7 +78,7 @@ public class ReadTransactionDatabaseByIndex extends FC8800Command {
             return false;
         }
     }
-
+    
     /**
      * 分析缓冲中的数据包
      */
@@ -135,7 +121,7 @@ public class ReadTransactionDatabaseByIndex extends FC8800Command {
 
             for (int i = 0; i < iSize; i++) {
                 try {
-                    AbstractTransaction cd = (AbstractTransaction) TransactionType.newInstance();
+                    AbstractTransaction cd = (Net.PC15.FC89H.Command.Data.CardTransaction) TransactionType.newInstance();
                     cd.SerialNumber = buf.readInt();
                     cd.SetBytes(buf);
                     trList.add(cd);
@@ -149,22 +135,4 @@ public class ReadTransactionDatabaseByIndex extends FC8800Command {
         }
 
     }
-
-    @Override
-    protected void CommandOver_ReSend() {
-        ClearBuf();
-        _ProcessMax = mQuantity;
-        _ProcessStep = 0;
-    }
-
-    protected void ClearBuf() {
-        if (mBufs == null) {
-            return;
-        }
-        while (mBufs.peek() != null) {
-            ByteBuf buf = mBufs.poll();
-            buf.release();
-        }
-    }
-
 }

@@ -3,56 +3,35 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Net.PC15.FC8800.Command.Card;
+package Net.PC15.FC89H.Command.Card;
 
 import Net.PC15.Connector.INConnectorEvent;
 import Net.PC15.FC8800.Command.Card.Parameter.ReadCardDataBase_Parameter;
 import Net.PC15.FC8800.Command.Card.Result.ReadCardDataBase_Result;
-import Net.PC15.FC8800.Command.Card.Result.ReadCardDatabaseDetail_Result;
 import Net.PC15.FC8800.Command.Data.CardDetail;
-import Net.PC15.FC8800.Command.FC8800Command;
 import Net.PC15.FC8800.Packet.FC8800PacketModel;
-import Net.PC15.Util.ByteUtil;
 import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
- * 从控制器中读取卡片数据<br/>
+ * 从控制器中读取卡片数据，针对FC89H使用<br/>
  * 成功返回结果参考 {@link ReadCardDataBase_Result}
  *
- * @author 赖金杰
+ * @author 徐铭康
  */
-public class ReadCardDataBase extends FC8800Command {
-
-    protected int mStep;//指示当前命令进行的步骤
-    protected ConcurrentLinkedQueue<ByteBuf> mBufs;
-    protected int mRecordCardSize;//记录的卡数量
+public class ReadCardDataBase extends Net.PC15.FC8800.Command.Card.ReadCardDataBase {
     
-    public ReadCardDataBase(){
-        
-    }
-
     public ReadCardDataBase(ReadCardDataBase_Parameter par) {
+        //super(par);
         _Parameter = par;
         _ProcessMax = 2;
         _ProcessStep = 1;
 
         mStep = 1;//第一步，读取卡片存储信息，并分析出是否已存储卡片
         CreatePacket(7, 1);
-
     }
-
-    @Override
-    protected void Release0() {
-        ClearBuf();
-        mBufs = null;
-        _Parameter = null;
-        _Result = null;
-        return;
-    }
-
+    
+    
     @Override
     protected boolean _CommandStep(INConnectorEvent oEvent, FC8800PacketModel model) {
         switch (mStep) {
@@ -64,71 +43,7 @@ public class ReadCardDataBase extends FC8800Command {
         return false;
 
     }
-
-    /**
-     * 检查卡片数据库的信息，是否有卡可读取
-     *
-     * @param oEvent 事件句柄
-     * @param model 本次数据包的包装类
-     * @return true 正确解析或 false 未解析
-     */
-    protected boolean CheckDataBaseDetail(INConnectorEvent oEvent, FC8800PacketModel model) {
-        if (CheckResponse_Cmd(model, 7, 1, 0, 0x10)) {
-            ByteBuf buf = model.GetDatabuff();
-
-            ReadCardDatabaseDetail_Result r = new ReadCardDatabaseDetail_Result();
-            r.SortDataBaseSize = buf.readUnsignedInt();
-            r.SortCardSize = buf.readUnsignedInt();
-            r.SequenceDataBaseSize = buf.readUnsignedInt();
-            r.SequenceCardSize = buf.readUnsignedInt();
-
-            ReadCardDataBase_Parameter par = (ReadCardDataBase_Parameter) _Parameter;
-            ReadCardDataBase_Result result = new ReadCardDataBase_Result(par.CardType);
-            _Result = result;
-            mRecordCardSize = 0;
-            switch (par.CardType) {
-                case 1://排序卡区域
-                    if (r.SortCardSize > 0) {
-                        mRecordCardSize = (int) r.SortCardSize;
-                    }
-                    break;
-                case 2://非排序卡区域
-                    if (r.SequenceCardSize > 0) {
-                        mRecordCardSize = (int) r.SequenceCardSize;
-                    }
-
-                    break;
-                case 3://所有区域
-                    if ((r.SortCardSize + r.SequenceCardSize) > 0) {
-                        mRecordCardSize = (int) (r.SortCardSize + r.SequenceCardSize);
-                    }
-                    break;
-            }
-            if (mRecordCardSize > 0) {
-                _ProcessMax = mRecordCardSize;
-                _ProcessStep = 0;
-                //发生命令进度变更
-                //RaiseCommandProcessEvent(oEvent);
-                //发送读取所有卡的指令
-                buf = ByteUtil.ALLOCATOR.buffer(1);
-                buf.writeByte(par.CardType);
-                CreatePacket(7, 3, 0, 1, buf);
-
-                CommandWaitResponse();
-
-                mBufs = new ConcurrentLinkedQueue<ByteBuf>();
-                mStep = 2;
-
-            } else {
-                RaiseCommandCompleteEvent(oEvent);
-            }
-
-        } else {
-            return false;
-        }
-        return true;
-    }
-
+    
     /**
      * 检查读所有卡命令包
      *
@@ -179,7 +94,7 @@ public class ReadCardDataBase extends FC8800Command {
             return false;
         }
     }
-
+    
     /**
      * 分析缓冲中的数据包
      */
@@ -195,29 +110,12 @@ public class ReadCardDataBase extends FC8800Command {
             iCardSize = buf.readInt();
             //buf.readBytes(bCardBuf,0,0x21);
             for (int i = 0; i < iCardSize; i++) {
-                CardDetail cd = new CardDetail();
+                Net.PC15.FC89H.Command.Data.CardDetail cd = new Net.PC15.FC89H.Command.Data.CardDetail();
                 cd.SetBytes(buf);
                 CardList.add(cd);
             }
             buf.release();
         }
 
-    }
-
-    @Override
-    protected void CommandOver_ReSend() {
-        ClearBuf();
-        _ProcessMax = mRecordCardSize;
-        _ProcessStep = 0;
-    }
-
-    protected void ClearBuf() {
-        if (mBufs == null) {
-            return;
-        }
-        while (mBufs.peek() != null) {
-            ByteBuf buf = mBufs.poll();
-            buf.release();
-        }
     }
 }

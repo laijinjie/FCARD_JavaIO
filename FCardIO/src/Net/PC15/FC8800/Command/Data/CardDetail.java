@@ -133,6 +133,7 @@ public class CardDetail implements INData, Comparable<CardDetail> {
      * 卡号，取值范围 0x1-0xFFFFFFFF
      */
     public long CardData;
+    public String CardDataHEX;
     /**
      * 卡密码,无密码不填。密码是4-8位的数字。
      */
@@ -149,7 +150,7 @@ public class CardDetail implements INData, Comparable<CardDetail> {
      * TimeGroup[2] -- 3门的时段<br/>
      * TimeGroup[3] -- 4门的时段<br/>
      */
-    private byte[] TimeGroup;
+    protected byte[] TimeGroup;
     /**
      * 有效次数,取值范围：0-65535;<br.>
      * 0表示次数用光了。65535表示不受限制
@@ -164,7 +165,7 @@ public class CardDetail implements INData, Comparable<CardDetail> {
      * bit2 -- 3门的权限<br/>
      * bit3 -- 4门的权限<br/>
      */
-    private int Door;
+    protected int Door;
 
     /**
      * 特权<br/>
@@ -176,7 +177,7 @@ public class CardDetail implements INData, Comparable<CardDetail> {
      * <li>4 &emsp; 防盗设置卡  </li>
      * </ul>
      */
-    private int Privilege;
+    protected int Privilege;
 
     /**
      * 卡片状态<br/>
@@ -187,7 +188,7 @@ public class CardDetail implements INData, Comparable<CardDetail> {
     /**
      * 节假日权限
      */
-    private byte[] Holiday;
+    protected byte[] Holiday;
 
     /**
      * 使用节假日限制功能,节假日禁止开门
@@ -205,6 +206,7 @@ public class CardDetail implements INData, Comparable<CardDetail> {
     public Calendar RecordTime;
 
     public CardDetail() {
+        CardDataHEX = null;
         CardData = 0;
         Password = null;
         Expiry = null;

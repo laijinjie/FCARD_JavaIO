@@ -3,49 +3,43 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Net.PC15.FC8800.Command.Card;
+package Net.PC15.FC89H.Command.Card;
 
-import Net.PC15.Connector.INConnectorEvent;
 import Net.PC15.FC8800.Command.Card.Parameter.DeleteCard_Parameter;
-import Net.PC15.FC8800.Command.FC8800Command;
 import Net.PC15.FC8800.Packet.FC8800PacketCompile;
 import Net.PC15.FC8800.Packet.FC8800PacketModel;
 import Net.PC15.Util.ByteUtil;
 import io.netty.buffer.ByteBuf;
 
 /**
- * 删除卡片
- * @author 赖金杰
+ * 删除卡片，针对FC89H使用
+ * @author 徐铭康
  */
-public class DeleteCard extends FC8800Command {
-    
-    protected int mIndex;//指示当前命令进行的步骤
-    protected long [] _List;
-    
-    public DeleteCard(){
-        
-    }
-    
+public class DeleteCard extends Net.PC15.FC8800.Command.Card.DeleteCard {
+    protected String [] _strList;
+
     public DeleteCard(DeleteCard_Parameter par) {
         _Parameter = par;
         _List = par.CardList;
+        _strList = Net.PC15.Util.StringUtil.LongToString(_List);
         _ProcessMax = _List.length;
         mIndex = 0;
         //初始化缓冲空间
-        int iLen = (40 * 5) + 4;
+        int iLen = (40 * 9) + 4;
         ByteBuf dataBuf = ByteUtil.ALLOCATOR.buffer(iLen);
         CreatePacket(7, 5, 0, iLen, dataBuf);
         WriteNext();
     }
-
+    
     /**
      * 写入下一个卡号
      */
+    @Override
     protected void WriteNext() {
         int iMaxSize = 40; //每个数据包最大40个卡
         int iSize = 0;
         int iIndex = 0;
-        int ListLen = _List.length;
+        int ListLen = _strList.length;
         
         FC8800PacketCompile compile = (FC8800PacketCompile) _Packet;
         FC8800PacketModel p = (FC8800PacketModel) _Packet.GetPacket();
@@ -56,7 +50,9 @@ public class DeleteCard extends FC8800Command {
             iIndex = i;
             iSize += 1;
             dataBuf.writeByte(0);
-            dataBuf.writeInt((int)_List[iIndex]);
+            
+            
+            Net.PC15.Util.StringUtil.HextoByteBuf(_strList[iIndex],dataBuf);
             if (iSize == iMaxSize) {
                 break;
             }
@@ -69,35 +65,4 @@ public class DeleteCard extends FC8800Command {
         mIndex = iIndex + 1;
         CommandReady();
     }
-    
-    @Override
-    protected void Release0() {
-        _Parameter = null;
-        _Result = null;
-        _List = null;
-    }
-    
-    @Override
-    protected boolean _CommandStep(INConnectorEvent oEvent, FC8800PacketModel model) {
-        if (CheckResponseOK(model)) {
-            CommandNext(oEvent);
-            return true;
-        } 
-        return false;
-    }
-
-    /**
-     * 命令继续执行
-     */
-    protected void CommandNext(INConnectorEvent oEvent) {
-        //增加命令进度
-        _ProcessStep = mIndex;
-        if (mIndex < _List.length) {
-            WriteNext();
-        } else {
-            RaiseCommandCompleteEvent(oEvent);
-        }
-        
-    }
-
 }

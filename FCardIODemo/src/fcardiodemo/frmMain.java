@@ -314,8 +314,11 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         txtReadTransactionDatabasePacketSize = new javax.swing.JTextField();
         jLabel23 = new javax.swing.JLabel();
         txtReadTransactionDatabaseQuantity = new javax.swing.JTextField();
+        jLabel26 = new javax.swing.JLabel();
+        cmbProtocolType = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setMinimumSize(new java.awt.Dimension(1020, 850));
         setSize(new java.awt.Dimension(1024, 768));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
@@ -356,7 +359,7 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         jLabel24.setText("IP地址：");
         pnlTCPClient.add(jLabel24, new org.netbeans.lib.awtextra.AbsoluteConstraints(16, 20, 79, -1));
 
-        txtTCPServerIP.setText("192.168.1.169");
+        txtTCPServerIP.setText("192.168.1.66");
         pnlTCPClient.add(txtTCPServerIP, new org.netbeans.lib.awtextra.AbsoluteConstraints(99, 17, 223, -1));
 
         jLabel25.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -481,7 +484,7 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         });
         jpLog.setViewportView(txtLog);
 
-        getContentPane().add(jpLog, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 163, 501, 590));
+        getContentPane().add(jpLog, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 163, 501, 630));
 
         jTabSetting.setName(""); // NOI18N
 
@@ -1007,7 +1010,13 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
 
         jTabSetting.addTab("记录管理", jPanel4);
 
-        getContentPane().add(jTabSetting, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 0, 510, 760));
+        getContentPane().add(jTabSetting, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 50, 510, 750));
+
+        jLabel26.setText("协议类型：");
+        getContentPane().add(jLabel26, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 20, -1, -1));
+
+        cmbProtocolType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "FC8800通讯协议", "FC890H通讯协议", " " }));
+        getContentPane().add(cmbProtocolType, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 20, 170, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -1076,7 +1085,16 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         ReadTransactionDatabase_Parameter par = new ReadTransactionDatabase_Parameter(dt, e_TransactionDatabaseType.valueOf(type));
         par.PacketSize = PacketSize;
         par.Quantity = Quantity;
-        ReadTransactionDatabase cmd = new ReadTransactionDatabase(par);
+        
+        //徐铭康修改
+        //ReadTransactionDatabase cmd = new ReadTransactionDatabase(par);
+        ReadTransactionDatabase cmd = null;
+        if (cmbProtocolType.getSelectedIndex() == 1) {
+            cmd = new Net.PC15.FC89H.Command.Transaction.ReadTransactionDatabase(par);
+        }
+        else {
+            cmd = new ReadTransactionDatabase(par);
+        }
         AddCommandResultCallback(cmd.getClass().getName(), (x, y) -> {
             ReadTransactionDatabase_Result result = (ReadTransactionDatabase_Result) y;
             x.append("\n记录类型：");
@@ -1215,7 +1233,15 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         ReadTransactionDatabaseByIndex_Parameter par = new ReadTransactionDatabaseByIndex_Parameter(dt, e_TransactionDatabaseType.valueOf(type));
         par.ReadIndex = index;
         par.Quantity = Quantity;
-        ReadTransactionDatabaseByIndex cmd = new ReadTransactionDatabaseByIndex(par);
+        //徐铭康修改
+        //ReadTransactionDatabaseByIndex cmd = new ReadTransactionDatabaseByIndex(par);
+        ReadTransactionDatabaseByIndex cmd = null;
+        if (cmbProtocolType.getSelectedIndex() == 1) {
+            cmd = new Net.PC15.FC89H.Command.Transaction.ReadTransactionDatabaseByIndex(par);
+        }
+        else {
+            cmd = new ReadTransactionDatabaseByIndex(par);
+        }
         AddCommandResultCallback(cmd.getClass().getName(), (x, y) -> {
             ReadTransactionDatabaseByIndex_Result result = (ReadTransactionDatabaseByIndex_Result) y;
             x.append("\n记录类型：");
@@ -1328,8 +1354,15 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         }
 
         DeleteCard_Parameter par = new DeleteCard_Parameter(dt, lst);
-        DeleteCard cmd = new DeleteCard(par);
-
+        //徐铭康修改
+        //DeleteCard cmd = new DeleteCard(par);
+        FC8800Command cmd = null;
+        if (cmbProtocolType.getSelectedIndex() == 1 ) {
+            cmd = new Net.PC15.FC89H.Command.Card.DeleteCard(par);
+        }
+        else {
+            cmd = new Net.PC15.FC8800.Command.Card.DeleteCard(par);
+        }
         _Allocator.AddCommand(cmd);
     }//GEN-LAST:event_butDeleteCardByListActionPerformed
 
@@ -1346,7 +1379,15 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         dt.Timeout = 5000;//此函数超时时间设定长一些
 
         WriteCardListBySort_Parameter par = new WriteCardListBySort_Parameter(dt, mCardList);
-        WriteCardListBySort cmd = new WriteCardListBySort(par);
+        //徐铭康修改
+        //WriteCardListBySort cmd = new WriteCardListBySort(par);
+        FC8800Command cmd = null;
+        if (cmbProtocolType.getSelectedIndex() == 1 ) {
+            cmd = new Net.PC15.FC89H.Command.Card.WriteCardListBySort(par);
+        }
+        else {
+            cmd = new Net.PC15.FC8800.Command.Card.WriteCardListBySort(par);
+        }
         AddCommandResultCallback(cmd.getClass().getName(), (x, y) -> {
             WriteCardListBySort_Result result = (WriteCardListBySort_Result) y;
             x.append("上传完毕");
@@ -1374,10 +1415,21 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         if (dt == null) {
             return;
         }
+        
         dt.Timeout = 8000;//此函数超时时间设定长一些
-
+        
+        //徐铭康 修改
         WriteCardListBySequence_Parameter par = new WriteCardListBySequence_Parameter(dt, mCardList);
-        WriteCardListBySequence cmd = new WriteCardListBySequence(par);
+        
+        //WriteCardListBySequence cmd = new WriteCardListBySequence(par);
+        FC8800Command cmd = null;
+        if (cmbProtocolType.getSelectedIndex() == 1) {
+            cmd = new Net.PC15.FC89H.Command.Card.WriteCardListBySequence(par);
+        }
+        else {
+            
+            cmd = new Net.PC15.FC8800.Command.Card.WriteCardListBySequence(par);
+        }
         AddCommandResultCallback(cmd.getClass().getName(), (x, y) -> {
             WriteCardListBySequence_Result result = (WriteCardListBySequence_Result) y;
             x.append("上传完毕");
@@ -1409,11 +1461,13 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         if (mCardList == null) {
             mCardList = new ArrayList<>(10000);
         }
+        
 
         if ((maxSize + mCardList.size()) > 120000) {
             JOptionPane.showMessageDialog(null, "待生成的数量和列表中的卡数相加超过12万！", "卡片管理", JOptionPane.ERROR_MESSAGE);
             return;
         }
+        
 
         Random rnd = new Random();
         int max = 90000000;
@@ -1426,12 +1480,21 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         }
 
         Collections.sort(mCardList);
-
+        //徐铭康修改
         ArrayList<CardDetail> tmplst = new ArrayList<>(1500);
+        
         //Calendar time=Calendar.getInstance();
         while (maxSize > 0) {
             long card = rnd.nextInt(max) % (max - min + 1) + min;
-            CardDetail cd = new CardDetail(card);
+            //徐铭康修改
+            //CardDetail cd = new CardDetail(card);
+            CardDetail cd = null;
+            if (cmbProtocolType.getSelectedIndex() == 1) {
+                cd = new Net.PC15.FC89H.Command.Data.CardDetail(String.valueOf(card));
+            }
+            else {
+                cd = new CardDetail(card);
+            }
             iSearch = CardDetail.SearchCardDetail(mCardList, cd);
             if (iSearch == -1) {
                 if (tmplst.indexOf(cd) == -1) {
@@ -1490,8 +1553,15 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         dt.Timeout = 5000;//此函数超时时间设定长一些
 
         DeleteCard_Parameter par = new DeleteCard_Parameter(dt, lst);
-        DeleteCard cmd = new DeleteCard(par);
-
+        //徐铭康修改
+        //DeleteCard cmd = new DeleteCard(par);
+        FC8800Command cmd = null;
+        if (cmbProtocolType.getSelectedIndex() == 1 ) {
+            cmd = new Net.PC15.FC89H.Command.Card.DeleteCard(par);
+        }
+        else {
+            cmd = new DeleteCard(par);
+        }
         _Allocator.AddCommand(cmd);
     }//GEN-LAST:event_butDeleteCardActionPerformed
 
@@ -1509,9 +1579,17 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
             return;
         }
         dt.Timeout = 5000;//此函数超时时间设定长一些
-
+        //徐铭康修改
         WriteCardListBySequence_Parameter par = new WriteCardListBySequence_Parameter(dt, lst);
-        WriteCardListBySequence cmd = new WriteCardListBySequence(par);
+        //WriteCardListBySequence cmd = new WriteCardListBySequence(par);
+        FC8800Command cmd = null;
+        if (cmbProtocolType.getSelectedIndex() == 1) {
+            cmd = new Net.PC15.FC89H.Command.Card.WriteCardListBySequence(par);
+        }
+        else { 
+            cmd = new WriteCardListBySequence(par);
+        }
+        
         AddCommandResultCallback(cmd.getClass().getName(), (x, y) -> {
             WriteCardListBySequence_Result result = (WriteCardListBySequence_Result) y;
             x.append("上传完毕");
@@ -1573,7 +1651,14 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         dt.Timeout = 5000;//此函数超时时间设定长一些
 
         ReadCardDetail_Parameter par = new ReadCardDetail_Parameter(dt, cd.CardData);
-        ReadCardDetail cmd = new ReadCardDetail(par);
+        //ReadCardDetail cmd = new ReadCardDetail(par);
+        FC8800Command cmd = null;//new Net.PC15.FC8800.Command.Card.ReadCardDetail(par);
+        if (cmbProtocolType.getSelectedIndex() == 1) {
+            cmd = new Net.PC15.FC89H.Command.Card.ReadCardDetail(par);
+        }
+        else {
+            cmd = new Net.PC15.FC8800.Command.Card.ReadCardDetail(par);
+        }
         AddCommandResultCallback(cmd.getClass().getName(), (x, y) -> {
             ReadCardDetail_Result result = (ReadCardDetail_Result) y;
             if (result.IsReady) {
@@ -1670,7 +1755,15 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         dt.Timeout = 2000;
         int iType = cmbCardDataBaseType.getSelectedIndex() + 1;
         ReadCardDataBase_Parameter par = new ReadCardDataBase_Parameter(dt, iType);
-        ReadCardDataBase cmd = new ReadCardDataBase(par);
+        //徐铭康修改
+        //ReadCardDataBase cmd = new ReadCardDataBase(par);
+        ReadCardDataBase cmd = null;
+        if (cmbProtocolType.getSelectedIndex() == 1 ) {
+            cmd = new Net.PC15.FC89H.Command.Card.ReadCardDataBase(par);
+        }
+        else{
+             cmd = new ReadCardDataBase(par);
+        }
         String[] CardTypeList = new String[]{"", "排序区", "非排序区", "所有区域"};
         AddCommandResultCallback(cmd.getClass().getName(), (x, y) -> {
             ReadCardDataBase_Result result = (ReadCardDataBase_Result) y;
@@ -1688,6 +1781,7 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
                 int Index = 1;
                 StringBuilder builder = new StringBuilder(result.DataBaseSize * 140);
                 for (CardDetail cd : result.CardList) {
+                   
                     Object[] arr = CardDetailToRow(cd, Index);
 
                     builder.append("卡号：");
@@ -2288,7 +2382,6 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
     }
 
     private ArrayList<CardDetail> mCardList;
-
     private void ClearCardList() {
         DefaultTableModel tableModel = (DefaultTableModel) tblCard.getModel();
         tableModel.setRowCount(0);// 清除原有行
@@ -2410,7 +2503,84 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
 
         JCheckBox[] doors = new JCheckBox[]{chkCardDoor1, chkCardDoor2, chkCardDoor3, chkCardDoor4};
 
-        CardDetail cd = new CardDetail(CardData);//设定卡号
+        CardDetail cd = null;
+        if (cmbProtocolType.getSelectedIndex() == 1) {
+            cd = new Net.PC15.FC89H.Command.Data.CardDetail(Long.toString(CardData));
+        }
+        else {
+            cd = new CardDetail(CardData);//设定卡号
+        }
+        
+        cd.Password = Password;//设定密码
+        cd.Expiry = CardExpiry;//设定有效期
+        cd.OpenTimes = iOpenTimes;//开门次数
+        cd.CardStatus = (byte) CardStatus;
+        //设定4个门的开门时段
+        for (int i = 1; i <= 4; i++) {
+            cd.SetTimeGroup(i, 1);//每个门都设定为1门
+            cd.SetDoor(i, doors[i - 1].isSelected());//设定每个门权限
+        }
+        cd.SetNormal();//设定卡片没有特权
+        cd.HolidayUse = true;//设定受节假日限制。
+
+        return cd;
+    }
+
+    private Net.PC15.FC89H.Command.Data.CardDetail GetFC89HCardDetail() {
+        String Card = txtCardData.getText();
+        String Password = txtCardPassword.getText();
+        String Expiry = TxtCardExpiry.getText();
+        String OpenTimes = txtOpenTimes.getText();
+        int CardStatus = cmbCardStatus.getSelectedIndex();
+        int iOpenTimes = 0;
+        Calendar CardExpiry = Calendar.getInstance();
+        long CardData = 0;
+
+        if (StringUtil.IsNullOrEmpty(Card)) {
+            JOptionPane.showMessageDialog(null, "卡号不能为空！", "卡片管理", JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
+        if (!StringUtil.IsNum(Card) || Card.length() > 10) {
+            JOptionPane.showMessageDialog(null, "卡号为1-10位数字！", "卡片管理", JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
+        CardData = Long.valueOf(Card);
+        if (CardData > UInt32Util.UINT32_MAX || CardData == 0) {
+            JOptionPane.showMessageDialog(null, "卡号不能大于4294967295！", "卡片管理", JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
+        if (!StringUtil.IsNullOrEmpty(Password)) {
+            if (Password.length() > 8 || Password.length() < 4 || !StringUtil.IsNum(Password)) {
+                JOptionPane.showMessageDialog(null, "密码为4-8位数字！", "卡片管理", JOptionPane.ERROR_MESSAGE);
+                return null;
+            }
+        }
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+        try {
+            Date dt1 = df.parse(Expiry);
+            CardExpiry.setTime(dt1);
+            dt1 = CardExpiry.getTime();
+
+        } catch (Exception exception) {
+            JOptionPane.showMessageDialog(null, "截止日期格式不正确（yyyy-MM-dd hh:mm）！", "卡片管理", JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
+        if (OpenTimes.equals(OpenTimesUnlimited)) {
+            OpenTimes = "65535";
+        }
+        if (!StringUtil.IsNum(OpenTimes) || OpenTimes.length() > 5) {
+            JOptionPane.showMessageDialog(null, "有效次数必须是数字，取值范围0-65535！", "卡片管理", JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
+        iOpenTimes = Integer.valueOf(OpenTimes);
+        if (iOpenTimes > 65535) {
+            JOptionPane.showMessageDialog(null, "有效次数必须是数字，取值范围0-65535！", "卡片管理", JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
+
+        JCheckBox[] doors = new JCheckBox[]{chkCardDoor1, chkCardDoor2, chkCardDoor3, chkCardDoor4};
+
+        Net.PC15.FC89H.Command.Data.CardDetail cd = new Net.PC15.FC89H.Command.Data.CardDetail();//设定卡号
         cd.Password = Password;//设定密码
         cd.Expiry = CardExpiry;//设定有效期
         cd.OpenTimes = iOpenTimes;//开门次数
@@ -2566,7 +2736,11 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
             UDPDetail udp = new UDPDetail("255.255.255.255", 8101);
             udp.Broadcast = true;
             detail.Connector = udp;
-            detail.Identity = new FC8800Identity(r.SN, FC8800Command.NULLPassword, E_ControllerType.FC8900);
+            
+            detail.Identity = new FC8800Identity(r.SN, FC8800Command.NULLPassword, E_ControllerType.FC8800);
+            if (cmbProtocolType.getSelectedIndex() == 1 ){
+                detail.Identity = new FC8800Identity(r.SN, FC8800Command.NULLPassword, E_ControllerType.FC8900);
+            }
             SearchEquptOnNetNum_Parameter par = new SearchEquptOnNetNum_Parameter(detail, SearchNetFlag);
             WriteEquptNetNum cmd = new WriteEquptNetNum(par);
             _Allocator.AddCommand(cmd);
@@ -2629,6 +2803,7 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
     private javax.swing.JCheckBox chkTransactionIsCircle;
     private javax.swing.JComboBox<String> cmbCardDataBaseType;
     private javax.swing.JComboBox<String> cmbCardStatus;
+    private javax.swing.JComboBox<String> cmbProtocolType;
     private javax.swing.JComboBox<String> cmbTransactionType;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
@@ -2651,6 +2826,7 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel25;
+    private javax.swing.JLabel jLabel26;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -2749,8 +2925,14 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
             JOptionPane.showMessageDialog(null, "通讯密码必须是8位！", "错误", JOptionPane.ERROR_MESSAGE);
             return null;
         }
-
-        detail.Identity = new FC8800Identity(sn, pwd, E_ControllerType.FC8900);
+         
+        if (cmbProtocolType.getSelectedIndex() == 1 ){
+            detail.Identity = new FC8800Identity(sn, pwd, E_ControllerType.FC8900);
+        }
+        else {
+            detail.Identity = new FC8800Identity(sn, pwd, E_ControllerType.FC8800);
+        }
+        
         return detail;
     }
     private void AddCommandResultCallback(String sCommand, CommandResultCallback callback) {
@@ -2886,8 +3068,11 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         CommandName.put(ReadCardDataBase.class.getName(), "从控制器中读取卡片数据");
         CommandName.put(ReadCardDetail.class.getName(), "读取单个卡片在控制器中的信息");
         CommandName.put(WriteCardListBySequence.class.getName(), "将卡片列表写入到控制器非排序区");
+        CommandName.put(Net.PC15.FC89H.Command.Card.WriteCardListBySequence.class.getName(), "将卡片列表写入到控制器非排序区");
         CommandName.put(WriteCardListBySort.class.getName(), "将卡片列表写入到控制器排序区");
+        CommandName.put(Net.PC15.FC89H.Command.Card.WriteCardListBySort.class.getName(), "将卡片列表写入到控制器排序区");
         CommandName.put(DeleteCard.class.getName(), "删除卡片");
+        CommandName.put(Net.PC15.FC89H.Command.Card.DeleteCard.class.getName(), "删除卡片");
 
         CommandName.put(ReadTransactionDatabaseDetail.class.getName(), "读取控制器中的卡片数据库信息");
         CommandName.put(TransactionDatabaseEmpty.class.getName(), "清空所有类型的记录数据库");
@@ -2896,6 +3081,8 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         CommandName.put(WriteTransactionDatabaseWriteIndex.class.getName(), "修改指定记录数据库的写索引");
         CommandName.put(ReadTransactionDatabaseByIndex.class.getName(), "读取记录");
         CommandName.put(ReadTransactionDatabase.class.getName(), "读取新记录");
+        CommandName.put(Net.PC15.FC89H.Command.Transaction.ReadTransactionDatabaseByIndex.class.getName(), "读取记录");
+        CommandName.put(Net.PC15.FC89H.Command.Transaction.ReadTransactionDatabase.class.getName(), "读取新记录");
     }
 
     @Override

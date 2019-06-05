@@ -27,14 +27,18 @@ import java.util.Collections;
  */
 public class WriteCardListBySort extends FC8800Command {
 
-    private int mIndex;//指示当前命令进行的步骤
-    private ArrayList<CardDetail> _List;
-    private int mStep;
+    protected int mIndex;//指示当前命令进行的步骤
+    protected ArrayList<CardDetail> _List;
+    protected int mStep;
     /**
      * 本次上传卡数量
      */
-    private int mUploadMax;
+    protected int mUploadMax;
 
+    public WriteCardListBySort(){
+        
+    }
+    
     public WriteCardListBySort(WriteCardListBySort_Parameter par) {
         _Parameter = par;
         _List = par.CardList;
@@ -77,7 +81,7 @@ public class WriteCardListBySort extends FC8800Command {
      * @param model 本次数据包的包装类
      * @return true 正确解析或 false 未解析
      */
-    private boolean CheckDataBaseDetail(FC8800PacketModel model) {
+    protected boolean CheckDataBaseDetail(FC8800PacketModel model) {
         if (CheckResponse_Cmd(model, 7, 1, 0, 0x10)) {
             ByteBuf buf = model.GetDatabuff();
 
@@ -179,7 +183,7 @@ public class WriteCardListBySort extends FC8800Command {
      * @param model 本次数据包的包装类
      * @return true 正确解析或 false 未解析
      */
-    private boolean CheckWriteCardResponse(FC8800PacketModel model) {
+    protected boolean CheckWriteCardResponse(FC8800PacketModel model) {
         if (CheckResponseOK(model)) {
             _ProcessStep = mIndex;
 
@@ -224,7 +228,7 @@ public class WriteCardListBySort extends FC8800Command {
      * @param model 本次数据包的包装类
      * @return true 正确解析或 false 未解析
      */
-    private boolean CheckEndWriteResponse(INConnectorEvent oEvent, FC8800PacketModel model) {
+    protected boolean CheckEndWriteResponse(INConnectorEvent oEvent, FC8800PacketModel model) {
         if (CheckResponseOK(model)) {
             RaiseCommandCompleteEvent(oEvent);
         } else {

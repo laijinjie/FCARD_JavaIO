@@ -6,19 +6,19 @@
 package testio.FCardIO;
 
 import Net.PC15.FC8800.Command.Door.Parameter.OpenDoor_Parameter;
-import Net.PC15.Command.CommandDetial;
+import Net.PC15.Command.CommandDetail;
 import Net.PC15.Command.CommandParameter;
 import java.util.concurrent.Semaphore;
 import Net.PC15.Connector.ConnectorAllocator;
 import Net.PC15.FC8800.Command.FC8800Command;
 import Net.PC15.Command.INCommand;
 import Net.PC15.Command.INCommandResult;
-import Net.PC15.Connector.ConnectorDetial;
+import Net.PC15.Connector.ConnectorDetail;
 import Net.PC15.Connector.E_ControllerType;
 import Net.PC15.Connector.INConnectorEvent;
-import Net.PC15.Connector.TCPClient.TCPClientDetial;
+import Net.PC15.Connector.TCPClient.TCPClientDetail;
 import Net.PC15.Connector.TCPServer.IPEndPoint;
-import Net.PC15.Connector.TCPServer.TCPServerClientDetial;
+import Net.PC15.Connector.TCPServer.TCPServerClientDetail;
 import Net.PC15.Data.AbstractTransaction;
 import Net.PC15.Data.BytesData;
 import Net.PC15.Data.INData;
@@ -100,7 +100,7 @@ public class FCardIOTest implements INConnectorEvent {
     }
 
     public void TestReadAllCard() {
-        CommandDetial detial = getCommandDetial();
+        Net.PC15.Command.CommandDetail detial = getCommandDetial();
         detial.Timeout = 1000;
         ReadCardDataBase_Parameter par = new ReadCardDataBase_Parameter(detial, 1);
         INCommand cmd = new ReadCardDataBase(par);
@@ -116,8 +116,8 @@ public class FCardIOTest implements INConnectorEvent {
         _Allocator.AddCommand(cmd);
     }
 
-    private CommandDetial getCommandDetial() {
-        CommandDetial detial = new CommandDetial();
+    private Net.PC15.Command.CommandDetail getCommandDetial() {
+        Net.PC15.Command.CommandDetail detial = new Net.PC15.Command.CommandDetail();
         detial.Connector = new TCPClientDetial("192.168.1.169", 8000);
         detial.Identity = new FC8800Identity("FC-8940A46060007", "FFFFFFFF", E_ControllerType.FC8900);
         return detial;

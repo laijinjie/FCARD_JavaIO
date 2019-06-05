@@ -292,4 +292,30 @@ public class StringUtil {
         return FillString(str, iLen, fillstr, fill_right);
 
     }
+    
+    public static String[] LongToString(long longArray[]) {
+         if (longArray == null || longArray.length < 1) {
+             return null;
+         }
+         String  stringArray[] = new String[longArray.length];
+         for (int i = 0; i < stringArray.length; i++ ) {
+             try {
+              stringArray[i] = String.valueOf(longArray[i]);
+             } catch (NumberFormatException e) {
+              stringArray[i] = null;
+                 continue;
+             }
+         }
+         return stringArray;
+     }
+    
+        /**
+        * 16进制直接转换成为字符串(无需Unicode解码)
+        * @param hexStr
+        * @return
+        */
+       public static String HexStr2Str(String hexStr) {
+           Integer x = Integer.parseInt(hexStr,16);
+           return String.valueOf(x);
+       }
 }

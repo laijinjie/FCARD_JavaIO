@@ -34,22 +34,22 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 public class ReadTransactionDatabase extends FC8800Command {
 
-    private ConcurrentLinkedQueue<ByteBuf> mBufs;
+    protected ConcurrentLinkedQueue<ByteBuf> mBufs;
     /**
      * 本次读取的数量
      */
-    private int mReadQuantity;
-    private int mStep;
-    private ReadTransactionDatabase_Parameter thisParameter;
-    private TransactionDetail transactionDetail;
+    protected int mReadQuantity;
+    protected int mStep;
+    protected ReadTransactionDatabase_Parameter thisParameter;
+    protected TransactionDetail transactionDetail;
     /**
      * 可读取的新记录数量
      */
-    private int mReadable;
+    protected int mReadable;
     /**
      * 读取计数
      */
-    private int mReadTotal;
+    protected int mReadTotal;
 
     public ReadTransactionDatabase(ReadTransactionDatabase_Parameter par) {
         _Parameter = par;
@@ -83,7 +83,7 @@ public class ReadTransactionDatabase extends FC8800Command {
         return false;
     }
 
-    private boolean CheckDataBaseDetail(INConnectorEvent oEvent, FC8800PacketModel model) {
+    protected boolean CheckDataBaseDetail(INConnectorEvent oEvent, FC8800PacketModel model) {
         if (CheckResponse_Cmd(model, 8, 1, 0, 0xD * 6)) {
             ByteBuf buf = model.GetDatabuff();
 
