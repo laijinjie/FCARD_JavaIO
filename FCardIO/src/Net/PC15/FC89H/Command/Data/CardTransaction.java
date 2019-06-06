@@ -94,7 +94,7 @@ public class CardTransaction extends Net.PC15.FC8800.Command.Data.CardTransactio
             CardDataHEX = ByteUtil.ByteToHex(btCardData);
             CardDataStr = Net.PC15.Util.StringUtil.LTrim(CardDataHEX,'0');
             //CardData = Integer.parseInt(CardDataHEX,10);
-            CardDataHEX = Net.PC15.Util.StringUtil.HexStr2Str(CardDataHEX,16);
+            //CardDataHEX = Net.PC15.Util.StringUtil.HexStr2Str(CardDataHEX,16);
            
             //CardData = Long.valueOf(CardDataHEX);
             
