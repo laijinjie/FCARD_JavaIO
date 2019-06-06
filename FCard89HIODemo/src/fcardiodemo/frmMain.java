@@ -1331,7 +1331,7 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         FC8800Command cmd = null;
         String[] lst = new String[ilstLen];
             for (int i = 0; i < ilstLen; i++) {
-                lst[i] = mCardList.get(i).CardDataHEX;
+                lst[i] = mCardList.get(i).CardDataStr;
             }
             Net.PC15.FC89H.Command.Card.Parameter.DeleteCard_Parameter par = new Net.PC15.FC89H.Command.Card.Parameter.DeleteCard_Parameter(dt, lst);
             cmd = new Net.PC15.FC89H.Command.Card.DeleteCard(par);
@@ -1357,14 +1357,14 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         FC8800Command cmd = new Net.PC15.FC89H.Command.Card.WriteCardListBySort(par);
        
         AddCommandResultCallback(cmd.getClass().getName(), (x, y) -> {
-            WriteCardListBySort_Result result = (WriteCardListBySort_Result) y;
+            Net.PC15.FC89H.Command.Card.Result.WriteCardListBySort_Result result = (Net.PC15.FC89H.Command.Card.Result.WriteCardListBySort_Result) y;
             x.append("上传完毕");
             if (result.FailTotal > 0) {
                 x.append("失败数量：");
                 x.append(result.FailTotal);
                 x.append("，卡号列表：\n");
-                for (CardDetail c : result.CardList) {
-                    x.append(c.CardData);
+                for (Net.PC15.FC89H.Command.Data.CardDetail c : result.CardList) {
+                    x.append(c.CardDataStr);
                     x.append("\n");
                 }
             }
@@ -2364,7 +2364,7 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
             Privilege = PrivilegeList[4];// "防盗设置卡";
         }
         Object[] row = new Object[]{Index,
-            cd.CardDataHEX,
+            cd.CardDataStr,
             cd.Password.replaceAll("F", ""),
             TimeUtil.FormatTimeHHmm(cd.Expiry),
             CardStatusList[cd.CardStatus],
@@ -2513,7 +2513,7 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
                 if (Transaction instanceof Net.PC15.FC89H.Command.Data.CardTransaction) {
                     Net.PC15.FC89H.Command.Data.CardTransaction cardTrn = (Net.PC15.FC89H.Command.Data.CardTransaction) Transaction;
                     log.append("，卡号：");
-                    log.append(cardTrn.CardDataHEX);
+                    log.append(cardTrn.CardDataStr);
                     log.append("，门号：");
                     log.append(cardTrn.DoorNum());
                     if (cardTrn.IsEnter()) {

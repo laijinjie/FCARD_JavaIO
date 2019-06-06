@@ -72,23 +72,31 @@ public class CardTransaction extends Net.PC15.FC8800.Command.Data.CardTransactio
      * 卡号
      */
     public String CardDataHEX;
-    
+    public String CardDataStr;
     @Override
     public void SetBytes(ByteBuf data) {
         try {
+            data.readByte();
             /*
             if (data.readUnsignedByte() == 255) {
                 _IsNull = true;
                 //return;
             }
-            data.readByte();
-            */
-            //CardData = data.readUnsignedInt();
+            
             byte[] btCardData = new byte[9];
             data.readBytes(btCardData, 0, 9);
+            byte[] btCardData = new byte[37];
+            data.readBytes(btCardData, 0, 37);
+            */
+            //CardData = data.readUnsignedInt();
+            byte[] btCardData = new byte[8];
+            data.readBytes(btCardData, 0, 8);
             CardDataHEX = ByteUtil.ByteToHex(btCardData);
-            CardDataHEX = Net.PC15.Util.StringUtil.HexStr2Str(CardDataHEX);
-            CardData = Long.valueOf(CardDataHEX);
+            CardDataStr = Net.PC15.Util.StringUtil.LTrim(CardDataHEX,'0');
+            //CardData = Integer.parseInt(CardDataHEX,10);
+            CardDataHEX = Net.PC15.Util.StringUtil.HexStr2Str(CardDataHEX,16);
+           
+            //CardData = Long.valueOf(CardDataHEX);
             
             byte[] btTime = new byte[6];
             data.readBytes(btTime, 0, 6);

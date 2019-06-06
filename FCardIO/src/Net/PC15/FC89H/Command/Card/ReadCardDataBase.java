@@ -7,11 +7,15 @@ package Net.PC15.FC89H.Command.Card;
 
 import Net.PC15.Connector.INConnectorEvent;
 import Net.PC15.FC8800.Command.Card.Parameter.ReadCardDataBase_Parameter;
-import Net.PC15.FC8800.Command.Card.Result.ReadCardDataBase_Result;
-import Net.PC15.FC8800.Command.Data.CardDetail;
+import Net.PC15.FC8800.Command.Card.Result.ReadCardDatabaseDetail_Result;
+import Net.PC15.FC8800.Command.FC8800Command;
+import Net.PC15.FC89H.Command.Card.Result.ReadCardDataBase_Result;
+import Net.PC15.FC89H.Command.Data.CardDetail;
 import Net.PC15.FC8800.Packet.FC8800PacketModel;
+import Net.PC15.Util.ByteUtil;
 import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * 从控制器中读取卡片数据，针对FC89H使用<br/>
@@ -19,8 +23,10 @@ import java.util.ArrayList;
  *
  * @author 徐铭康
  */
-public class ReadCardDataBase extends Net.PC15.FC8800.Command.Card.ReadCardDataBase {
-    
+public class ReadCardDataBase extends FC8800Command {
+    protected int mStep;//指示当前命令进行的步骤
+    protected ConcurrentLinkedQueue<ByteBuf> mBufs;
+    protected int mRecordCardSize;//记录的卡数量
     public ReadCardDataBase(ReadCardDataBase_Parameter par) {
         //super(par);
         _Parameter = par;
@@ -42,6 +48,70 @@ public class ReadCardDataBase extends Net.PC15.FC8800.Command.Card.ReadCardDataB
         }
         return false;
 
+    }
+    
+    /**
+     * 检查卡片数据库的信息，是否有卡可读取
+     *
+     * @param oEvent 事件句柄
+     * @param model 本次数据包的包装类
+     * @return true 正确解析或 false 未解析
+     */
+    protected boolean CheckDataBaseDetail(INConnectorEvent oEvent, FC8800PacketModel model) {
+        if (CheckResponse_Cmd(model, 7, 1, 0, 0x10)) {
+            ByteBuf buf = model.GetDatabuff();
+
+            ReadCardDatabaseDetail_Result r = new ReadCardDatabaseDetail_Result();
+            r.SortDataBaseSize = buf.readUnsignedInt();
+            r.SortCardSize = buf.readUnsignedInt();
+            r.SequenceDataBaseSize = buf.readUnsignedInt();
+            r.SequenceCardSize = buf.readUnsignedInt();
+
+            ReadCardDataBase_Parameter par = (ReadCardDataBase_Parameter) _Parameter;
+            ReadCardDataBase_Result result = new ReadCardDataBase_Result(par.CardType);
+            _Result = result;
+            mRecordCardSize = 0;
+            switch (par.CardType) {
+                case 1://排序卡区域
+                    if (r.SortCardSize > 0) {
+                        mRecordCardSize = (int) r.SortCardSize;
+                    }
+                    break;
+                case 2://非排序卡区域
+                    if (r.SequenceCardSize > 0) {
+                        mRecordCardSize = (int) r.SequenceCardSize;
+                    }
+
+                    break;
+                case 3://所有区域
+                    if ((r.SortCardSize + r.SequenceCardSize) > 0) {
+                        mRecordCardSize = (int) (r.SortCardSize + r.SequenceCardSize);
+                    }
+                    break;
+            }
+            if (mRecordCardSize > 0) {
+                _ProcessMax = mRecordCardSize;
+                _ProcessStep = 0;
+                //发生命令进度变更
+                //RaiseCommandProcessEvent(oEvent);
+                //发送读取所有卡的指令
+                buf = ByteUtil.ALLOCATOR.buffer(1);
+                buf.writeByte(par.CardType);
+                CreatePacket(7, 3, 0, 1, buf);
+
+                CommandWaitResponse();
+
+                mBufs = new ConcurrentLinkedQueue<ByteBuf>();
+                mStep = 2;
+
+            } else {
+                RaiseCommandCompleteEvent(oEvent);
+            }
+
+        } else {
+            return false;
+        }
+        return true;
     }
     
     /**
@@ -109,13 +179,20 @@ public class ReadCardDataBase extends Net.PC15.FC8800.Command.Card.ReadCardDataB
             ByteBuf buf = mBufs.poll();
             iCardSize = buf.readInt();
             //buf.readBytes(bCardBuf,0,0x21);
+            
             for (int i = 0; i < iCardSize; i++) {
-                Net.PC15.FC89H.Command.Data.CardDetail cd = new Net.PC15.FC89H.Command.Data.CardDetail();
+                
+                CardDetail cd = new CardDetail();
                 cd.SetBytes(buf);
                 CardList.add(cd);
             }
             buf.release();
         }
 
+    }
+
+    @Override
+    protected void Release0() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

@@ -9,6 +9,7 @@ import Net.PC15.Util.ByteUtil;
 import Net.PC15.Util.StringUtil;
 import Net.PC15.Util.TimeUtil;
 import io.netty.buffer.ByteBuf;
+import java.util.ArrayList;
 
 /**
  * 针对FC89H使用，卡片权限详情
@@ -63,22 +64,30 @@ public class CardDetail extends Net.PC15.FC8800.Command.Data.CardDetail {
     public CardDetail(String data) {
         this();
         CardDataHEX = data;
-        CardData = Long.valueOf(data);
+        CardDataStr = data;
     }
     
     /**
      * 
      */
-    private String CardDataHEX;
+    public String CardDataHEX;
+    public String CardDataStr;
     
     @Override
     public void SetBytes(ByteBuf data) {
         data.readByte();
-        //CardData = data.readUnsignedInt();
-        byte[] btCardData = new byte[4];
-        data.readBytes(btCardData, 0, 4);
+        //测试完整data
+        //byte[] btCardData = new byte[36];
+        //data.readBytes(btCardData, 0, 36);
+        
+        
+        byte[] btCardData = new byte[8];
+        data.readBytes(btCardData, 0, 8);
         CardDataHEX = ByteUtil.ByteToHex(btCardData);
-        CardData = Long.valueOf(CardDataHEX);
+        if (true)
+        {
+        CardDataStr = Net.PC15.Util.StringUtil.LTrim(CardDataHEX,'0');
+        //CardDataHEX = Net.PC15.Util.StringUtil.HexStr2Str(CardDataHEX,16);
         byte[] btData = new byte[4];
         data.readBytes(btData, 0, 4);
         Password = ByteUtil.ByteToHex(btData);
@@ -109,6 +118,7 @@ public class CardDetail extends Net.PC15.FC8800.Command.Data.CardDetail {
         EnterStatus = data.readByte();
         data.readBytes(btTime, 0, 6);
         RecordTime = TimeUtil.BCDTimeToDate_yyMMddhhmmss(btTime);
+        }
         return;
     
     }
@@ -116,9 +126,13 @@ public class CardDetail extends Net.PC15.FC8800.Command.Data.CardDetail {
     @Override
     public void GetBytes(ByteBuf data) {
          data.writeByte(0);
-        //data.writeInt((int) CardData);
+         
+         //传16进制
+        String CardDataHEX2 = Net.PC15.Util.StringUtil.FillString(CardDataHEX, 16, "0", false);
+        Net.PC15.Util.StringUtil.HextoByteBuf(CardDataHEX2,data);
         
-        Net.PC15.Util.StringUtil.HextoByteBuf(CardDataHEX,data);
+        //传10进制
+        //data.writeBytes(CardDataHEX.getBytes());
         
         Password = StringUtil.FillHexString(Password, 8, "F", true);
         long pwd = Long.parseLong(Password, 16);
@@ -146,5 +160,25 @@ public class CardDetail extends Net.PC15.FC8800.Command.Data.CardDetail {
         TimeUtil.DateToBCD_yyMMddhhmmss(btTime, RecordTime);
         data.writeBytes(btTime, 0, 6);
          
+    }
+    
+    public static int SearchCardDetail(ArrayList<CardDetail> list, CardDetail search) {
+        int max, min, mid;
+        max = list.size() - 1;
+        min = 0;
+        while (min <= max) {
+            mid = (max + min) >> 1;
+            CardDetail cd = list.get(mid);
+            int num = cd.compareTo(search);
+            if (num > 0) {
+                max = mid - 1;
+            } else if (num < 0) {
+                min = mid + 1;
+            } else {
+                return mid;
+            }
+        }
+        return -1;
+
     }
 }

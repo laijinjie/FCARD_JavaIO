@@ -6,9 +6,9 @@
 package Net.PC15.FC89H.Command.Card;
 
 import Net.PC15.Connector.INConnectorEvent;
-import Net.PC15.FC8800.Command.Card.Result.WriteCardListBySequence_Result;
-import Net.PC15.FC8800.Command.Card.Parameter.WriteCardListBySequence_Parameter;
-import Net.PC15.FC8800.Command.Data.CardDetail;
+import Net.PC15.FC89H.Command.Card.Result.WriteCardListBySequence_Result;
+import Net.PC15.FC89H.Command.Card.Parameter.WriteCardListBySequence_Parameter;
+import Net.PC15.FC89H.Command.Data.CardDetail;
 import Net.PC15.FC8800.Packet.FC8800PacketCompile;
 import Net.PC15.FC8800.Packet.FC8800PacketModel;
 import Net.PC15.Util.ByteUtil;
@@ -56,7 +56,7 @@ public class WriteCardListBySequence extends Net.PC15.FC8800.Command.Card.WriteC
         for (int i = mIndex; i < ListLen; i++) {
             iIndex = i;
             iSize += 1;
-            Net.PC15.FC89H.Command.Data.CardDetail cd = (Net.PC15.FC89H.Command.Data.CardDetail)_List.get(iIndex) ;
+            CardDetail cd = _List.get(iIndex) ;
             cd.GetBytes(dataBuf);
             if (iSize == iMaxSize) {
                 break;
@@ -74,7 +74,6 @@ public class WriteCardListBySequence extends Net.PC15.FC8800.Command.Card.WriteC
     /**
      * 分析缓冲区，确定下载失败的卡号
      */
-    @Override
     protected void Analysis() {
         if (mBufs == null) {
             return;
@@ -116,9 +115,7 @@ public class WriteCardListBySequence extends Net.PC15.FC8800.Command.Card.WriteC
     
      /**
      * 命令继续执行
-     * @param oEvent
      */
-    @Override
     protected void CommandNext(INConnectorEvent oEvent) {
         //增加命令进度
         _ProcessStep = mIndex;

@@ -6,7 +6,7 @@
 package Net.PC15.FC89H.Command.Card;
 
 import Net.PC15.Connector.INConnectorEvent;
-import Net.PC15.FC8800.Command.Card.Parameter.ReadCardDetail_Parameter;
+import Net.PC15.FC89H.Command.Card.Parameter.ReadCardDetail_Parameter;
 import Net.PC15.FC8800.Command.Card.Result.ReadCardDetail_Result;
 import Net.PC15.FC89H.Command.Data.CardDetail;
 import Net.PC15.FC8800.Command.FC8800Command;

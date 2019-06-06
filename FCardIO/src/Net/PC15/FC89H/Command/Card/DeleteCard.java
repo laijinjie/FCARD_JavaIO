@@ -5,7 +5,9 @@
  */
 package Net.PC15.FC89H.Command.Card;
 
-import Net.PC15.FC8800.Command.Card.Parameter.DeleteCard_Parameter;
+import Net.PC15.Connector.INConnectorEvent;
+import Net.PC15.FC8800.Command.FC8800Command;
+import Net.PC15.FC89H.Command.Card.Parameter.DeleteCard_Parameter;
 import Net.PC15.FC8800.Packet.FC8800PacketCompile;
 import Net.PC15.FC8800.Packet.FC8800PacketModel;
 import Net.PC15.Util.ByteUtil;
@@ -15,14 +17,15 @@ import io.netty.buffer.ByteBuf;
  * 删除卡片，针对FC89H使用
  * @author 徐铭康
  */
-public class DeleteCard extends Net.PC15.FC8800.Command.Card.DeleteCard {
+public class DeleteCard extends FC8800Command {
+    
+    protected int mIndex;//指示当前命令进行的步骤
     protected String [] _strList;
 
     public DeleteCard(DeleteCard_Parameter par) {
         _Parameter = par;
-        _List = par.CardList;
-        _strList = Net.PC15.Util.StringUtil.LongToString(_List);
-        _ProcessMax = _List.length;
+        _strList = par.CardList;
+        _ProcessMax = _strList.length;
         mIndex = 0;
         //初始化缓冲空间
         int iLen = (40 * 9) + 4;
@@ -34,7 +37,6 @@ public class DeleteCard extends Net.PC15.FC8800.Command.Card.DeleteCard {
     /**
      * 写入下一个卡号
      */
-    @Override
     protected void WriteNext() {
         int iMaxSize = 40; //每个数据包最大40个卡
         int iSize = 0;
@@ -64,5 +66,36 @@ public class DeleteCard extends Net.PC15.FC8800.Command.Card.DeleteCard {
         compile.Compile();//重新编译
         mIndex = iIndex + 1;
         CommandReady();
+    }
+    
+    
+    @Override
+    protected boolean _CommandStep(INConnectorEvent oEvent, FC8800PacketModel model) {
+        if (CheckResponseOK(model)) {
+            CommandNext(oEvent);
+            return true;
+        } 
+        return false;
+    }
+
+    @Override
+    protected void Release0() {
+        _Parameter = null;
+        _Result = null;
+        _strList = null;
+    }
+    
+    /**
+     * 命令继续执行
+     */
+    protected void CommandNext(INConnectorEvent oEvent) {
+        //增加命令进度
+        _ProcessStep = mIndex;
+        if (mIndex < _strList.length) {
+            WriteNext();
+        } else {
+            RaiseCommandCompleteEvent(oEvent);
+        }
+        
     }
 }

@@ -94,7 +94,7 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
      */
     public frmMain() {
         initComponents();
-        setTitle("FC8900 控制器调试器 V1.0");
+        setTitle("FC8800 控制器调试器 V1.0");
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         mIsClose = false;
         //JFrame.setDefaultLookAndFeelDecorated(true);
@@ -314,8 +314,6 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         txtReadTransactionDatabasePacketSize = new javax.swing.JTextField();
         jLabel23 = new javax.swing.JLabel();
         txtReadTransactionDatabaseQuantity = new javax.swing.JTextField();
-        jLabel26 = new javax.swing.JLabel();
-        cmbProtocolType = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(1020, 850));
@@ -484,7 +482,7 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         });
         jpLog.setViewportView(txtLog);
 
-        getContentPane().add(jpLog, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 163, 501, 630));
+        getContentPane().add(jpLog, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 163, 501, 590));
 
         jTabSetting.setName(""); // NOI18N
 
@@ -1010,13 +1008,7 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
 
         jTabSetting.addTab("记录管理", jPanel4);
 
-        getContentPane().add(jTabSetting, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 50, 510, 750));
-
-        jLabel26.setText("协议类型：");
-        getContentPane().add(jLabel26, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 20, -1, -1));
-
-        cmbProtocolType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "FC8800通讯协议", "FC890H通讯协议", " " }));
-        getContentPane().add(cmbProtocolType, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 20, 170, -1));
+        getContentPane().add(jTabSetting, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 10, 510, 750));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -1088,13 +1080,7 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         
         //徐铭康修改
         //ReadTransactionDatabase cmd = new ReadTransactionDatabase(par);
-        ReadTransactionDatabase cmd = null;
-        if (cmbProtocolType.getSelectedIndex() == 1) {
-            cmd = new Net.PC15.FC89H.Command.Transaction.ReadTransactionDatabase(par);
-        }
-        else {
-            cmd = new ReadTransactionDatabase(par);
-        }
+        ReadTransactionDatabase cmd = new ReadTransactionDatabase(par);
         AddCommandResultCallback(cmd.getClass().getName(), (x, y) -> {
             ReadTransactionDatabase_Result result = (ReadTransactionDatabase_Result) y;
             x.append("\n记录类型：");
@@ -1235,13 +1221,8 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         par.Quantity = Quantity;
         //徐铭康修改
         //ReadTransactionDatabaseByIndex cmd = new ReadTransactionDatabaseByIndex(par);
-        ReadTransactionDatabaseByIndex cmd = null;
-        if (cmbProtocolType.getSelectedIndex() == 1) {
-            cmd = new Net.PC15.FC89H.Command.Transaction.ReadTransactionDatabaseByIndex(par);
-        }
-        else {
-            cmd = new ReadTransactionDatabaseByIndex(par);
-        }
+        ReadTransactionDatabaseByIndex cmd = new ReadTransactionDatabaseByIndex(par);
+
         AddCommandResultCallback(cmd.getClass().getName(), (x, y) -> {
             ReadTransactionDatabaseByIndex_Result result = (ReadTransactionDatabaseByIndex_Result) y;
             x.append("\n记录类型：");
@@ -1348,21 +1329,17 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         dt.Timeout = 5000;//此函数超时时间设定长一些
 
         int ilstLen = mCardList.size();
+        
+        //徐铭康修改
+        //DeleteCard cmd = new DeleteCard(par);
+        FC8800Command cmd = null;
+        
         long[] lst = new long[ilstLen];
         for (int i = 0; i < ilstLen; i++) {
             lst[i] = mCardList.get(i).CardData;
         }
-
         DeleteCard_Parameter par = new DeleteCard_Parameter(dt, lst);
-        //徐铭康修改
-        //DeleteCard cmd = new DeleteCard(par);
-        FC8800Command cmd = null;
-        if (cmbProtocolType.getSelectedIndex() == 1 ) {
-            cmd = new Net.PC15.FC89H.Command.Card.DeleteCard(par);
-        }
-        else {
-            cmd = new Net.PC15.FC8800.Command.Card.DeleteCard(par);
-        }
+        cmd = new DeleteCard(par);
         _Allocator.AddCommand(cmd);
     }//GEN-LAST:event_butDeleteCardByListActionPerformed
 
@@ -1381,13 +1358,7 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         WriteCardListBySort_Parameter par = new WriteCardListBySort_Parameter(dt, mCardList);
         //徐铭康修改
         //WriteCardListBySort cmd = new WriteCardListBySort(par);
-        FC8800Command cmd = null;
-        if (cmbProtocolType.getSelectedIndex() == 1 ) {
-            cmd = new Net.PC15.FC89H.Command.Card.WriteCardListBySort(par);
-        }
-        else {
-            cmd = new Net.PC15.FC8800.Command.Card.WriteCardListBySort(par);
-        }
+        FC8800Command cmd = new WriteCardListBySort(par);
         AddCommandResultCallback(cmd.getClass().getName(), (x, y) -> {
             WriteCardListBySort_Result result = (WriteCardListBySort_Result) y;
             x.append("上传完毕");
@@ -1422,14 +1393,7 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         WriteCardListBySequence_Parameter par = new WriteCardListBySequence_Parameter(dt, mCardList);
         
         //WriteCardListBySequence cmd = new WriteCardListBySequence(par);
-        FC8800Command cmd = null;
-        if (cmbProtocolType.getSelectedIndex() == 1) {
-            cmd = new Net.PC15.FC89H.Command.Card.WriteCardListBySequence(par);
-        }
-        else {
-            
-            cmd = new Net.PC15.FC8800.Command.Card.WriteCardListBySequence(par);
-        }
+        FC8800Command cmd = new WriteCardListBySequence(par);
         AddCommandResultCallback(cmd.getClass().getName(), (x, y) -> {
             WriteCardListBySequence_Result result = (WriteCardListBySequence_Result) y;
             x.append("上传完毕");
@@ -1488,13 +1452,7 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
             long card = rnd.nextInt(max) % (max - min + 1) + min;
             //徐铭康修改
             //CardDetail cd = new CardDetail(card);
-            CardDetail cd = null;
-            if (cmbProtocolType.getSelectedIndex() == 1) {
-                cd = new Net.PC15.FC89H.Command.Data.CardDetail(String.valueOf(card));
-            }
-            else {
-                cd = new CardDetail(card);
-            }
+            CardDetail cd = new CardDetail(card);
             iSearch = CardDetail.SearchCardDetail(mCardList, cd);
             if (iSearch == -1) {
                 if (tmplst.indexOf(cd) == -1) {
@@ -1542,9 +1500,6 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         if (cd == null) {
             return;
         }
-        long[] lst = new long[1];
-        lst[0] = cd.CardData;
-
         //读取控制器中的卡片数据库信息
         CommandDetail dt = getCommandDetail();
         if (dt == null) {
@@ -1552,16 +1507,16 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         }
         dt.Timeout = 5000;//此函数超时时间设定长一些
 
-        DeleteCard_Parameter par = new DeleteCard_Parameter(dt, lst);
+        
         //徐铭康修改
         //DeleteCard cmd = new DeleteCard(par);
         FC8800Command cmd = null;
-        if (cmbProtocolType.getSelectedIndex() == 1 ) {
-            cmd = new Net.PC15.FC89H.Command.Card.DeleteCard(par);
-        }
-        else {
+        
+            long[] lst = new long[1];
+            lst[0] = cd.CardData;
+            DeleteCard_Parameter par = new DeleteCard_Parameter(dt, lst);
             cmd = new DeleteCard(par);
-        }
+        
         _Allocator.AddCommand(cmd);
     }//GEN-LAST:event_butDeleteCardActionPerformed
 
@@ -1582,13 +1537,7 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         //徐铭康修改
         WriteCardListBySequence_Parameter par = new WriteCardListBySequence_Parameter(dt, lst);
         //WriteCardListBySequence cmd = new WriteCardListBySequence(par);
-        FC8800Command cmd = null;
-        if (cmbProtocolType.getSelectedIndex() == 1) {
-            cmd = new Net.PC15.FC89H.Command.Card.WriteCardListBySequence(par);
-        }
-        else { 
-            cmd = new WriteCardListBySequence(par);
-        }
+        FC8800Command cmd = new WriteCardListBySequence(par);
         
         AddCommandResultCallback(cmd.getClass().getName(), (x, y) -> {
             WriteCardListBySequence_Result result = (WriteCardListBySequence_Result) y;
@@ -1652,13 +1601,7 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
 
         ReadCardDetail_Parameter par = new ReadCardDetail_Parameter(dt, cd.CardData);
         //ReadCardDetail cmd = new ReadCardDetail(par);
-        FC8800Command cmd = null;//new Net.PC15.FC8800.Command.Card.ReadCardDetail(par);
-        if (cmbProtocolType.getSelectedIndex() == 1) {
-            cmd = new Net.PC15.FC89H.Command.Card.ReadCardDetail(par);
-        }
-        else {
-            cmd = new Net.PC15.FC8800.Command.Card.ReadCardDetail(par);
-        }
+        FC8800Command cmd = new ReadCardDetail(par);
         AddCommandResultCallback(cmd.getClass().getName(), (x, y) -> {
             ReadCardDetail_Result result = (ReadCardDetail_Result) y;
             if (result.IsReady) {
@@ -1757,13 +1700,7 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         ReadCardDataBase_Parameter par = new ReadCardDataBase_Parameter(dt, iType);
         //徐铭康修改
         //ReadCardDataBase cmd = new ReadCardDataBase(par);
-        ReadCardDataBase cmd = null;
-        if (cmbProtocolType.getSelectedIndex() == 1 ) {
-            cmd = new Net.PC15.FC89H.Command.Card.ReadCardDataBase(par);
-        }
-        else{
-             cmd = new ReadCardDataBase(par);
-        }
+        ReadCardDataBase cmd = new ReadCardDataBase(par);
         String[] CardTypeList = new String[]{"", "排序区", "非排序区", "所有区域"};
         AddCommandResultCallback(cmd.getClass().getName(), (x, y) -> {
             ReadCardDataBase_Result result = (ReadCardDataBase_Result) y;
@@ -2503,13 +2440,7 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
 
         JCheckBox[] doors = new JCheckBox[]{chkCardDoor1, chkCardDoor2, chkCardDoor3, chkCardDoor4};
 
-        CardDetail cd = null;
-        if (cmbProtocolType.getSelectedIndex() == 1) {
-            cd = new Net.PC15.FC89H.Command.Data.CardDetail(Long.toString(CardData));
-        }
-        else {
-            cd = new CardDetail(CardData);//设定卡号
-        }
+        CardDetail cd = new CardDetail(CardData);//设定卡号
         
         cd.Password = Password;//设定密码
         cd.Expiry = CardExpiry;//设定有效期
@@ -2738,9 +2669,6 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
             detail.Connector = udp;
             
             detail.Identity = new FC8800Identity(r.SN, FC8800Command.NULLPassword, E_ControllerType.FC8800);
-            if (cmbProtocolType.getSelectedIndex() == 1 ){
-                detail.Identity = new FC8800Identity(r.SN, FC8800Command.NULLPassword, E_ControllerType.FC8900);
-            }
             SearchEquptOnNetNum_Parameter par = new SearchEquptOnNetNum_Parameter(detail, SearchNetFlag);
             WriteEquptNetNum cmd = new WriteEquptNetNum(par);
             _Allocator.AddCommand(cmd);
@@ -2803,7 +2731,6 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
     private javax.swing.JCheckBox chkTransactionIsCircle;
     private javax.swing.JComboBox<String> cmbCardDataBaseType;
     private javax.swing.JComboBox<String> cmbCardStatus;
-    private javax.swing.JComboBox<String> cmbProtocolType;
     private javax.swing.JComboBox<String> cmbTransactionType;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
@@ -2826,7 +2753,6 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel25;
-    private javax.swing.JLabel jLabel26;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -2925,13 +2851,7 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
             JOptionPane.showMessageDialog(null, "通讯密码必须是8位！", "错误", JOptionPane.ERROR_MESSAGE);
             return null;
         }
-         
-        if (cmbProtocolType.getSelectedIndex() == 1 ){
-            detail.Identity = new FC8800Identity(sn, pwd, E_ControllerType.FC8900);
-        }
-        else {
-            detail.Identity = new FC8800Identity(sn, pwd, E_ControllerType.FC8800);
-        }
+        detail.Identity = new FC8800Identity(sn, pwd, E_ControllerType.FC8800);
         
         return detail;
     }

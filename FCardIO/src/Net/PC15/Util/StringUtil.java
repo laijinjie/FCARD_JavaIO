@@ -7,6 +7,7 @@ package Net.PC15.Util;
 
 import io.netty.buffer.ByteBuf;
 import java.lang.StringBuilder;
+import java.util.Random;
 
 /**
  * 十六进制实用工具类
@@ -314,8 +315,86 @@ public class StringUtil {
         * @param hexStr
         * @return
         */
-       public static String HexStr2Str(String hexStr) {
-           Integer x = Integer.parseInt(hexStr,16);
+       public static String HexStr2Str(String hexStr,int i) {
+           Integer x = Integer.parseInt(hexStr,i);
            return String.valueOf(x);
        }
+       
+       /**
+        * 字符串转化成为16进制字符串
+        * @param s
+        * @return
+        */
+       public static String StrTo16(String s) {
+           String str = "";
+           for (int i = 0; i < s.length(); i++) {
+               int ch = (int) s.charAt(i);
+               String s4 = Integer.toHexString(ch);
+               str = str + s4;
+           }
+           return str;
+       }
+       
+       /**
+	 * 获取16进制随机数
+	 * @param len
+	 * @return
+	 * @throws CoderException
+	 */
+	public static String randomHexString(int len)  {
+		try {
+			StringBuffer result = new StringBuffer();
+			for(int i=0;i<len;i++) {
+				result.append(Integer.toHexString(new Random().nextInt(16)));
+			}
+			return result.toString().toUpperCase();
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			
+		}
+		return null;
+		
+	}
+        
+        /**
+	 * 仿照String的trim()
+	 * @param strArg：需要进行去掉前后空格符的字符串
+	 * @return：返回字符串的副本，该副本进行去掉了首尾空格符
+	 */
+	public static String LTrim(String strArg,char text){
+		
+		char[] cVal=strArg.toCharArray();
+		int p1=0;
+		int len=cVal.length;
+		
+		//从首到尾进行遍历，如果发现了第一个不是  ' ' 就break:表示终止了遍历，找到了首部到尾部第一个不为 ' ' 的位置
+		while(p1 < len){
+			if (cVal[p1] == text) {
+				p1 += 1;
+			}else{
+				break;
+			}
+		}
+		
+		//这说明  strArg 压根就是由空格字符组成的字符串
+		if (p1 == len) {
+			return "";
+		}
+		
+		//从尾部到首部进行遍历，如果发现了第一个不是  ' ' 就break:表示终止了遍历，找到了尾部到首部第一个不为 ' ' 的位置
+		int p2=len-1;
+                /*
+		while(p2 >= 0){
+			if (cVal[p2] == ' ') {
+				p2 -= 1;
+			}else{
+				break;
+			}
+		}
+		*/
+		String subStr=strArg.substring(p1,p2+1);
+		return subStr;
+	}
 }
