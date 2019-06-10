@@ -169,19 +169,20 @@ public class CardDetail extends Net.PC15.FC8800.Command.Data.CardDetail {
      */
     @Override
     public void GetBytes(ByteBuf data) throws Exception{
-        
-        if (CardDataHEX == null) {
-            System.out.println("ERROR! 卡号为空!");
-            throw new Exception("卡号为空");
+        if (CardDataHEX == null || CardDataHEX.length() == 0 ) {
+            System.out.println("ERROR! 卡号不能为空!");
+            throw new Exception("卡号不能为空");
         }
         int length = CardDataHEX.length();
-        if (CardDataHEX.length() == 0 || length < 5 || length > 16) {
-            System.out.println("ERROR! 卡号长度不正确!");
-            throw new Exception("卡号长度不正确");
-        }
+        
         if (!Net.PC15.Util.StringUtil.CanParseInt(CardDataHEX)) {
             System.out.println("ERROR! 卡号不是数字格式!");
             throw new Exception("卡号不是数字格式");
+        }
+        String maxHex = new BigInteger(CardDataHEX,10).toString(16);
+        if (maxHex == "ffffffffffffffff") {
+            System.out.println("ERROR! 卡号超过最大值!");
+            throw new Exception("卡号超过最大值");
         }
          data.writeByte(0);
          
