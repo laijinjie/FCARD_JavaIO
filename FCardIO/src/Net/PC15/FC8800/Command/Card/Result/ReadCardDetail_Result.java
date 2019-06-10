@@ -13,7 +13,7 @@ import Net.PC15.FC8800.Command.Data.CardDetail;
  *
  * @author 赖金杰
  */
-public class ReadCardDetail_Result implements INCommandResult {
+public class ReadCardDetail_Result<T extends Comparable<T>> implements INCommandResult {
 
     /**
      * 卡片是否存在
@@ -23,7 +23,7 @@ public class ReadCardDetail_Result implements INCommandResult {
     /**
      * 卡片的详情
      */
-    public CardDetail Card;
+    public T Card;
 
     public ReadCardDetail_Result() {
     }

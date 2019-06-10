@@ -116,6 +116,38 @@ public class StringUtil {
             iIndex++;
         }
     }
+    
+    public static byte[] HextoByte(String hexString) {
+        int i, iIndex = 0, iData;
+        if (IsNullOrEmpty(hexString)) {
+            return null;
+        }
+        if (!IsHex(hexString)) {
+            return null;
+        }
+
+        //确定字符串长度必须是2的倍数
+        if ((hexString.length() % 2) == 1) {
+            hexString = "0" + hexString;
+        }
+        //生成转换值列表
+        byte[] digits = HexToByte_Digit;
+
+        //生成缓存
+        byte[] sbuf = hexString.getBytes();
+        int ilen = sbuf.length;
+        //开始转换
+        byte[] b = new byte[sbuf.length];
+        for (i = 0; i < ilen; i++) {
+            iData = digits[sbuf[i++] & 0x000000ff] * 16;
+            iData = iData + digits[sbuf[i]];
+            
+            b[i] = (byte)iData;
+            //buf.writeByte((byte) iData);
+            iIndex++;
+        }
+        return b;
+    }
 
     /**
      * 检查是否为十六进制字符串
@@ -367,6 +399,18 @@ public class StringUtil {
            return str;
        }
        
+       public static String bytesToHexFun2(byte[] bytes) {
+           char[] HEX_CHAR = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+        char[] buf = new char[bytes.length * 2];
+        int index = 0;
+        for(byte b : bytes) { // 利用位运算进行转换，可以看作方法一的变种
+            buf[index++] = HEX_CHAR[b >>> 4 & 0xf];
+            buf[index++] = HEX_CHAR[b & 0xf];
+        }
+
+        return new String(buf);
+    }
+       
        /**
 	 * 获取16进制随机数
 	 * @param len
@@ -429,4 +473,19 @@ public class StringUtil {
 		String subStr=strArg.substring(p1,p2+1);
 		return subStr;
 	}
+        
+        public static String str2HexStr(String str) {
+            char[] chars = "0123456789ABCDEF".toCharArray();
+            StringBuilder sb = new StringBuilder("");
+            byte[] bs = str.getBytes();
+            int bit;
+            for (int i = 0; i < bs.length; i++) {
+                bit = (bs[i] & 0x0f0) >> 4;
+                sb.append(chars[bit]);
+                bit = bs[i] & 0x0f;
+                sb.append(chars[bit]);
+                // sb.append(' ');
+            }
+            return sb.toString().trim();
+        }
 }

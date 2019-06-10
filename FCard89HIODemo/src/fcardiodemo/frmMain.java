@@ -1394,13 +1394,15 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         //WriteCardListBySequence cmd = new WriteCardListBySequence(par);
         FC8800Command cmd = new Net.PC15.FC89H.Command.Card.WriteCardListBySequence(par);
         AddCommandResultCallback(cmd.getClass().getName(), (x, y) -> {
-            Net.PC15.FC89H.Command.Card.Result.WriteCardListBySequence_Result result = (Net.PC15.FC89H.Command.Card.Result.WriteCardListBySequence_Result) y;
+            WriteCardListBySequence_Result result = (WriteCardListBySequence_Result) y;
             x.append("上传完毕");
+            //ArrayList<CardDetail> _list = (Net.PC15.FC89H.Command.Data.CardDetail)result.CardList;
+             ArrayList<CardDetail> _list =  result.CardList;
             if (result.FailTotal > 0) {
                 x.append("失败数量：");
                 x.append(result.FailTotal);
                 x.append("，卡号列表：\n");
-                for (CardDetail c : result.CardList) {
+                for (CardDetail c : _list) {
                     x.append(c.CardData);
                     x.append("\n");
                 }
@@ -1607,10 +1609,13 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         //ReadCardDetail cmd = new ReadCardDetail(par);
         FC8800Command cmd = new Net.PC15.FC89H.Command.Card.ReadCardDetail(par);
         AddCommandResultCallback(cmd.getClass().getName(), (x, y) -> {
-            Net.PC15.FC89H.Command.Card.Result.ReadCardDetail_Result result = (Net.PC15.FC89H.Command.Card.Result.ReadCardDetail_Result) y;
+            ReadCardDetail_Result result = (ReadCardDetail_Result) y;
             if (result.IsReady) {
                 x.append("卡片在数据库中存储，卡片信息：\n");
-                Object[] arr = CardDetailToRow(result.Card, 0);
+                
+                Net.PC15.FC89H.Command.Data.CardDetail card = (Net.PC15.FC89H.Command.Data.CardDetail)result.Card;
+                
+                Object[] arr = CardDetailToRow(card, 0);
                 StringBuilder builder = new StringBuilder(200);
                 builder.append("卡号：");
                 builder.append(arr[1]);//cd.CardData

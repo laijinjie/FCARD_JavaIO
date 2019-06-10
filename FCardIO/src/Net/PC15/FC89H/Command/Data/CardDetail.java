@@ -9,6 +9,7 @@ import Net.PC15.Util.ByteUtil;
 import Net.PC15.Util.StringUtil;
 import Net.PC15.Util.TimeUtil;
 import io.netty.buffer.ByteBuf;
+import java.math.BigInteger;
 import java.util.ArrayList;
 
 /**
@@ -93,18 +94,20 @@ public class CardDetail extends Net.PC15.FC8800.Command.Data.CardDetail {
     }
     
     public void SetCardDataHEX(String value) throws Exception{
-        if (value == null) {
+        if (value == null || value.length() == 0 ) {
             System.out.println("ERROR! 卡号不能为空!");
             throw new Exception("卡号不能为空");
         }
         int length = value.length();
-        if (value.length() == 0 || length > 16) {
-            System.out.println("ERROR! 卡号长度不正确!");
-            throw new Exception("卡号长度不正确");
-        }
+        
         if (!Net.PC15.Util.StringUtil.CanParseInt(value)) {
             System.out.println("ERROR! 卡号不是数字格式!");
             throw new Exception("卡号不是数字格式");
+        }
+        String maxHex = new BigInteger(value,10).toString(16);
+        if (maxHex == "ffffffffffffffff") {
+            System.out.println("ERROR! 卡号超过最大值!");
+            throw new Exception("卡号超过最大值");
         }
         CardDataHEX = value;
     }
@@ -125,7 +128,9 @@ public class CardDetail extends Net.PC15.FC8800.Command.Data.CardDetail {
         CardDataHEX = ByteUtil.ByteToHex(btCardData);
         
             CardDataHEX = Net.PC15.Util.StringUtil.LTrim(CardDataHEX,'0');
+            
             //CardDataHEX = Net.PC15.Util.StringUtil.HexStr2Str(CardDataHEX,16);
+            
             byte[] btData = new byte[4];
             data.readBytes(btData, 0, 4);
             Password = ByteUtil.ByteToHex(btData);

@@ -163,7 +163,12 @@ public class ReadCardDataBase extends FC8800Command {
             if (iCardSize > 0) {
                 //Calendar begintime = Calendar.getInstance();
                 //开始拆分接收到的数据包
-                Analysis(iCardSize);
+                try {
+                    Analysis(iCardSize);
+                }
+                catch (Exception e){
+                    
+                }
                 //Calendar endtime = Calendar.getInstance();
                 //long waitTime = endtime.getTimeInMillis() - begintime.getTimeInMillis();
                 //System.out.println("解析数据包耗时：" + waitTime);

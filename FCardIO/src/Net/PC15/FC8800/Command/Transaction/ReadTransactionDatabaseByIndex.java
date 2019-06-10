@@ -79,7 +79,13 @@ public class ReadTransactionDatabaseByIndex extends FC8800Command {
 
             if (iSize > 0) {
                 //开始拆分接收到的数据包
-                Analysis(iSize);
+                 try {
+                    Analysis(iSize);
+                }
+                catch (Exception e){
+                    
+                }
+                
 
                 //拆分后返回事件
                 RaiseCommandCompleteEvent(oEvent);

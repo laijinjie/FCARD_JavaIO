@@ -70,7 +70,7 @@ public class ReadTransactionDatabaseByIndex extends Net.PC15.FC8800.Command.Tran
             ByteBuf buf = mBufs.poll();
             iSize = buf.readInt();
 
-            if ((buf.capacity() - 4) % 37 == 0) {
+            if ((buf.capacity() - 4) % 21 == 0) {
                  for (int i = 0; i < iSize; i++) {
                     try {
                         AbstractTransaction cd = (CardTransaction) TransactionType.newInstance();

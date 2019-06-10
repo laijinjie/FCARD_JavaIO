@@ -249,7 +249,13 @@ public class ReadTransactionDatabase extends FC8800Command {
 
             //Calendar begintime = Calendar.getInstance();
             //开始拆分接收到的数据包
-            Analysis(mReadTotal);
+            try {
+                    Analysis(mReadTotal);
+                }
+                catch (Exception e){
+                    
+                }
+            
             //Calendar endtime = Calendar.getInstance();
             //long waitTime = endtime.getTimeInMillis() - begintime.getTimeInMillis();
             //System.out.println("解析数据包耗时：" + waitTime);
