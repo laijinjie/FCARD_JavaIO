@@ -14,7 +14,7 @@ import java.util.ArrayList;
  *
  * @author 赖金杰
  */
-public class WriteCardListBySequence_Result implements INCommandResult {
+public class WriteCardListBySequence_Result<T> implements INCommandResult {
 
     /**
      * 失败卡数量.
@@ -24,7 +24,7 @@ public class WriteCardListBySequence_Result implements INCommandResult {
     /**
      * 失败的卡列表
      */
-    public ArrayList<CardDetail> CardList;
+    public ArrayList<T> CardList;
 
     public WriteCardListBySequence_Result() {
         

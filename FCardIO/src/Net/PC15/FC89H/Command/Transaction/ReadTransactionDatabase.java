@@ -31,56 +31,11 @@ public class ReadTransactionDatabase extends Net.PC15.FC8800.Command.Transaction
     public ReadTransactionDatabase(ReadTransactionDatabase_Parameter par) {
         super(par);
     }
-    
-    @Override
-    protected boolean _CommandStep(INConnectorEvent oEvent, FC8800PacketModel model) {
-        switch (mStep) {
-            case 1://读取记录数据库空间信息
-                return CheckDataBaseDetail(oEvent, model);
-            case 2://读取记录
-                return CheckReadTransactionResponse(oEvent, model);
-            case 3://写记录读索引号
-                return CheckWriteReadIndexResponse(oEvent, model);
-        }
-        return false;
-    }
-    
-    /**
-     * 检查修改记录读索引号的返回值
-     *
-     * @param oEvent
-     * @param model
-     * @return
-     */
-    @Override
-    protected boolean CheckWriteReadIndexResponse(INConnectorEvent oEvent, FC8800PacketModel model) {
-        if (CheckResponseOK(model)) {
-            ReadTransactionDatabase_Result result = (ReadTransactionDatabase_Result) _Result;
-            result.Quantity = mReadTotal;
-            result.readable = (int) transactionDetail.readable();
-
-            //命令完结
-            CommandOver();
-
-            //Calendar begintime = Calendar.getInstance();
-            //开始拆分接收到的数据包
-            Analysis(mReadTotal);
-            //Calendar endtime = Calendar.getInstance();
-            //long waitTime = endtime.getTimeInMillis() - begintime.getTimeInMillis();
-            //System.out.println("解析数据包耗时：" + waitTime);
-
-            //拆分后返回事件
-            RaiseCommandCompleteEvent(oEvent);
-            return true;
-        }
-        return false;
-
-    }
-    
     /**
      * 分析缓冲中的数据包
      */
-    private void Analysis(int iSize) {
+    @Override
+    protected void Analysis(int iSize)  throws Exception{
         ReadTransactionDatabase_Result result = (ReadTransactionDatabase_Result) _Result;
         result.Quantity = iSize;
 
@@ -90,7 +45,7 @@ public class ReadTransactionDatabase extends Net.PC15.FC8800.Command.Transaction
         Class TransactionType;
         switch (result.DatabaseType) {
             case OnCardTransaction:
-                TransactionType = CardTransaction.class;
+                TransactionType = Net.PC15.FC89H.Command.Data.CardTransaction.class;
                 break;
             case OnButtonTransaction:
                 TransactionType = ButtonTransaction.class;
@@ -116,19 +71,29 @@ public class ReadTransactionDatabase extends Net.PC15.FC8800.Command.Transaction
         while (mBufs.peek() != null) {
             ByteBuf buf = mBufs.poll();
             iSize = buf.readInt();
-
-            for (int i = 0; i < iSize; i++) {
-                try {
-                    AbstractTransaction cd = (Net.PC15.FC89H.Command.Data.CardTransaction) TransactionType.newInstance();
-                    cd.SerialNumber = buf.readInt();
-                    cd.SetBytes(buf);
-                    trList.add(cd);
-                } catch (Exception e) {
-                    result.Quantity = 0;
-                    return;
-                }
+            
+            
+             if ((buf.capacity() - 4) % 37 == 0) {
+                 for (int i = 0; i < iSize; i++) {
+                    try {
+                        AbstractTransaction cd = (CardTransaction) TransactionType.newInstance();
+                        cd.SerialNumber = buf.readInt();
+                        cd.SetBytes(buf);
+                        trList.add(cd);
+                    } catch (Exception e) {
+                        result.Quantity = 0;
+                        return;
+                    }
 
             }
+                 
+             }
+             else {
+                 buf.release();
+                 throw new Exception("数据流长度不正确");
+                 
+             }
+            
             buf.release();
         }
 

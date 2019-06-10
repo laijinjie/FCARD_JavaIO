@@ -12,26 +12,15 @@ import java.util.ArrayList;
 /**
  * FC89H,读取卡片数据
  * @author 徐铭康
- */
+
 public class ReadCardDataBase_Result implements INCommandResult {
 
-    /**
-     * 读取到的卡片列表
-     */
+    
     public ArrayList<CardDetail> CardList;
-    /**
-     * 读取到的卡片数量
-     */
+
     public int DataBaseSize;
     
-    /**
-     * 待读取的卡片数据库类型<br/>
-     * <ul>
-     * <li>1 &emsp; 排序卡区域   </li>
-     * <li>2 &emsp; 非排序卡区域 </li>
-     * <li>3 &emsp; 所有区域     </li>
-     * </ul>
-     */
+    
     public int CardType;
     
 
@@ -49,3 +38,4 @@ public class ReadCardDataBase_Result implements INCommandResult {
     }
 
 }
+ */

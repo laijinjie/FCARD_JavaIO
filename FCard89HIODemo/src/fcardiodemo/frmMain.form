@@ -162,7 +162,7 @@
                 </Component>
                 <Component class="javax.swing.JTextField" name="txtTCPServerIP">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="192.168.1.189"/>
+                    <Property name="text" type="java.lang.String" value="192.168.1.66"/>
                   </Properties>
                   <Constraints>
                     <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
@@ -652,7 +652,8 @@
                 </Component>
                 <Component class="javax.swing.JTextField" name="txtWriteSN">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="FC-8940H47124309"/>
+                    <Property name="text" type="java.lang.String" value="FC-8940A46060007"/>
+                    <Property name="toolTipText" type="java.lang.String" value=""/>
                   </Properties>
                   <Constraints>
                     <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">

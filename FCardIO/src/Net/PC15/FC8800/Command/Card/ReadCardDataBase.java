@@ -136,7 +136,7 @@ public class ReadCardDataBase extends FC8800Command {
      * @param model 本次数据包的包装类
      * @return true 正确解析或 false 未解析
      */
-    private boolean CheckReadCardPacket(INConnectorEvent oEvent, FC8800PacketModel model) {
+    protected boolean CheckReadCardPacket(INConnectorEvent oEvent, FC8800PacketModel model) {
         if (CheckResponse_Cmd(model, 7, 3, 0)) {
             //System.out.println(" 已收到数据：\n" + ByteBufUtil.hexDump(msg));
             try {
@@ -183,7 +183,7 @@ public class ReadCardDataBase extends FC8800Command {
     /**
      * 分析缓冲中的数据包
      */
-    private void Analysis(int iCardSize) {
+    protected void Analysis(int iCardSize) throws Exception {
         ReadCardDataBase_Result result = (ReadCardDataBase_Result) _Result;
         result.DataBaseSize = iCardSize;
 

@@ -16,14 +16,14 @@ import java.util.Collections;
  *
  * @author 赖金杰
  */
-public class WriteCardListBySequence_Parameter extends CommandParameter {
+public class WriteCardListBySequence_Parameter<T extends Comparable<T>> extends CommandParameter {
 
     /**
      * 需要上传的卡片列表
      */
-    public ArrayList<CardDetail> CardList;
+    public ArrayList<T> CardList;
 
-    public WriteCardListBySequence_Parameter(CommandDetail detail, ArrayList<CardDetail> list) {
+    public WriteCardListBySequence_Parameter(CommandDetail detail, ArrayList<T> list) {
         super(detail);
         CardList = list;
         if (CardList != null) {

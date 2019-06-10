@@ -60,19 +60,58 @@ public class CardDetail extends Net.PC15.FC8800.Command.Data.CardDetail {
         return 0x25;//33字节
     }
 
-    
+    /*
     public CardDetail(String data) {
         this();
         CardDataHEX = data;
         CardDataStr = data;
     }
+    */
     
     /**
-     * 
+     * 16进制卡号
      */
-    public String CardDataHEX;
-    public String CardDataStr;
+    protected String CardDataHEX;
     
+    /**
+     * 10进制卡号
+     */
+    protected String CardDataStr;
+    
+    /**
+     * 获取16进制卡号
+     */
+    public String GetCardDataHEX() {
+        return CardDataHEX;
+    }
+    
+    /**
+     * 获取10进制卡号
+     */
+    public String GetCardData() {
+        return CardDataStr;
+    }
+    
+    public void SetCardDataHEX(String value) throws Exception{
+        if (value == null) {
+            System.out.println("ERROR! 卡号不能为空!");
+            throw new Exception("卡号不能为空");
+        }
+        int length = value.length();
+        if (value.length() == 0 || length > 16) {
+            System.out.println("ERROR! 卡号长度不正确!");
+            throw new Exception("卡号长度不正确");
+        }
+        if (!Net.PC15.Util.StringUtil.CanParseInt(value)) {
+            System.out.println("ERROR! 卡号不是数字格式!");
+            throw new Exception("卡号不是数字格式");
+        }
+        CardDataHEX = value;
+    }
+    
+    /**
+     * 读数据
+     */
     @Override
     public void SetBytes(ByteBuf data) {
         data.readByte();
@@ -84,47 +123,61 @@ public class CardDetail extends Net.PC15.FC8800.Command.Data.CardDetail {
         byte[] btCardData = new byte[8];
         data.readBytes(btCardData, 0, 8);
         CardDataHEX = ByteUtil.ByteToHex(btCardData);
-        if (true)
-        {
-        CardDataStr = Net.PC15.Util.StringUtil.LTrim(CardDataHEX,'0');
-        //CardDataHEX = Net.PC15.Util.StringUtil.HexStr2Str(CardDataHEX,16);
-        byte[] btData = new byte[4];
-        data.readBytes(btData, 0, 4);
-        Password = ByteUtil.ByteToHex(btData);
+        
+            CardDataHEX = Net.PC15.Util.StringUtil.LTrim(CardDataHEX,'0');
+            //CardDataHEX = Net.PC15.Util.StringUtil.HexStr2Str(CardDataHEX,16);
+            byte[] btData = new byte[4];
+            data.readBytes(btData, 0, 4);
+            Password = ByteUtil.ByteToHex(btData);
 
-        byte[] btTime = new byte[6];
-        data.readBytes(btTime, 0, 5);
-        Expiry = TimeUtil.BCDTimeToDate_yyMMddhhmm(btTime);
+            byte[] btTime = new byte[6];
+            data.readBytes(btTime, 0, 5);
+            Expiry = TimeUtil.BCDTimeToDate_yyMMddhhmm(btTime);
 
-        data.readBytes(btData, 0, 4);
-        for (int i = 0; i < 4; i++) {
-            TimeGroup[i] = btData[i];
-        }
+            data.readBytes(btData, 0, 4);
+            for (int i = 0; i < 4; i++) {
+                TimeGroup[i] = btData[i];
+            }
 
-        OpenTimes = data.readUnsignedShort();
+            OpenTimes = data.readUnsignedShort();
 
-        int bData = data.readUnsignedByte();//特权
-        Door = bData >> 4;
-        bData = bData & 15;
-        Privilege = bData & 7;
-        HolidayUse = (bData & 8) == 8;
-        CardStatus = data.readByte();
+            int bData = data.readUnsignedByte();//特权
+            Door = bData >> 4;
+            bData = bData & 15;
+            Privilege = bData & 7;
+            HolidayUse = (bData & 8) == 8;
+            CardStatus = data.readByte();
 
-        data.readBytes(btData, 0, 4);
-        for (int i = 0; i < 4; i++) {
-            Holiday[i] = btData[i];
-        }
+            data.readBytes(btData, 0, 4);
+            for (int i = 0; i < 4; i++) {
+                Holiday[i] = btData[i];
+            }
 
-        EnterStatus = data.readByte();
-        data.readBytes(btTime, 0, 6);
-        RecordTime = TimeUtil.BCDTimeToDate_yyMMddhhmmss(btTime);
-        }
-        return;
-    
+            EnterStatus = data.readByte();
+            data.readBytes(btTime, 0, 6);
+            RecordTime = TimeUtil.BCDTimeToDate_yyMMddhhmmss(btTime);
+        
     }
     
+    /**
+     * 写数据
+     */
     @Override
-    public void GetBytes(ByteBuf data) {
+    public void GetBytes(ByteBuf data) throws Exception{
+        
+        if (CardDataHEX == null) {
+            System.out.println("ERROR! 卡号为空!");
+            throw new Exception("卡号为空");
+        }
+        int length = CardDataHEX.length();
+        if (CardDataHEX.length() == 0 || length < 5 || length > 16) {
+            System.out.println("ERROR! 卡号长度不正确!");
+            throw new Exception("卡号长度不正确");
+        }
+        if (!Net.PC15.Util.StringUtil.CanParseInt(CardDataHEX)) {
+            System.out.println("ERROR! 卡号不是数字格式!");
+            throw new Exception("卡号不是数字格式");
+        }
          data.writeByte(0);
          
          //传16进制

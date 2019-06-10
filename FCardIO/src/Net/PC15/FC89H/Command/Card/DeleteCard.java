@@ -5,9 +5,7 @@
  */
 package Net.PC15.FC89H.Command.Card;
 
-import Net.PC15.Connector.INConnectorEvent;
-import Net.PC15.FC8800.Command.FC8800Command;
-import Net.PC15.FC89H.Command.Card.Parameter.DeleteCard_Parameter;
+import Net.PC15.FC8800.Command.Card.Parameter.DeleteCard_Parameter;
 import Net.PC15.FC8800.Packet.FC8800PacketCompile;
 import Net.PC15.FC8800.Packet.FC8800PacketModel;
 import Net.PC15.Util.ByteUtil;
@@ -16,16 +14,18 @@ import io.netty.buffer.ByteBuf;
 /**
  * 删除卡片，针对FC89H使用
  * @author 徐铭康
+ * @param <T>
  */
-public class DeleteCard extends FC8800Command {
+public class DeleteCard<T> extends Net.PC15.FC8800.Command.Card.DeleteCard {
     
-    protected int mIndex;//指示当前命令进行的步骤
-    protected String [] _strList;
-
+    /**
+     *
+     * @param par
+     */
     public DeleteCard(DeleteCard_Parameter par) {
         _Parameter = par;
-        _strList = par.CardList;
-        _ProcessMax = _strList.length;
+        _List = par.CardList;
+        _ProcessMax = _List.size();
         mIndex = 0;
         //初始化缓冲空间
         int iLen = (40 * 9) + 4;
@@ -41,7 +41,7 @@ public class DeleteCard extends FC8800Command {
         int iMaxSize = 40; //每个数据包最大40个卡
         int iSize = 0;
         int iIndex = 0;
-        int ListLen = _strList.length;
+        int ListLen = _List.size();
         
         FC8800PacketCompile compile = (FC8800PacketCompile) _Packet;
         FC8800PacketModel p = (FC8800PacketModel) _Packet.GetPacket();
@@ -52,9 +52,7 @@ public class DeleteCard extends FC8800Command {
             iIndex = i;
             iSize += 1;
             dataBuf.writeByte(0);
-            
-            
-            Net.PC15.Util.StringUtil.HextoByteBuf(_strList[iIndex],dataBuf);
+            Net.PC15.Util.StringUtil.HextoByteBuf((String)_List.get(iIndex),dataBuf);
             if (iSize == iMaxSize) {
                 break;
             }
@@ -69,33 +67,4 @@ public class DeleteCard extends FC8800Command {
     }
     
     
-    @Override
-    protected boolean _CommandStep(INConnectorEvent oEvent, FC8800PacketModel model) {
-        if (CheckResponseOK(model)) {
-            CommandNext(oEvent);
-            return true;
-        } 
-        return false;
-    }
-
-    @Override
-    protected void Release0() {
-        _Parameter = null;
-        _Result = null;
-        _strList = null;
-    }
-    
-    /**
-     * 命令继续执行
-     */
-    protected void CommandNext(INConnectorEvent oEvent) {
-        //增加命令进度
-        _ProcessStep = mIndex;
-        if (mIndex < _strList.length) {
-            WriteNext();
-        } else {
-            RaiseCommandCompleteEvent(oEvent);
-        }
-        
-    }
 }

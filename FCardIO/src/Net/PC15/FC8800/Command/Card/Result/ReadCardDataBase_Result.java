@@ -6,7 +6,6 @@
 package Net.PC15.FC8800.Command.Card.Result;
 
 import Net.PC15.Command.INCommandResult;
-import Net.PC15.FC8800.Command.Data.CardDetail;
 import java.util.ArrayList;
 
 /**
@@ -14,12 +13,12 @@ import java.util.ArrayList;
  *
  * @author 赖金杰
  */
-public class ReadCardDataBase_Result implements INCommandResult {
+public class ReadCardDataBase_Result<T> implements INCommandResult {
 
     /**
      * 读取到的卡片列表
      */
-    public ArrayList<CardDetail> CardList;
+    public ArrayList<T> CardList;
     /**
      * 读取到的卡片数量
      */

@@ -315,10 +315,42 @@ public class StringUtil {
         * @param hexStr
         * @return
         */
-       public static String HexStr2Str(String hexStr,int i) {
-           Integer x = Integer.parseInt(hexStr,i);
+       public static String HexStr2Str(String hexStr,int ii) {
+           for(int i=0;i < hexStr.length();i++){
+			char cc = hexStr.charAt(i);
+			if(cc=='0'||cc=='1'||cc=='2'||cc=='3'||cc=='4'||cc=='5'||cc=='6'||cc=='7'||cc=='8'||cc=='9'||cc=='A'||cc=='B'||cc=='C'||
+					cc=='D'||cc=='E'||cc=='F'||cc=='a'||cc=='b'||cc=='c'||cc=='c'||cc=='d'||cc=='e'||cc=='f'){
+				continue;
+			}else{
+				return hexStr;
+			}
+		}
+           Integer x = Integer.parseInt(hexStr,ii);
            return String.valueOf(x);
        }
+       
+       public static boolean CanParseHex(String hexStr,int ii) {
+           for(int i=0;i < hexStr.length();i++){
+			char cc = hexStr.charAt(i);
+			if(cc=='0'||cc=='1'||cc=='2'||cc=='3'||cc=='4'||cc=='5'||cc=='6'||cc=='7'||cc=='8'||cc=='9'||cc=='A'||cc=='B'||cc=='C'||
+					cc=='D'||cc=='E'||cc=='F'||cc=='a'||cc=='b'||cc=='c'||cc=='c'||cc=='d'||cc=='e'||cc=='f'){
+				continue;
+			}else{
+				return false;
+			}
+		}
+          return true;
+       }
+       
+       public static boolean CanParseInt(String str){
+        if(str == null){ //验证是否为空
+            return false;
+
+        }
+
+        return str.matches("\\d+"); //使用正则表达式判断该字符串是否为数字，第一个\是转义符，\d+表示匹配1个或 //多个连续数字，"+"和"*"类似，"*"表示0个或多个
+
+      }
        
        /**
         * 字符串转化成为16进制字符串

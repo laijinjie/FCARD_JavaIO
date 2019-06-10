@@ -93,6 +93,12 @@ public class CardTransaction extends Net.PC15.FC8800.Command.Data.CardTransactio
             data.readBytes(btCardData, 0, 8);
             CardDataHEX = ByteUtil.ByteToHex(btCardData);
             CardDataStr = Net.PC15.Util.StringUtil.LTrim(CardDataHEX,'0');
+            try {
+                CardDataStr = Net.PC15.Util.StringUtil.HexStr2Str(CardDataHEX,16);
+            }
+            catch (Exception e){
+                
+            }
             //CardData = Integer.parseInt(CardDataHEX,10);
             //CardDataHEX = Net.PC15.Util.StringUtil.HexStr2Str(CardDataHEX,16);
            

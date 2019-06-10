@@ -32,57 +32,8 @@ public class ReadTransactionDatabaseByIndex extends Net.PC15.FC8800.Command.Tran
         super(par);
     }
     
-    
     @Override
-    protected boolean _CommandStep(INConnectorEvent oEvent, FC8800PacketModel model) {
-        if (CheckResponse_Cmd(model, 8, 4, 0)) {
-            try {
-                ByteBuf buf = model.GetDatabuff();
-                int iSize = buf.getInt(0);
-                _ProcessStep += iSize;
-                RaiseCommandProcessEvent(oEvent);
-
-                buf.retain();
-                mBufs.add(buf);
-
-                //让命令持续等待下去
-                CommandWaitResponse();
-            } catch (Exception e) {
-                System.out.println("发送错误：" + e.getLocalizedMessage());
-            }
-
-            return true;
-
-        } else if (CheckResponse_Cmd(model, 8, 4, 0xFF, 4)) {
-            ByteBuf buf = model.GetDatabuff();
-            int iSize = buf.readInt();
-            ReadTransactionDatabaseByIndex_Result result = new ReadTransactionDatabaseByIndex_Result();
-            ReadTransactionDatabaseByIndex_Parameter par = (ReadTransactionDatabaseByIndex_Parameter) _Parameter;
-            result.DatabaseType = par.DatabaseType;
-            result.ReadIndex = par.ReadIndex;
-            result.Quantity = iSize;
-            _Result = result;
-
-            if (iSize > 0) {
-                //开始拆分接收到的数据包
-                Analysis(iSize);
-
-                //拆分后返回事件
-                RaiseCommandCompleteEvent(oEvent);
-            } else {
-                //返回没有收到数据
-                RaiseCommandCompleteEvent(oEvent);
-            }
-            return true;
-        } else {
-            return false;
-        }
-    }
-    
-    /**
-     * 分析缓冲中的数据包
-     */
-    private void Analysis(int iSize) {
+    protected void Analysis(int iSize)  throws Exception{
         ReadTransactionDatabaseByIndex_Result result = (ReadTransactionDatabaseByIndex_Result) _Result;
         result.Quantity = iSize;
 
@@ -92,7 +43,7 @@ public class ReadTransactionDatabaseByIndex extends Net.PC15.FC8800.Command.Tran
         Class TransactionType;
         switch (result.DatabaseType) {
             case OnCardTransaction:
-                TransactionType = CardTransaction.class;
+                TransactionType = Net.PC15.FC89H.Command.Data.CardTransaction.class;
                 break;
             case OnButtonTransaction:
                 TransactionType = ButtonTransaction.class;
@@ -119,18 +70,26 @@ public class ReadTransactionDatabaseByIndex extends Net.PC15.FC8800.Command.Tran
             ByteBuf buf = mBufs.poll();
             iSize = buf.readInt();
 
-            for (int i = 0; i < iSize; i++) {
-                try {
-                    AbstractTransaction cd = (Net.PC15.FC89H.Command.Data.CardTransaction) TransactionType.newInstance();
-                    cd.SerialNumber = buf.readInt();
-                    cd.SetBytes(buf);
-                    trList.add(cd);
-                } catch (Exception e) {
-                    result.Quantity = 0;
-                    return;
-                }
+            if ((buf.capacity() - 4) % 37 == 0) {
+                 for (int i = 0; i < iSize; i++) {
+                    try {
+                        AbstractTransaction cd = (CardTransaction) TransactionType.newInstance();
+                        cd.SerialNumber = buf.readInt();
+                        cd.SetBytes(buf);
+                        trList.add(cd);
+                    } catch (Exception e) {
+                        result.Quantity = 0;
+                        return;
+                    }
 
+                }
+                 
+             }
+            else {
+                buf.release();
+                 throw new Exception("数据流长度不正确");
             }
+            
             buf.release();
         }
 

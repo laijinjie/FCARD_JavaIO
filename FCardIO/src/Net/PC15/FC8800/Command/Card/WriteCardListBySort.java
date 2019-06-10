@@ -25,10 +25,10 @@ import java.util.Collections;
  *
  * @author 赖金杰
  */
-public class WriteCardListBySort extends FC8800Command {
+public class WriteCardListBySort<T extends Comparable<T>> extends FC8800Command {
 
     protected int mIndex;//指示当前命令进行的步骤
-    protected ArrayList<CardDetail> _List;
+    protected ArrayList<T> _List;
     protected int mStep;
     /**
      * 本次上传卡数量
@@ -130,7 +130,7 @@ public class WriteCardListBySort extends FC8800Command {
     /**
      * 初始化写卡操作的资源
      */
-    private void IniWriteCard() {
+    protected void IniWriteCard() {
         _ProcessStep = 2;
         //初始化缓冲空间
         int iLen = (10 * 0x21) + 8;
@@ -148,7 +148,7 @@ public class WriteCardListBySort extends FC8800Command {
     /**
      * 写入下一个卡号
      */
-    private void WriteNext() {
+    protected void WriteNext() {
         int iMaxSize = 10; //每个数据包最大15个卡
         int iSize = 0;
         int iIndex = 0;
@@ -159,10 +159,12 @@ public class WriteCardListBySort extends FC8800Command {
         dataBuf.clear();
         dataBuf.writeInt(mIndex + 1);
         dataBuf.writeInt(iMaxSize);
+        try
+        {
         for (int i = mIndex; i < mUploadMax; i++) {
             iIndex = i;
             iSize += 1;
-            CardDetail cd = _List.get(iIndex);
+            CardDetail cd = (CardDetail)_List.get(iIndex);
             cd.GetBytes(dataBuf);
             if (iSize == iMaxSize) {
                 break;
@@ -175,6 +177,10 @@ public class WriteCardListBySort extends FC8800Command {
         compile.Compile();//重新编译
         mIndex = iIndex + 1;
         CommandReady();
+        }
+        catch (Exception e){
+            
+        }
     }
 
     /**
@@ -194,9 +200,9 @@ public class WriteCardListBySort extends FC8800Command {
                 int ListSize = _List.size();
                 if (_List.size() > mUploadMax) {
                     r.FailTotal = ListSize - mUploadMax;
-                    ArrayList<CardDetail> failList = new ArrayList<>(r.FailTotal);
+                    ArrayList<T> failList = new ArrayList<>(r.FailTotal);
                     for (int i = mIndex; i < ListSize; i++) {
-                        failList.add(_List.get(i));
+                        failList.add((T)_List.get(i));
                     }
                     r.CardList = failList;
                 }

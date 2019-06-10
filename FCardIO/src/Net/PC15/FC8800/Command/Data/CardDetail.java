@@ -97,7 +97,7 @@ public class CardDetail implements INData, Comparable<CardDetail> {
         return null;
     }
 
-    public void GetBytes(ByteBuf data) {
+    public void GetBytes(ByteBuf data) throws Exception{
         data.writeByte(0);
         data.writeInt((int) CardData);
 
@@ -129,6 +129,9 @@ public class CardDetail implements INData, Comparable<CardDetail> {
 
     }
 
+    public String GetCardData() {
+        return CardDataHEX;
+    }
     /**
      * 卡号，取值范围 0x1-0xFFFFFFFF
      */

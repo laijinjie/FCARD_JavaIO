@@ -7,7 +7,7 @@ package Net.PC15.FC89H.Command.Card;
 
 import Net.PC15.Connector.INConnectorEvent;
 import Net.PC15.FC89H.Command.Card.Result.WriteCardListBySequence_Result;
-import Net.PC15.FC89H.Command.Card.Parameter.WriteCardListBySequence_Parameter;
+import Net.PC15.FC8800.Command.Card.Parameter.WriteCardListBySequence_Parameter;
 import Net.PC15.FC89H.Command.Data.CardDetail;
 import Net.PC15.FC8800.Packet.FC8800PacketCompile;
 import Net.PC15.FC8800.Packet.FC8800PacketModel;
@@ -24,8 +24,7 @@ import java.util.ArrayList;
  *
  * @author 徐铭康
  */
-public class WriteCardListBySequence extends Net.PC15.FC8800.Command.Card.WriteCardListBySequence {
-    protected ArrayList<CardDetail> _List;
+public class WriteCardListBySequence<T extends Comparable<T>> extends Net.PC15.FC8800.Command.Card.WriteCardListBySequence {
     
     public WriteCardListBySequence(WriteCardListBySequence_Parameter par) {
         //super(par);
@@ -53,27 +52,34 @@ public class WriteCardListBySequence extends Net.PC15.FC8800.Command.Card.WriteC
         ByteBuf dataBuf = p.GetDatabuff();
         dataBuf.clear();
         dataBuf.writeInt(iMaxSize);
-        for (int i = mIndex; i < ListLen; i++) {
+        try
+        {
+            for (int i = mIndex; i < ListLen; i++) {
             iIndex = i;
             iSize += 1;
-            CardDetail cd = _List.get(iIndex) ;
+            CardDetail cd = (CardDetail)_List.get(iIndex);
             cd.GetBytes(dataBuf);
             if (iSize == iMaxSize) {
                 break;
             }
+            }
+            if (iSize != iMaxSize) {
+                dataBuf.setInt(0, iSize);
+            }
+            p.SetDataLen(dataBuf.readableBytes());//重置数据长度
+            compile.Compile();//重新编译
+            mIndex = iIndex + 1;
+            CommandReady();
         }
-        if (iSize != iMaxSize) {
-            dataBuf.setInt(0, iSize);
+        catch (Exception e){
+            
         }
-        p.SetDataLen(dataBuf.readableBytes());//重置数据长度
-        compile.Compile();//重新编译
-        mIndex = iIndex + 1;
-        CommandReady();
     }
     
     /**
      * 分析缓冲区，确定下载失败的卡号
      */
+     @Override
     protected void Analysis() {
         if (mBufs == null) {
             return;
@@ -85,10 +91,10 @@ public class WriteCardListBySequence extends Net.PC15.FC8800.Command.Card.WriteC
         r.CardList=CardList;
         
         while (mBufs.peek() != null) {
-            ByteBuf buf = mBufs.poll();
+            ByteBuf buf = (ByteBuf)mBufs.poll();
             iCardSize = buf.readInt();
             for (int i = 0; i < iCardSize; i++) {
-                Net.PC15.FC89H.Command.Data.CardDetail cd = new Net.PC15.FC89H.Command.Data.CardDetail();
+                CardDetail cd = new CardDetail();
                 cd.SetBytes(buf);
                 CardList.add(cd);
             }
@@ -98,36 +104,4 @@ public class WriteCardListBySequence extends Net.PC15.FC8800.Command.Card.WriteC
         
     }
     
-    @Override
-    protected boolean _CommandStep(INConnectorEvent oEvent, FC8800PacketModel model) {
-        if (CheckResponseOK(model)) {
-            
-            CommandNext(oEvent);
-            return true;
-        } else if (CheckResponse_Cmd(model, 7, 4, 0xFF)) {
-            //有错误卡号
-            SaveBuf(model.GetDatabuff());
-            CommandNext(oEvent);
-            return true;
-        }
-        return false;
-    }
-    
-     /**
-     * 命令继续执行
-     */
-    protected void CommandNext(INConnectorEvent oEvent) {
-        //增加命令进度
-        _ProcessStep = mIndex;
-        if (mIndex < _List.size()) {
-            WriteNext();
-        } else {
-            WriteCardListBySequence_Result r = new WriteCardListBySequence_Result();
-            _Result = r;
-            
-            Analysis();
-            RaiseCommandCompleteEvent(oEvent);
-        }
-        
-    }
 }

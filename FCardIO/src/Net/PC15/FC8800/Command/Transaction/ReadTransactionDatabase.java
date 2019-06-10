@@ -274,7 +274,7 @@ public class ReadTransactionDatabase extends FC8800Command {
     /**
      * 分析缓冲中的数据包
      */
-    private void Analysis(int iSize) {
+    protected void Analysis(int iSize)  throws Exception{
         ReadTransactionDatabase_Result result = (ReadTransactionDatabase_Result) _Result;
         result.Quantity = iSize;
 

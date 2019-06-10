@@ -26,10 +26,10 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  *
  * @author 赖金杰
  */
-public class WriteCardListBySequence extends FC8800Command {
+public class WriteCardListBySequence<T extends Comparable<T>> extends FC8800Command {
     
     protected int mIndex;//指示当前命令进行的步骤
-    protected ArrayList<CardDetail> _List;
+    protected ArrayList<T> _List;
     protected ConcurrentLinkedQueue<ByteBuf> mBufs;
     
     public WriteCardListBySequence(){
@@ -62,10 +62,12 @@ public class WriteCardListBySequence extends FC8800Command {
         ByteBuf dataBuf = p.GetDatabuff();
         dataBuf.clear();
         dataBuf.writeInt(iMaxSize);
+        try 
+        {
         for (int i = mIndex; i < ListLen; i++) {
             iIndex = i;
             iSize += 1;
-            CardDetail cd = _List.get(iIndex);
+            CardDetail cd = (CardDetail)_List.get(iIndex);
             cd.GetBytes(dataBuf);
             if (iSize == iMaxSize) {
                 break;
@@ -78,6 +80,10 @@ public class WriteCardListBySequence extends FC8800Command {
         compile.Compile();//重新编译
         mIndex = iIndex + 1;
         CommandReady();
+        }
+        catch (Exception e){
+            
+        }
     }
     
     @Override

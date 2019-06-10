@@ -96,7 +96,7 @@ public class ReadTransactionDatabaseByIndex extends FC8800Command {
     /**
      * 分析缓冲中的数据包
      */
-    private void Analysis(int iSize) {
+    protected void Analysis(int iSize)  throws Exception{
         ReadTransactionDatabaseByIndex_Result result = (ReadTransactionDatabaseByIndex_Result) _Result;
         result.Quantity = iSize;
 
