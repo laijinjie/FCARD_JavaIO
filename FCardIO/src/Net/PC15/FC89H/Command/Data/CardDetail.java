@@ -90,7 +90,7 @@ public class CardDetail extends Net.PC15.FC8800.Command.Data.CardDetail {
      * 获取10进制卡号
      */
     public String GetCardData() {
-        return CardDataStr;
+        return CardDataHEX;
     }
     
     public void SetCardDataHEX(String value) throws Exception{

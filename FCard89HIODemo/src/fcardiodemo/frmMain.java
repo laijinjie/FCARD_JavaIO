@@ -1517,7 +1517,7 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         dt.Timeout = 5000;//此函数超时时间设定长一些
 
         ArrayList<String> lst = new ArrayList<String>();
-        lst.add(cd.GetCardDataHEX());
+        lst.add(cd.GetCardData());
         DeleteCard_Parameter par = new DeleteCard_Parameter(dt, lst);
         Net.PC15.FC89H.Command.Card.DeleteCard cmd = new Net.PC15.FC89H.Command.Card.DeleteCard(par);
         
@@ -2380,7 +2380,7 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
             Privilege = PrivilegeList[4];// "防盗设置卡";
         }
         Object[] row = new Object[]{Index,
-            cd.GetCardDataHEX(),
+            cd.GetCardData(),
             cd.Password.replaceAll("F", ""),
             TimeUtil.FormatTimeHHmm(cd.Expiry),
             CardStatusList[cd.CardStatus],
