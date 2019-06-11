@@ -1358,13 +1358,13 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
        
         AddCommandResultCallback(cmd.getClass().getName(), (x, y) -> {
             WriteCardListBySort_Result result = (WriteCardListBySort_Result) y;
-            mCardList =  result.CardList;
+            ArrayList<Net.PC15.FC89H.Command.Data.CardDetail> _list =  result.CardList;
             x.append("上传完毕");
             if (result.FailTotal > 0) {
                 x.append("失败数量：");
                 x.append(result.FailTotal);
                 x.append("，卡号列表：\n");
-                for (Net.PC15.FC89H.Command.Data.CardDetail c : mCardList) {
+                for (Net.PC15.FC89H.Command.Data.CardDetail c : _list) {
                     x.append(c.GetCardData());
                     x.append("\n");
                 }
@@ -1396,13 +1396,13 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
             WriteCardListBySequence_Result result = (WriteCardListBySequence_Result) y;
             x.append("上传完毕");
             //ArrayList<CardDetail> _list = (Net.PC15.FC89H.Command.Data.CardDetail)result.CardList;
-             ArrayList<CardDetail> _list =  result.CardList;
+             ArrayList<Net.PC15.FC89H.Command.Data.CardDetail> _list =  result.CardList;
             if (result.FailTotal > 0) {
                 x.append("失败数量：");
                 x.append(result.FailTotal);
                 x.append("，卡号列表：\n");
-                for (CardDetail c : _list) {
-                    x.append(c.CardData);
+                for (Net.PC15.FC89H.Command.Data.CardDetail c : _list) {
+                    x.append(c.GetCardData());
                     x.append("\n");
                 }
             }
@@ -1545,13 +1545,13 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         AddCommandResultCallback(cmd.getClass().getName(), (x, y) -> {
             WriteCardListBySequence_Result result = (WriteCardListBySequence_Result) y;
             x.append("上传完毕");
-            ArrayList<CardDetail> _list =  result.CardList;
+            ArrayList<Net.PC15.FC89H.Command.Data.CardDetail> _list =  result.CardList;
             //ArrayList<Net.PC15.FC89H.Command.Data.CardDetail.CardDetail> list = (Net.PC15.FC89H.Command.Data.CardDetail)result.CardList;
             if (result.FailTotal > 0) {
                 x.append("失败数量：");
                 x.append(result.FailTotal);
                 x.append("，卡号列表：\n");
-                for (CardDetail c : _list) {
+                for (Net.PC15.FC89H.Command.Data.CardDetail c : _list) {
                     x.append(c.GetCardData());
                     x.append("\n");
                 }

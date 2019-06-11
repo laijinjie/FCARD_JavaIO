@@ -68,13 +68,6 @@ public class CardDetail extends Net.PC15.FC8800.Command.Data.CardDetail {
     
     
     /**
-     * 获取16进制卡号
-     */
-    public String GetCardDataHEX() {
-        return CardDataHEX;
-    }
-    
-    /**
      * 获取10进制卡号
      */
     public String GetCardData() {
