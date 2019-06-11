@@ -1334,9 +1334,9 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         //DeleteCard cmd = new DeleteCard(par);
         FC8800Command cmd = null;
         
-        long[] lst = new long[ilstLen];
+        ArrayList<Long> lst = new ArrayList<Long>(ilstLen);
         for (int i = 0; i < ilstLen; i++) {
-            lst[i] = mCardList.get(i).CardData;
+           lst.add(mCardList.get(i).CardData);
         }
         DeleteCard_Parameter par = new DeleteCard_Parameter(dt, lst);
         cmd = new DeleteCard(par);
@@ -1361,12 +1361,13 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         FC8800Command cmd = new WriteCardListBySort(par);
         AddCommandResultCallback(cmd.getClass().getName(), (x, y) -> {
             WriteCardListBySort_Result result = (WriteCardListBySort_Result) y;
+            mCardList =  result.CardList;
             x.append("上传完毕");
             if (result.FailTotal > 0) {
                 x.append("失败数量：");
                 x.append(result.FailTotal);
                 x.append("，卡号列表：\n");
-                for (CardDetail c : result.CardList) {
+                for (CardDetail c : mCardList) {
                     x.append(c.CardData);
                     x.append("\n");
                 }
@@ -1396,12 +1397,13 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         FC8800Command cmd = new WriteCardListBySequence(par);
         AddCommandResultCallback(cmd.getClass().getName(), (x, y) -> {
             WriteCardListBySequence_Result result = (WriteCardListBySequence_Result) y;
+            mCardList =  result.CardList;
             x.append("上传完毕");
             if (result.FailTotal > 0) {
                 x.append("失败数量：");
                 x.append(result.FailTotal);
                 x.append("，卡号列表：\n");
-                for (CardDetail c : result.CardList) {
+                for (CardDetail c : mCardList) {
                     x.append(c.CardData);
                     x.append("\n");
                 }
@@ -1511,9 +1513,8 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         //徐铭康修改
         //DeleteCard cmd = new DeleteCard(par);
         FC8800Command cmd = null;
-        
-            long[] lst = new long[1];
-            lst[0] = cd.CardData;
+        ArrayList<Long> lst = new ArrayList<Long>(1);
+        lst.add(cd.CardData);
             DeleteCard_Parameter par = new DeleteCard_Parameter(dt, lst);
             cmd = new DeleteCard(par);
         
@@ -1542,11 +1543,12 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         AddCommandResultCallback(cmd.getClass().getName(), (x, y) -> {
             WriteCardListBySequence_Result result = (WriteCardListBySequence_Result) y;
             x.append("上传完毕");
+            ArrayList<CardDetail> _list =  result.CardList;
             if (result.FailTotal > 0) {
                 x.append("失败数量：");
                 x.append(result.FailTotal);
                 x.append("，卡号列表：\n");
-                for (CardDetail c : result.CardList) {
+                for (CardDetail c : _list) {
                     x.append(c.CardData);
                     x.append("\n");
                 }
@@ -1605,8 +1607,9 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         AddCommandResultCallback(cmd.getClass().getName(), (x, y) -> {
             ReadCardDetail_Result result = (ReadCardDetail_Result) y;
             if (result.IsReady) {
+                CardDetail card = (CardDetail)result.Card;
                 x.append("卡片在数据库中存储，卡片信息：\n");
-                Object[] arr = CardDetailToRow(result.Card, 0);
+                Object[] arr = CardDetailToRow(card, 0);
                 StringBuilder builder = new StringBuilder(200);
                 builder.append("卡号：");
                 builder.append(arr[1]);//cd.CardData
@@ -1717,7 +1720,7 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
 
                 int Index = 1;
                 StringBuilder builder = new StringBuilder(result.DataBaseSize * 140);
-                for (CardDetail cd : result.CardList) {
+                for (CardDetail cd : mCardList) {
                    
                     Object[] arr = CardDetailToRow(cd, Index);
 
