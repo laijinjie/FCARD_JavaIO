@@ -34,9 +34,7 @@ public class WriteCardListBySort<T extends Comparable<T>> extends Net.PC15.FC880
         mIndex = 0;
         mUploadMax = _List.size();
 
-        //for (int i = mIndex; i < mUploadMax; i++) {
-            //_FC89HList.add((Net.PC15.FC89H.Command.Data.CardDetail)_List.get(i));
-        //}
+        
         CreatePacket(7, 1);
         mStep = 1;//第一步读取存储空间
     }

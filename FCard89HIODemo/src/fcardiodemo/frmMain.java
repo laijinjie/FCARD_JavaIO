@@ -1329,13 +1329,12 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         
         //徐铭康修改
         //DeleteCard cmd = new DeleteCard(par);
-        FC8800Command cmd = null;
-        ArrayList<String> lst = new ArrayList<String>(ilstLen);
+        ArrayList<String> lst = new ArrayList<>(ilstLen);
             for (int i = 0; i < ilstLen; i++) {
                 lst.add(mCardList.get(i).GetCardData());
             }
             DeleteCard_Parameter par = new DeleteCard_Parameter(dt, lst);
-            cmd = new Net.PC15.FC89H.Command.Card.DeleteCard(par);
+          FC8800Command cmd = new Net.PC15.FC89H.Command.Card.DeleteCard(par);
         
         _Allocator.AddCommand(cmd);
     }//GEN-LAST:event_butDeleteCardByListActionPerformed

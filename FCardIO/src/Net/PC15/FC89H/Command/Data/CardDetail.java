@@ -60,24 +60,12 @@ public class CardDetail extends Net.PC15.FC8800.Command.Data.CardDetail {
     public int GetDataLen() {
         return 0x25;//33字节
     }
-
-    /*
-    public CardDetail(String data) {
-        this();
-        CardDataHEX = data;
-        CardDataStr = data;
-    }
-    */
-    
-    /**
-     * 16进制卡号
-     */
-    protected String CardDataHEX;
     
     /**
      * 10进制卡号
      */
-    protected String CardDataStr;
+    protected String CardDataHEX;
+    
     
     /**
      * 获取16进制卡号
@@ -98,14 +86,13 @@ public class CardDetail extends Net.PC15.FC8800.Command.Data.CardDetail {
             System.out.println("ERROR! 卡号不能为空!");
             throw new Exception("卡号不能为空");
         }
-        int length = value.length();
         
         if (!Net.PC15.Util.StringUtil.CanParseInt(value)) {
             System.out.println("ERROR! 卡号不是数字格式!");
             throw new Exception("卡号不是数字格式");
         }
         String maxHex = new BigInteger(value,10).toString(16);
-        if (maxHex == "ffffffffffffffff") {
+        if (maxHex.equals("ffffffffffffffff")) {
             System.out.println("ERROR! 卡号超过最大值!");
             throw new Exception("卡号超过最大值");
         }
@@ -173,14 +160,13 @@ public class CardDetail extends Net.PC15.FC8800.Command.Data.CardDetail {
             System.out.println("ERROR! 卡号不能为空!");
             throw new Exception("卡号不能为空");
         }
-        int length = CardDataHEX.length();
         
         if (!Net.PC15.Util.StringUtil.CanParseInt(CardDataHEX)) {
             System.out.println("ERROR! 卡号不是数字格式!");
             throw new Exception("卡号不是数字格式");
         }
         String maxHex = new BigInteger(CardDataHEX,10).toString(16);
-        if (maxHex == "ffffffffffffffff") {
+        if (maxHex.equals("ffffffffffffffff")) {
             System.out.println("ERROR! 卡号超过最大值!");
             throw new Exception("卡号超过最大值");
         }

@@ -49,7 +49,7 @@ public class ReadCardDetail extends FC8800Command {
             } else {
                 r.IsReady = true;
                 buf.resetReaderIndex();
-                Net.PC15.FC89H.Command.Data.CardDetail cd = new Net.PC15.FC89H.Command.Data.CardDetail();
+                CardDetail cd = new CardDetail();
                 cd.SetBytes(buf);
                 r.Card = cd;
             }
