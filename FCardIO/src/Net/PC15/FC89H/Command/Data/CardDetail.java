@@ -75,6 +75,7 @@ public class CardDetail extends Net.PC15.FC8800.Command.Data.CardDetail {
     }
     
     public void SetCardDataHEX(String value) throws Exception{
+        /**/
         if (value == null || value.length() == 0 ) {
             System.out.println("ERROR! 卡号不能为空!");
             throw new Exception("卡号不能为空");
@@ -89,6 +90,7 @@ public class CardDetail extends Net.PC15.FC8800.Command.Data.CardDetail {
             System.out.println("ERROR! 卡号超过最大值!");
             throw new Exception("卡号超过最大值");
         }
+        
         CardDataHEX = value;
     }
     
@@ -109,7 +111,7 @@ public class CardDetail extends Net.PC15.FC8800.Command.Data.CardDetail {
         
             CardDataHEX = Net.PC15.Util.StringUtil.LTrim(CardDataHEX,'0');
             
-            //CardDataHEX = Net.PC15.Util.StringUtil.HexStr2Str(CardDataHEX,16);
+            CardDataHEX = Net.PC15.Util.StringUtil.HexStr2Str(CardDataHEX,16);
             
             byte[] btData = new byte[4];
             data.readBytes(btData, 0, 4);
@@ -149,6 +151,7 @@ public class CardDetail extends Net.PC15.FC8800.Command.Data.CardDetail {
      */
     @Override
     public void GetBytes(ByteBuf data) throws Exception{
+        /**/
         if (CardDataHEX == null || CardDataHEX.length() == 0 ) {
             System.out.println("ERROR! 卡号不能为空!");
             throw new Exception("卡号不能为空");
@@ -163,10 +166,11 @@ public class CardDetail extends Net.PC15.FC8800.Command.Data.CardDetail {
             System.out.println("ERROR! 卡号超过最大值!");
             throw new Exception("卡号超过最大值");
         }
+
          data.writeByte(0);
          
          //传16进制
-        String CardDataHEX2 = Net.PC15.Util.StringUtil.FillString(CardDataHEX, 16, "0", false);
+        String CardDataHEX2 = Net.PC15.Util.StringUtil.FillString(maxHex, 16, "0", false);
         Net.PC15.Util.StringUtil.HextoByteBuf(CardDataHEX2,data);
         
         //传10进制

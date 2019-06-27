@@ -70,7 +70,7 @@ public class DeleteCard<T> extends Net.PC15.FC8800.Command.Card.DeleteCard {
             }
          
          //传16进制
-        String CardDataHEX2 = Net.PC15.Util.StringUtil.FillString(cardData, 16, "0", false);
+        String CardDataHEX2 = Net.PC15.Util.StringUtil.FillString(maxHex, 16, "0", false);
         Net.PC15.Util.StringUtil.HextoByteBuf(CardDataHEX2,dataBuf);
             //Net.PC15.Util.StringUtil.HextoByteBuf(,dataBuf);
             if (iSize == iMaxSize) {
