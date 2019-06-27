@@ -10,6 +10,7 @@ import Net.PC15.FC8800.Packet.FC8800PacketCompile;
 import Net.PC15.FC8800.Packet.FC8800PacketModel;
 import Net.PC15.Util.ByteUtil;
 import io.netty.buffer.ByteBuf;
+import java.math.BigInteger;
 
 /**
  * 删除卡片，针对FC89H使用
@@ -37,7 +38,7 @@ public class DeleteCard<T> extends Net.PC15.FC8800.Command.Card.DeleteCard {
     /**
      * 写入下一个卡号
      */
-    protected void WriteNext() {
+    protected void WriteNext(){
         int iMaxSize = 40; //每个数据包最大40个卡
         int iSize = 0;
         int iIndex = 0;
@@ -52,7 +53,26 @@ public class DeleteCard<T> extends Net.PC15.FC8800.Command.Card.DeleteCard {
             iIndex = i;
             iSize += 1;
             dataBuf.writeByte(0);
-            Net.PC15.Util.StringUtil.HextoByteBuf((String)_List.get(iIndex),dataBuf);
+            String cardData = (String)_List.get(iIndex);
+            if (cardData == null || cardData.length() == 0 ) {
+                System.out.println("ERROR! 卡号不能为空!");
+                return;
+            }
+        
+            if (!Net.PC15.Util.StringUtil.CanParseInt(cardData)) {
+                System.out.println("ERROR! 卡号不是数字格式!");
+                return;
+            }
+            String maxHex = new BigInteger(cardData,10).toString(16);
+            if (maxHex.equals("ffffffffffffffff")) {
+                System.out.println("ERROR! 卡号超过最大值!");
+                return;
+            }
+         
+         //传16进制
+        String CardDataHEX2 = Net.PC15.Util.StringUtil.FillString(cardData, 16, "0", false);
+        Net.PC15.Util.StringUtil.HextoByteBuf(CardDataHEX2,dataBuf);
+            //Net.PC15.Util.StringUtil.HextoByteBuf(,dataBuf);
             if (iSize == iMaxSize) {
                 break;
             }

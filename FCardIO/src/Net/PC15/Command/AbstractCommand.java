@@ -190,7 +190,7 @@ public abstract class AbstractCommand implements INCommand {
                     //System.out.println(ByteBufUtil.hexDump(bData));
                 }
             } catch (Exception e) {
-                //System.out.println(" AbstractCommand--CheckResponse -- 发生错误：\n" + e.toString());
+                System.out.println(" AbstractCommand--CheckResponse -- 发生错误：\n" + e.toString());
                 decompile = false;
             }
         }

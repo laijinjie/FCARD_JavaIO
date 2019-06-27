@@ -256,6 +256,30 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         jPanel8 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        jPanel4 = new javax.swing.JPanel();
+        butReadTransactionDatabaseDetail = new javax.swing.JButton();
+        butTransactionDatabaseEmpty = new javax.swing.JButton();
+        jPanel5 = new javax.swing.JPanel();
+        butClearTransactionDatabase = new javax.swing.JButton();
+        jLabel17 = new javax.swing.JLabel();
+        cmbTransactionType = new javax.swing.JComboBox<>();
+        butReadTransactionDatabaseByIndex = new javax.swing.JButton();
+        butWriteTransactionDatabaseReadIndex = new javax.swing.JButton();
+        butWriteTransactionDatabaseWriteIndex = new javax.swing.JButton();
+        jLabel18 = new javax.swing.JLabel();
+        txtTransactionDatabaseReadIndex = new javax.swing.JTextField();
+        jLabel19 = new javax.swing.JLabel();
+        txtTransactionDatabaseWriteIndex = new javax.swing.JTextField();
+        jLabel20 = new javax.swing.JLabel();
+        txtReadTransactionDatabaseByIndex = new javax.swing.JTextField();
+        txtReadTransactionDatabaseByQuantity = new javax.swing.JTextField();
+        jLabel21 = new javax.swing.JLabel();
+        chkTransactionIsCircle = new javax.swing.JCheckBox();
+        butReadTransactionDatabase = new javax.swing.JButton();
+        jLabel22 = new javax.swing.JLabel();
+        txtReadTransactionDatabasePacketSize = new javax.swing.JTextField();
+        jLabel23 = new javax.swing.JLabel();
+        txtReadTransactionDatabaseQuantity = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
         butReadCardDataBase = new javax.swing.JButton();
         butReadCardDatabaseDetail = new javax.swing.JButton();
@@ -290,30 +314,6 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         butDeleteCardByList = new javax.swing.JButton();
         jLabel16 = new javax.swing.JLabel();
         txtCardAutoCreateSzie = new javax.swing.JTextField();
-        jPanel4 = new javax.swing.JPanel();
-        butReadTransactionDatabaseDetail = new javax.swing.JButton();
-        butTransactionDatabaseEmpty = new javax.swing.JButton();
-        jPanel5 = new javax.swing.JPanel();
-        butClearTransactionDatabase = new javax.swing.JButton();
-        jLabel17 = new javax.swing.JLabel();
-        cmbTransactionType = new javax.swing.JComboBox<>();
-        butReadTransactionDatabaseByIndex = new javax.swing.JButton();
-        butWriteTransactionDatabaseReadIndex = new javax.swing.JButton();
-        butWriteTransactionDatabaseWriteIndex = new javax.swing.JButton();
-        jLabel18 = new javax.swing.JLabel();
-        txtTransactionDatabaseReadIndex = new javax.swing.JTextField();
-        jLabel19 = new javax.swing.JLabel();
-        txtTransactionDatabaseWriteIndex = new javax.swing.JTextField();
-        jLabel20 = new javax.swing.JLabel();
-        txtReadTransactionDatabaseByIndex = new javax.swing.JTextField();
-        txtReadTransactionDatabaseByQuantity = new javax.swing.JTextField();
-        jLabel21 = new javax.swing.JLabel();
-        chkTransactionIsCircle = new javax.swing.JCheckBox();
-        butReadTransactionDatabase = new javax.swing.JButton();
-        jLabel22 = new javax.swing.JLabel();
-        txtReadTransactionDatabasePacketSize = new javax.swing.JTextField();
-        jLabel23 = new javax.swing.JLabel();
-        txtReadTransactionDatabaseQuantity = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(1020, 850));
@@ -357,7 +357,7 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         jLabel24.setText("IP地址：");
         pnlTCPClient.add(jLabel24, new org.netbeans.lib.awtextra.AbsoluteConstraints(16, 20, 79, -1));
 
-        txtTCPServerIP.setText("192.168.1.66");
+        txtTCPServerIP.setText("192.168.1.235");
         pnlTCPClient.add(txtTCPServerIP, new org.netbeans.lib.awtextra.AbsoluteConstraints(99, 17, 223, -1));
 
         jLabel25.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -568,7 +568,7 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         jLabel8.setText("SN：");
         jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, 36, -1));
 
-        txtWriteSN.setText("FC-8940A46060007");
+        txtWriteSN.setText("MC-5824T25070244");
         txtWriteSN.setToolTipText("");
         jPanel1.add(txtWriteSN, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 20, 131, -1));
 
@@ -705,6 +705,127 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
 
         jTabSetting.addTab("时间参数", jPanel8);
 
+        jPanel4.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        butReadTransactionDatabaseDetail.setText("读取记录数据库详情");
+        butReadTransactionDatabaseDetail.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                butReadTransactionDatabaseDetailActionPerformed(evt);
+            }
+        });
+        jPanel4.add(butReadTransactionDatabaseDetail, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 10, -1, -1));
+
+        butTransactionDatabaseEmpty.setBackground(new java.awt.Color(255, 0, 0));
+        butTransactionDatabaseEmpty.setForeground(new java.awt.Color(255, 0, 0));
+        butTransactionDatabaseEmpty.setText("清空所有记录");
+        butTransactionDatabaseEmpty.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                butTransactionDatabaseEmptyActionPerformed(evt);
+            }
+        });
+        jPanel4.add(butTransactionDatabaseEmpty, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 10, -1, -1));
+
+        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("指定记录类型的操作"));
+        jPanel5.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        butClearTransactionDatabase.setBackground(new java.awt.Color(255, 0, 0));
+        butClearTransactionDatabase.setForeground(new java.awt.Color(255, 0, 0));
+        butClearTransactionDatabase.setText("清空记录");
+        butClearTransactionDatabase.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                butClearTransactionDatabaseActionPerformed(evt);
+            }
+        });
+        jPanel5.add(butClearTransactionDatabase, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 20, -1, -1));
+
+        jLabel17.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel17.setText("记录类型：");
+        jPanel5.add(jLabel17, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 80, -1));
+
+        cmbTransactionType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "读卡记录", "出门开关记录", "门磁记录", "软件操作记录", "报警记录", "系统记录" }));
+        jPanel5.add(cmbTransactionType, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 20, 110, -1));
+
+        butReadTransactionDatabaseByIndex.setText("按序号读记录");
+        butReadTransactionDatabaseByIndex.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                butReadTransactionDatabaseByIndexActionPerformed(evt);
+            }
+        });
+        jPanel5.add(butReadTransactionDatabaseByIndex, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 130, 120, -1));
+
+        butWriteTransactionDatabaseReadIndex.setText("修改记录读索引");
+        butWriteTransactionDatabaseReadIndex.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                butWriteTransactionDatabaseReadIndexActionPerformed(evt);
+            }
+        });
+        jPanel5.add(butWriteTransactionDatabaseReadIndex, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, -1, -1));
+
+        butWriteTransactionDatabaseWriteIndex.setText("修改记录写索引");
+        butWriteTransactionDatabaseWriteIndex.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                butWriteTransactionDatabaseWriteIndexActionPerformed(evt);
+            }
+        });
+        jPanel5.add(butWriteTransactionDatabaseWriteIndex, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 100, -1, -1));
+
+        jLabel18.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel18.setText("读索引号：");
+        jPanel5.add(jLabel18, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 73, 79, -1));
+
+        txtTransactionDatabaseReadIndex.setText("0");
+        jPanel5.add(txtTransactionDatabaseReadIndex, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 70, 60, -1));
+
+        jLabel19.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel19.setText("写索引号：");
+        jPanel5.add(jLabel19, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 103, 79, -1));
+
+        txtTransactionDatabaseWriteIndex.setText("0");
+        jPanel5.add(txtTransactionDatabaseWriteIndex, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 100, 60, -1));
+
+        jLabel20.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel20.setText("开始索引号：");
+        jPanel5.add(jLabel20, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 133, 79, -1));
+
+        txtReadTransactionDatabaseByIndex.setText("1");
+        jPanel5.add(txtReadTransactionDatabaseByIndex, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 130, 60, -1));
+
+        txtReadTransactionDatabaseByQuantity.setText("10");
+        jPanel5.add(txtReadTransactionDatabaseByQuantity, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 130, 60, -1));
+
+        jLabel21.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel21.setText("读数量：");
+        jPanel5.add(jLabel21, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 133, 60, -1));
+
+        chkTransactionIsCircle.setText("循环");
+        jPanel5.add(chkTransactionIsCircle, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 70, -1, -1));
+
+        butReadTransactionDatabase.setText("读新记录");
+        butReadTransactionDatabase.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                butReadTransactionDatabaseActionPerformed(evt);
+            }
+        });
+        jPanel5.add(butReadTransactionDatabase, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 170, 120, -1));
+
+        jLabel22.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel22.setText("单次读取数量：");
+        jPanel5.add(jLabel22, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 170, 90, -1));
+
+        txtReadTransactionDatabasePacketSize.setText("200");
+        jPanel5.add(txtReadTransactionDatabasePacketSize, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 170, 60, -1));
+
+        jLabel23.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel23.setText("读数量：");
+        jPanel5.add(jLabel23, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 170, 60, -1));
+
+        txtReadTransactionDatabaseQuantity.setText("0");
+        jPanel5.add(txtReadTransactionDatabaseQuantity, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 170, 60, -1));
+
+        jPanel4.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, 470, 290));
+
+        jTabSetting.addTab("记录管理", jPanel4);
+
         jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
@@ -739,6 +860,8 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
 
         jLabel9.setText("卡区域：");
         jPanel2.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 52, -1, -1));
+
+        jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
 
         tblCard.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -887,127 +1010,6 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         jPanel2.add(txtCardAutoCreateSzie, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 660, 70, -1));
 
         jTabSetting.addTab("卡片管理", jPanel2);
-
-        jPanel4.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        butReadTransactionDatabaseDetail.setText("读取记录数据库详情");
-        butReadTransactionDatabaseDetail.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                butReadTransactionDatabaseDetailActionPerformed(evt);
-            }
-        });
-        jPanel4.add(butReadTransactionDatabaseDetail, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 10, -1, -1));
-
-        butTransactionDatabaseEmpty.setBackground(new java.awt.Color(255, 0, 0));
-        butTransactionDatabaseEmpty.setForeground(new java.awt.Color(255, 0, 0));
-        butTransactionDatabaseEmpty.setText("清空所有记录");
-        butTransactionDatabaseEmpty.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                butTransactionDatabaseEmptyActionPerformed(evt);
-            }
-        });
-        jPanel4.add(butTransactionDatabaseEmpty, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 10, -1, -1));
-
-        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("指定记录类型的操作"));
-        jPanel5.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        butClearTransactionDatabase.setBackground(new java.awt.Color(255, 0, 0));
-        butClearTransactionDatabase.setForeground(new java.awt.Color(255, 0, 0));
-        butClearTransactionDatabase.setText("清空记录");
-        butClearTransactionDatabase.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                butClearTransactionDatabaseActionPerformed(evt);
-            }
-        });
-        jPanel5.add(butClearTransactionDatabase, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 20, -1, -1));
-
-        jLabel17.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel17.setText("记录类型：");
-        jPanel5.add(jLabel17, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 80, -1));
-
-        cmbTransactionType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "读卡记录", "出门开关记录", "门磁记录", "软件操作记录", "报警记录", "系统记录" }));
-        jPanel5.add(cmbTransactionType, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 20, 110, -1));
-
-        butReadTransactionDatabaseByIndex.setText("按序号读记录");
-        butReadTransactionDatabaseByIndex.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                butReadTransactionDatabaseByIndexActionPerformed(evt);
-            }
-        });
-        jPanel5.add(butReadTransactionDatabaseByIndex, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 130, 120, -1));
-
-        butWriteTransactionDatabaseReadIndex.setText("修改记录读索引");
-        butWriteTransactionDatabaseReadIndex.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                butWriteTransactionDatabaseReadIndexActionPerformed(evt);
-            }
-        });
-        jPanel5.add(butWriteTransactionDatabaseReadIndex, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, -1, -1));
-
-        butWriteTransactionDatabaseWriteIndex.setText("修改记录写索引");
-        butWriteTransactionDatabaseWriteIndex.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                butWriteTransactionDatabaseWriteIndexActionPerformed(evt);
-            }
-        });
-        jPanel5.add(butWriteTransactionDatabaseWriteIndex, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 100, -1, -1));
-
-        jLabel18.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel18.setText("读索引号：");
-        jPanel5.add(jLabel18, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 73, 79, -1));
-
-        txtTransactionDatabaseReadIndex.setText("0");
-        jPanel5.add(txtTransactionDatabaseReadIndex, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 70, 60, -1));
-
-        jLabel19.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel19.setText("写索引号：");
-        jPanel5.add(jLabel19, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 103, 79, -1));
-
-        txtTransactionDatabaseWriteIndex.setText("0");
-        jPanel5.add(txtTransactionDatabaseWriteIndex, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 100, 60, -1));
-
-        jLabel20.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel20.setText("开始索引号：");
-        jPanel5.add(jLabel20, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 133, 79, -1));
-
-        txtReadTransactionDatabaseByIndex.setText("1");
-        jPanel5.add(txtReadTransactionDatabaseByIndex, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 130, 60, -1));
-
-        txtReadTransactionDatabaseByQuantity.setText("10");
-        jPanel5.add(txtReadTransactionDatabaseByQuantity, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 130, 60, -1));
-
-        jLabel21.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel21.setText("读数量：");
-        jPanel5.add(jLabel21, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 133, 60, -1));
-
-        chkTransactionIsCircle.setText("循环");
-        jPanel5.add(chkTransactionIsCircle, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 70, -1, -1));
-
-        butReadTransactionDatabase.setText("读新记录");
-        butReadTransactionDatabase.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                butReadTransactionDatabaseActionPerformed(evt);
-            }
-        });
-        jPanel5.add(butReadTransactionDatabase, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 170, 120, -1));
-
-        jLabel22.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel22.setText("单次读取数量：");
-        jPanel5.add(jLabel22, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 170, 90, -1));
-
-        txtReadTransactionDatabasePacketSize.setText("200");
-        jPanel5.add(txtReadTransactionDatabasePacketSize, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 170, 60, -1));
-
-        jLabel23.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel23.setText("读数量：");
-        jPanel5.add(jLabel23, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 170, 60, -1));
-
-        txtReadTransactionDatabaseQuantity.setText("0");
-        jPanel5.add(txtReadTransactionDatabaseQuantity, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 170, 60, -1));
-
-        jPanel4.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, 470, 290));
-
-        jTabSetting.addTab("记录管理", jPanel4);
 
         getContentPane().add(jTabSetting, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 10, 510, 750));
 
@@ -1519,7 +1521,10 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         lst.add(cd.GetCardData());
         DeleteCard_Parameter par = new DeleteCard_Parameter(dt, lst);
         Net.PC15.FC89H.Command.Card.DeleteCard cmd = new Net.PC15.FC89H.Command.Card.DeleteCard(par);
-        
+        AddCommandResultCallback(cmd.getClass().getName(), (x, y) -> {
+            y = y;
+
+        });
         _Allocator.AddCommand(cmd);
     }//GEN-LAST:event_butDeleteCardActionPerformed
 
@@ -1718,14 +1723,14 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
             x.append(CardTypeList[result.CardType]);
 
             if (result.DataBaseSize > 0) {
-                mCardList =  result.CardList;
+                ArrayList<Net.PC15.FC89H.Command.Data.CardDetail> _List =  result.CardList;
                 String CardStatusList[] = new String[]{"正常", "挂失卡", "黑名单"};
                 DefaultTableModel tableModel = (DefaultTableModel) tblCard.getModel();
                 tableModel.setRowCount(0);// 清除原有行
 
                 int Index = 1;
                 StringBuilder builder = new StringBuilder(result.DataBaseSize * 140);
-                for (Net.PC15.FC89H.Command.Data.CardDetail cd : mCardList) {
+                for (Net.PC15.FC89H.Command.Data.CardDetail cd : _List) {
                    
                     Object[] arr = CardDetailToRow(cd, Index);
 
@@ -2263,8 +2268,15 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
 
         javax.swing.table.TableModel model = tblCard.getModel();
 
-        long Card = Long.parseLong(model.getValueAt(numRow, 1).toString());
-        CardDetail cd = new CardDetail(Card);
+        String Card = model.getValueAt(numRow, 1).toString();
+        Net.PC15.FC89H.Command.Data.CardDetail cd = new Net.PC15.FC89H.Command.Data.CardDetail();
+        try 
+        {
+        cd.SetCardDataHEX(Card);
+        }
+        catch (Exception e){
+            return;
+        }
         int Index = mCardList.indexOf(cd);
         if (Index == -1) {
             return;
@@ -3286,9 +3298,10 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         }
 
         if (Transaction instanceof CardTransaction) {
-            CardTransaction cardTrn = (CardTransaction) WatchTransaction.EventData;
+            Net.PC15.FC89H.Command.Data.CardTransaction cardTrn = (Net.PC15.FC89H.Command.Data.CardTransaction) WatchTransaction.EventData;
+            //CardTransaction cardTrn = (CardTransaction) WatchTransaction.EventData;
             strBuf.append("\n卡号：");
-            strBuf.append(cardTrn.CardData);
+            strBuf.append(cardTrn.CardDataStr);
             strBuf.append("，门号：");
             strBuf.append(cardTrn.DoorNum());
             if (cardTrn.IsEnter()) {

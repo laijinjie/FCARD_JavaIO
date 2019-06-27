@@ -9,6 +9,7 @@ import Net.PC15.Command.INWatchResponse;
 import Net.PC15.Connector.E_ControllerType;
 import Net.PC15.FC8800.Command.FC8800CommandWatchResponse;
 import Net.PC15.FC8800.Packet.FC8800Decompile;
+import Net.PC15.FC89H.Command.FC89HCommandWatchResponse;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -24,7 +25,7 @@ public class PacketDecompileAllocator {
         DecompileMap = new ConcurrentHashMap<>();
         //初始化类型比较器
         DecompileMap.put(E_ControllerType.FC8800.getClass().getCanonicalName(), FC8800CommandWatchResponse.class);
-        DecompileMap.put(E_ControllerType.FC8900.getClass().getCanonicalName(), FC8800CommandWatchResponse.class);
+        DecompileMap.put(E_ControllerType.FC8900.getClass().getCanonicalName(), FC89HCommandWatchResponse.class);
         DecompileMap.put(E_ControllerType.MC5800.getClass().getCanonicalName(), FC8800CommandWatchResponse.class);
     }
 

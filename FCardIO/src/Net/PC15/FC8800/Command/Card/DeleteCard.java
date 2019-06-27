@@ -57,7 +57,8 @@ public class DeleteCard<T> extends FC8800Command {
             iIndex = i;
             iSize += 1;
             dataBuf.writeByte(0);
-            dataBuf.writeInt((Integer)_List.get(iIndex));
+            Long l = (Long)_List.get(iIndex);
+            dataBuf.writeInt(l.intValue());
             if (iSize == iMaxSize) {
                 break;
             }

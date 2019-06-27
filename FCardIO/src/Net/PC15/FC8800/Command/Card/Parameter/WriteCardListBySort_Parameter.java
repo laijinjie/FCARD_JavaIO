@@ -15,7 +15,7 @@ import java.util.Collections;
  *
  * @author 赖金杰
  */
-public class WriteCardListBySort_Parameter<T extends Comparable<T>> extends CommandParameter {
+public class WriteCardListBySort_Parameter<T extends CardDetail> extends CommandParameter {
 
     /**
      * 需要上传的卡片列表

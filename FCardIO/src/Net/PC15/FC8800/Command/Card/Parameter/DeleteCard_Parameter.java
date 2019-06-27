@@ -16,7 +16,7 @@ import java.util.Collections;
  *
  * @author 赖金杰
  */
-public class DeleteCard_Parameter<T> extends CommandParameter {
+public class DeleteCard_Parameter<T  extends CardDetail> extends CommandParameter {
 
     /**
      * 需要删除的卡片列表

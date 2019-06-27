@@ -20,6 +20,7 @@ import Net.PC15.FC8800.Packet.FC8800Decompile;
 import Net.PC15.FC8800.Packet.FC8800PacketModel;
 import Net.PC15.Packet.INPacketModel;
 import Net.PC15.Util.UInt32Util;
+import io.netty.buffer.ByteBuf;
 import java.util.Calendar;
 
 /**
@@ -45,10 +46,20 @@ public class FC8800CommandWatchResponse extends AbstractWatchResponse {
                 DefinedTransaction dt;
                 switch (watchevent.CmdIndex) {
                     case 1://读卡信息
-                        CardTransaction card = new CardTransaction();
-                        card.SetBytes(packet.GetDatabuff());
-
-                        watchevent.EventData = card;
+                        //if ((buf.capacity() - 4) % 21 == 0) {
+                        ByteBuf buf = packet.GetDatabuff();
+                        //fc89H
+                        if (buf.capacity()  == 17) {
+                            Net.PC15.FC89H.Command.Data.CardTransaction card = new Net.PC15.FC89H.Command.Data.CardTransaction();
+                            card.SetBytes(buf);
+                            watchevent.EventData = card;
+                        }
+                        else {
+                            CardTransaction card = new CardTransaction();
+                            card.SetBytes(buf);
+                            watchevent.EventData = card;
+                        }
+                        
                         break;
                     case 2://出门开关信息
                         ButtonTransaction ButtonTrn = new ButtonTransaction();

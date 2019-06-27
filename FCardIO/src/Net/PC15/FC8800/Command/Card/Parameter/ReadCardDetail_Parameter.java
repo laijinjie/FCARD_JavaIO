@@ -11,7 +11,7 @@ import Net.PC15.Command.CommandParameter;
  * 读取单个卡片在控制器中的信息<br/>
  * @author 赖金杰
  */
-public class ReadCardDetail_Parameter<T extends Comparable<T>> extends CommandParameter {
+public class ReadCardDetail_Parameter<T> extends CommandParameter {
 
     /**
      * 要读取详情的授权卡卡号<br/>
