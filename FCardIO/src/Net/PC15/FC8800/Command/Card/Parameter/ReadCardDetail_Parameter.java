@@ -11,16 +11,16 @@ import Net.PC15.Command.CommandParameter;
  * 读取单个卡片在控制器中的信息<br/>
  * @author 赖金杰
  */
-public class ReadCardDetail_Parameter<T> extends CommandParameter {
+public class ReadCardDetail_Parameter extends CommandParameter {
 
     /**
      * 要读取详情的授权卡卡号<br/>
      * 取值：1-0xFFFFFFFF
      */
-    public T CardData;
+    public String CardData;
 
 
-    public ReadCardDetail_Parameter(CommandDetail detail, T data) {
+    public ReadCardDetail_Parameter(CommandDetail detail, String data) {
         super(detail);
         this.CardData = data;
     }

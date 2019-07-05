@@ -24,19 +24,10 @@ import java.util.Collections;
  *
  * @author 徐铭康
  */
-public class WriteCardListBySort<T extends Comparable<T>> extends Net.PC15.FC8800.Command.Card.WriteCardListBySort {
-    
-    public WriteCardListBySort(WriteCardListBySort_Parameter par) {
-        
-        _Parameter = par;
-        _List = par.CardList;
-        _ProcessMax = par.CardList.size();
-        mIndex = 0;
-        mUploadMax = _List.size();
+public class WriteCardListBySort extends Net.PC15.FC8800.Command.Card.WriteCardListBySort {
 
-        
-        CreatePacket(7, 1);
-        mStep = 1;//第一步读取存储空间
+    public WriteCardListBySort(WriteCardListBySort_Parameter par) {
+        super(par);
     }
     
     /**

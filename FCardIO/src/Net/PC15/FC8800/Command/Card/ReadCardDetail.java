@@ -26,7 +26,7 @@ public class ReadCardDetail extends FC8800Command {
         _Parameter = par;
         ByteBuf dataBuf = ByteUtil.ALLOCATOR.buffer(5);
         dataBuf.writeByte(0);
-        dataBuf.writeInt((int) par.CardData);
+        dataBuf.writeInt(Integer.valueOf(par.CardData));
         CreatePacket(7, 3, 1, 5, dataBuf);
     }
 

@@ -14,6 +14,7 @@ import Net.PC15.FC8800.Packet.FC8800PacketModel;
 import Net.PC15.Util.ByteUtil;
 import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * 针对FC89H使用，将卡片列表写入到控制器非排序区<br/>
@@ -24,8 +25,9 @@ import java.util.ArrayList;
  *
  * @author 徐铭康
  */
-public class WriteCardListBySequence<T extends Comparable<T>> extends Net.PC15.FC8800.Command.Card.WriteCardListBySequence {
+public class WriteCardListBySequence extends Net.PC15.FC8800.Command.Card.WriteCardListBySequence {
     
+     //protected ArrayList<Net.PC15.FC89H.Command.Data.CardDetail> _List;
     public WriteCardListBySequence(WriteCardListBySequence_Parameter par) {
         //super(par);
         _Parameter = par;
@@ -57,7 +59,7 @@ public class WriteCardListBySequence<T extends Comparable<T>> extends Net.PC15.F
             for (int i = mIndex; i < ListLen; i++) {
             iIndex = i;
             iSize += 1;
-            CardDetail cd = (CardDetail)_List.get(iIndex);
+            Net.PC15.FC89H.Command.Data.CardDetail cd = (Net.PC15.FC89H.Command.Data.CardDetail)_List.get(iIndex);
             cd.GetBytes(dataBuf);
             if (iSize == iMaxSize) {
                 break;
@@ -88,7 +90,7 @@ public class WriteCardListBySequence<T extends Comparable<T>> extends Net.PC15.F
         ArrayList<CardDetail> CardList = new ArrayList<>(10000);
         
         WriteCardListBySequence_Result r = (WriteCardListBySequence_Result) _Result;
-        r.CardList=CardList;
+       
         
         while (mBufs.peek() != null) {
             ByteBuf buf = (ByteBuf)mBufs.poll();
@@ -101,7 +103,7 @@ public class WriteCardListBySequence<T extends Comparable<T>> extends Net.PC15.F
             buf.release();
         }
         r.FailTotal=CardList.size();
-        
+        r.CardList=CardList;
     }
     
 }

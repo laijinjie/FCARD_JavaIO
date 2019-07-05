@@ -76,6 +76,8 @@ public class WeekTimeGroup implements INData {
 
     @Override
     public void SetBytes(ByteBuf data) {
+        data.readByte();
+        data.readByte();
         SetBytes(E_WeekDay.Monday, data);
     }
 

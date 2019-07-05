@@ -26,10 +26,10 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  *
  * @author 赖金杰
  */
-public class WriteCardListBySequence<T extends Comparable<T>> extends FC8800Command {
+public class WriteCardListBySequence extends FC8800Command {
     
     protected int mIndex;//指示当前命令进行的步骤
-    protected ArrayList<T> _List;
+    protected ArrayList<? extends CardDetail> _List;
     protected ConcurrentLinkedQueue<ByteBuf> mBufs;
     
     public WriteCardListBySequence(){
@@ -42,16 +42,20 @@ public class WriteCardListBySequence<T extends Comparable<T>> extends FC8800Comm
         _ProcessMax = par.CardList.size();
         mIndex = 0;
         //初始化缓冲空间
+        _CreatePacket();
+        WriteNext();
+    }
+    
+    protected void _CreatePacket(){
         int iLen = (5 * 0x21) + 4;
         ByteBuf dataBuf = ByteUtil.ALLOCATOR.buffer(iLen);
         CreatePacket(7, 4, 0, iLen, dataBuf);
-        WriteNext();
     }
 
     /**
      * 写入下一个卡号
      */
-    private void WriteNext() {
+    protected void WriteNext(){
         int iMaxSize = 5; //每个数据包最大5个卡
         int iSize = 0;
         int iIndex = 0;
@@ -62,12 +66,10 @@ public class WriteCardListBySequence<T extends Comparable<T>> extends FC8800Comm
         ByteBuf dataBuf = p.GetDatabuff();
         dataBuf.clear();
         dataBuf.writeInt(iMaxSize);
-        try 
-        {
         for (int i = mIndex; i < ListLen; i++) {
             iIndex = i;
             iSize += 1;
-            CardDetail cd = (CardDetail)_List.get(iIndex);
+            CardDetail cd = _List.get(iIndex);
             cd.GetBytes(dataBuf);
             if (iSize == iMaxSize) {
                 break;
@@ -80,10 +82,6 @@ public class WriteCardListBySequence<T extends Comparable<T>> extends FC8800Comm
         compile.Compile();//重新编译
         mIndex = iIndex + 1;
         CommandReady();
-        }
-        catch (Exception e){
-            
-        }
     }
     
     @Override
@@ -114,7 +112,7 @@ public class WriteCardListBySequence<T extends Comparable<T>> extends FC8800Comm
     /**
      * 命令继续执行
      */
-    protected void CommandNext(INConnectorEvent oEvent) {
+    protected void CommandNext(INConnectorEvent oEvent){
         //增加命令进度
         _ProcessStep = mIndex;
         if (mIndex < _List.size()) {
@@ -140,7 +138,7 @@ public class WriteCardListBySequence<T extends Comparable<T>> extends FC8800Comm
         ArrayList<CardDetail> CardList = new ArrayList<>(10000);
         
         WriteCardListBySequence_Result r = (WriteCardListBySequence_Result) _Result;
-        r.CardList=CardList;
+        
         
         while (mBufs.peek() != null) {
             ByteBuf buf = mBufs.poll();
@@ -152,6 +150,7 @@ public class WriteCardListBySequence<T extends Comparable<T>> extends FC8800Comm
             }
             buf.release();
         }
+        r.CardList=CardList;
         r.FailTotal=CardList.size();
         
     }

@@ -15,14 +15,14 @@ import java.util.Collections;
  *
  * @author 赖金杰
  */
-public class WriteCardListBySort_Parameter<T extends CardDetail> extends CommandParameter {
+public class WriteCardListBySort_Parameter extends CommandParameter {
 
     /**
      * 需要上传的卡片列表
      */
-    public ArrayList<T> CardList;
+    public ArrayList<? extends CardDetail> CardList;
 
-    public WriteCardListBySort_Parameter(CommandDetail detail, ArrayList<T> list) {
+    public WriteCardListBySort_Parameter(CommandDetail detail, ArrayList<? extends CardDetail> list) {
         super(detail);
         CardList = list;
         if (CardList != null) {

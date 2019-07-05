@@ -25,20 +25,16 @@ import java.util.Collections;
  *
  * @author 赖金杰
  */
-public class WriteCardListBySort<T extends Comparable<T>> extends FC8800Command {
+public class WriteCardListBySort extends FC8800Command {
 
     protected int mIndex;//指示当前命令进行的步骤
-    protected ArrayList<T> _List;
+    protected ArrayList<? extends CardDetail> _List;
     protected int mStep;
     /**
      * 本次上传卡数量
      */
     protected int mUploadMax;
 
-    public WriteCardListBySort(){
-        
-    }
-    
     public WriteCardListBySort(WriteCardListBySort_Parameter par) {
         _Parameter = par;
         _List = par.CardList;
@@ -81,7 +77,7 @@ public class WriteCardListBySort<T extends Comparable<T>> extends FC8800Command 
      * @param model 本次数据包的包装类
      * @return true 正确解析或 false 未解析
      */
-    protected boolean CheckDataBaseDetail(FC8800PacketModel model) {
+    private boolean CheckDataBaseDetail(FC8800PacketModel model) {
         if (CheckResponse_Cmd(model, 7, 1, 0, 0x10)) {
             ByteBuf buf = model.GetDatabuff();
 
@@ -159,12 +155,10 @@ public class WriteCardListBySort<T extends Comparable<T>> extends FC8800Command 
         dataBuf.clear();
         dataBuf.writeInt(mIndex + 1);
         dataBuf.writeInt(iMaxSize);
-        try
-        {
         for (int i = mIndex; i < mUploadMax; i++) {
             iIndex = i;
             iSize += 1;
-            CardDetail cd = (CardDetail)_List.get(iIndex);
+            CardDetail cd = _List.get(iIndex);
             cd.GetBytes(dataBuf);
             if (iSize == iMaxSize) {
                 break;
@@ -177,10 +171,6 @@ public class WriteCardListBySort<T extends Comparable<T>> extends FC8800Command 
         compile.Compile();//重新编译
         mIndex = iIndex + 1;
         CommandReady();
-        }
-        catch (Exception e){
-            
-        }
     }
 
     /**
@@ -189,7 +179,7 @@ public class WriteCardListBySort<T extends Comparable<T>> extends FC8800Command 
      * @param model 本次数据包的包装类
      * @return true 正确解析或 false 未解析
      */
-    protected boolean CheckWriteCardResponse(FC8800PacketModel model) {
+    private boolean CheckWriteCardResponse(FC8800PacketModel model) {
         if (CheckResponseOK(model)) {
             _ProcessStep = mIndex;
 
@@ -200,9 +190,9 @@ public class WriteCardListBySort<T extends Comparable<T>> extends FC8800Command 
                 int ListSize = _List.size();
                 if (_List.size() > mUploadMax) {
                     r.FailTotal = ListSize - mUploadMax;
-                    ArrayList<T> failList = new ArrayList<>(r.FailTotal);
+                    ArrayList<CardDetail> failList = new ArrayList<>(r.FailTotal);
                     for (int i = mIndex; i < ListSize; i++) {
-                        failList.add((T)_List.get(i));
+                        failList.add(_List.get(i));
                     }
                     r.CardList = failList;
                 }
@@ -234,7 +224,7 @@ public class WriteCardListBySort<T extends Comparable<T>> extends FC8800Command 
      * @param model 本次数据包的包装类
      * @return true 正确解析或 false 未解析
      */
-    protected boolean CheckEndWriteResponse(INConnectorEvent oEvent, FC8800PacketModel model) {
+    private boolean CheckEndWriteResponse(INConnectorEvent oEvent, FC8800PacketModel model) {
         if (CheckResponseOK(model)) {
             RaiseCommandCompleteEvent(oEvent);
         } else {

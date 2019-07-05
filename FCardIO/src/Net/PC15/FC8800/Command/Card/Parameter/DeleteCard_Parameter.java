@@ -16,14 +16,14 @@ import java.util.Collections;
  *
  * @author 赖金杰
  */
-public class DeleteCard_Parameter<T  extends CardDetail> extends CommandParameter {
+public class DeleteCard_Parameter extends CommandParameter {
 
     /**
      * 需要删除的卡片列表
      */
-    public ArrayList<T> CardList;
+    public String[] CardList;
 
-    public DeleteCard_Parameter(CommandDetail detail, ArrayList<T> list) {
+    public DeleteCard_Parameter(CommandDetail detail, String[] list) {
         super(detail);
         CardList = list;
     }

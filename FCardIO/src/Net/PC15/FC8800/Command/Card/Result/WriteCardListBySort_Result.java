@@ -13,7 +13,7 @@ import java.util.ArrayList;
  *
  * @author 赖金杰
  */
-public class WriteCardListBySort_Result<T extends Comparable<T>> implements INCommandResult {
+public class WriteCardListBySort_Result implements INCommandResult {
 
     /**
      * 失败卡数量.
@@ -23,7 +23,7 @@ public class WriteCardListBySort_Result<T extends Comparable<T>> implements INCo
     /**
      * 失败的卡列表
      */
-    public ArrayList<T> CardList;
+    public ArrayList<? extends CardDetail> CardList;
 
     public WriteCardListBySort_Result() {
         
