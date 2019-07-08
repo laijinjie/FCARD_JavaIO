@@ -71,12 +71,12 @@ public class ReadTransactionDatabase extends Net.PC15.FC8800.Command.Transaction
         while (mBufs.peek() != null) {
             ByteBuf buf = mBufs.poll();
             iSize = buf.readInt();
-            
-            
+            Object o = TransactionType.newInstance();
+            if (o instanceof CardTransaction) {
              if ((buf.capacity() - 4) % 21 == 0) {
                  for (int i = 0; i < iSize; i++) {
                     try {
-                        AbstractTransaction cd = (CardTransaction) TransactionType.newInstance();
+                        AbstractTransaction cd = (AbstractTransaction) TransactionType.newInstance();
                         cd.SerialNumber = buf.readInt();
                         cd.SetBytes(buf);
                         trList.add(cd);
@@ -84,16 +84,14 @@ public class ReadTransactionDatabase extends Net.PC15.FC8800.Command.Transaction
                         result.Quantity = 0;
                         return;
                     }
-
-            }
-                 
+                }
              }
              else {
                  buf.release();
                  throw new Exception("数据流长度不正确");
                  
              }
-            
+            }
             buf.release();
         }
 

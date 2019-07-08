@@ -29,9 +29,9 @@ public class ReadCardDataBase extends FC8800Command {
     protected int mStep;//指示当前命令进行的步骤
     protected ConcurrentLinkedQueue<ByteBuf> mBufs;
     protected int mRecordCardSize;//记录的卡数量
-    
-    public ReadCardDataBase(){
-        
+
+    public ReadCardDataBase() {
+
     }
 
     public ReadCardDataBase(ReadCardDataBase_Parameter par) {
@@ -160,14 +160,19 @@ public class ReadCardDataBase extends FC8800Command {
         } else if (CheckResponse_Cmd(model, 7, 3, 0xFF, 4)) {
             ByteBuf buf = model.GetDatabuff();
             int iCardSize = buf.readInt();
-            if (iCardSize > 0) {
+            /*
+            if (iCardSize == 0) {
+                buf = mBufs.poll();
+                iCardSize = (buf.capacity() - 4) / 33;
+            }
+             */
+            if (iCardSize > 0 || (!mBufs.isEmpty())) {
                 //Calendar begintime = Calendar.getInstance();
                 //开始拆分接收到的数据包
                 try {
                     Analysis(iCardSize);
-                }
-                catch (Exception e){
-                    
+                } catch (Exception e) {
+
                 }
                 //Calendar endtime = Calendar.getInstance();
                 //long waitTime = endtime.getTimeInMillis() - begintime.getTimeInMillis();
@@ -190,11 +195,15 @@ public class ReadCardDataBase extends FC8800Command {
      */
     protected void Analysis(int iCardSize) throws Exception {
         ReadCardDataBase_Result result = (ReadCardDataBase_Result) _Result;
-        result.DataBaseSize = iCardSize;
+        if (iCardSize == 0) {
+            iCardSize = 1024;
+        }
+        //result.DataBaseSize = iCardSize;
 
         ArrayList<CardDetail> CardList = new ArrayList<>(iCardSize);
         result.CardList = CardList;
         //byte bCardBuf[] = new byte[0x21];
+
         while (mBufs.peek() != null) {
             ByteBuf buf = mBufs.poll();
             iCardSize = buf.readInt();
@@ -203,9 +212,12 @@ public class ReadCardDataBase extends FC8800Command {
                 CardDetail cd = new CardDetail();
                 cd.SetBytes(buf);
                 CardList.add(cd);
+                iCardSize++;
             }
             buf.release();
         }
+        
+        result.DataBaseSize = CardList.size();
 
     }
 

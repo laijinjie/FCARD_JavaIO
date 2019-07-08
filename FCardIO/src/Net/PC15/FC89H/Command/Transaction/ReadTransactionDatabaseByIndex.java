@@ -69,27 +69,18 @@ public class ReadTransactionDatabaseByIndex extends Net.PC15.FC8800.Command.Tran
         while (mBufs.peek() != null) {
             ByteBuf buf = mBufs.poll();
             iSize = buf.readInt();
-
-            if ((buf.capacity() - 4) % 21 == 0) {
-                 for (int i = 0; i < iSize; i++) {
-                    try {
-                        AbstractTransaction cd = (CardTransaction) TransactionType.newInstance();
-                        cd.SerialNumber = buf.readInt();
-                        cd.SetBytes(buf);
-                        trList.add(cd);
-                    } catch (Exception e) {
-                        result.Quantity = 0;
-                        return;
-                    }
-
+            for (int i = 0; i < iSize; i++) {
+                try {
+                    AbstractTransaction cd = (AbstractTransaction)TransactionType.newInstance();
+                    cd.SerialNumber = buf.readInt();
+                    cd.SetBytes(buf);
+                    trList.add(cd);
+                } catch (Exception e) {
+                    result.Quantity = 0;
+                    return;
                 }
-                 
-             }
-            else {
-                buf.release();
-                 throw new Exception("数据流长度不正确");
+
             }
-            
             buf.release();
         }
 

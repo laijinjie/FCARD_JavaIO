@@ -29,8 +29,14 @@ import Net.PC15.FC8800.Command.Transaction.*;
 import Net.PC15.FC8800.Command.Transaction.Parameter.*;
 import Net.PC15.FC8800.Command.Transaction.Result.*;
 import Net.PC15.FC8800.Command.Data.*;
+import Net.PC15.FC8800.Command.Data.TimeGroup.DayTimeGroup;
+import Net.PC15.FC8800.Command.Data.TimeGroup.TimeSegment;
+import Net.PC15.FC8800.Command.Data.TimeGroup.WeekTimeGroup;
 import Net.PC15.FC8800.Command.DateTime.Result.ReadTime_Result;
 import Net.PC15.FC8800.Command.FC8800Command;
+import Net.PC15.FC8800.Command.TimeGroup.AddTimeGroup;
+import Net.PC15.FC8800.Command.TimeGroup.ClearTimeGroup;
+import Net.PC15.FC8800.Command.TimeGroup.Parameter.AddTimeGroup_Parameter;
 import Net.PC15.FC8800.FC8800Identity;
 import Net.PC15.Util.ByteUtil;
 import Net.PC15.Util.StringUtil;
@@ -253,6 +259,18 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         butAutoSearchDoor = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
+        WriteOpenAlarm = new javax.swing.JButton();
+        butClearTimeGroup = new javax.swing.JButton();
+        WriteSmogAlarm = new javax.swing.JButton();
+        ReadOpenAlarm = new javax.swing.JButton();
+        ReadSmogAlarm = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
+        butReadTimeGroup = new javax.swing.JButton();
+        txtOpenAlarm = new javax.swing.JTextField();
+        txtSmogAlarm = new javax.swing.JTextField();
+        butReadFireAlarmState = new javax.swing.JButton();
+        butSendFireAlarm = new javax.swing.JButton();
+        javax.swing.JButton butReadWorkStatus = new javax.swing.JButton();
         jPanel8 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
@@ -357,7 +375,7 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         jLabel24.setText("IP地址：");
         pnlTCPClient.add(jLabel24, new org.netbeans.lib.awtextra.AbsoluteConstraints(16, 20, 79, -1));
 
-        txtTCPServerIP.setText("192.168.1.235");
+        txtTCPServerIP.setText("192.168.1.66");
         pnlTCPClient.add(txtTCPServerIP, new org.netbeans.lib.awtextra.AbsoluteConstraints(99, 17, 223, -1));
 
         jLabel25.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -679,7 +697,103 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         jScrollPane2.setViewportView(jTextArea1);
 
         jPanel6.add(jScrollPane2);
-        jScrollPane2.setBounds(20, 500, 390, 110);
+        jScrollPane2.setBounds(20, 600, 390, 110);
+
+        WriteOpenAlarm.setText("写入匪警报警功能参数");
+        WriteOpenAlarm.setToolTipText("");
+        WriteOpenAlarm.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                WriteOpenAlarmActionPerformed(evt);
+            }
+        });
+        jPanel6.add(WriteOpenAlarm);
+        WriteOpenAlarm.setBounds(200, 460, 160, 23);
+
+        butClearTimeGroup.setText("清空开门时段");
+        butClearTimeGroup.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                butClearTimeGroupActionPerformed(evt);
+            }
+        });
+        jPanel6.add(butClearTimeGroup);
+        butClearTimeGroup.setBounds(320, 420, 130, 23);
+
+        WriteSmogAlarm.setText("写入烟雾报警功能状态");
+        WriteSmogAlarm.setToolTipText("");
+        WriteSmogAlarm.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                WriteSmogAlarmActionPerformed(evt);
+            }
+        });
+        jPanel6.add(WriteSmogAlarm);
+        WriteSmogAlarm.setBounds(200, 500, 160, 23);
+
+        ReadOpenAlarm.setText("读取匪警报警功能参数");
+        ReadOpenAlarm.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ReadOpenAlarmActionPerformed(evt);
+            }
+        });
+        jPanel6.add(ReadOpenAlarm);
+        ReadOpenAlarm.setBounds(20, 460, 160, 23);
+
+        ReadSmogAlarm.setText("读取烟雾报警功能状态");
+        ReadSmogAlarm.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ReadSmogAlarmActionPerformed(evt);
+            }
+        });
+        jPanel6.add(ReadSmogAlarm);
+        ReadSmogAlarm.setBounds(20, 500, 160, 23);
+
+        jButton5.setText("设置开门时段");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+        jPanel6.add(jButton5);
+        jButton5.setBounds(20, 420, 130, 23);
+
+        butReadTimeGroup.setText("采集开门时段");
+        butReadTimeGroup.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                butReadTimeGroupActionPerformed(evt);
+            }
+        });
+        jPanel6.add(butReadTimeGroup);
+        butReadTimeGroup.setBounds(170, 420, 130, 23);
+        jPanel6.add(txtOpenAlarm);
+        txtOpenAlarm.setBounds(370, 460, 60, 21);
+        jPanel6.add(txtSmogAlarm);
+        txtSmogAlarm.setBounds(370, 500, 60, 21);
+
+        butReadFireAlarmState.setText("读取消防报警状态");
+        butReadFireAlarmState.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                butReadFireAlarmStateActionPerformed(evt);
+            }
+        });
+        jPanel6.add(butReadFireAlarmState);
+        butReadFireAlarmState.setBounds(20, 540, 160, 23);
+
+        butSendFireAlarm.setText("触发消防报警");
+        butSendFireAlarm.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                butSendFireAlarmActionPerformed(evt);
+            }
+        });
+        jPanel6.add(butSendFireAlarm);
+        butSendFireAlarm.setBounds(200, 540, 110, 23);
+
+        butReadWorkStatus.setText("获取各端口状态");
+        butReadWorkStatus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                butReadWorkStatusActionPerformed(evt);
+            }
+        });
+        jPanel6.add(butReadWorkStatus);
+        butReadWorkStatus.setBounds(320, 540, 120, 23);
 
         jTabSetting.addTab("系统设置", jPanel6);
 
@@ -1331,9 +1445,9 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         
         //徐铭康修改
         //DeleteCard cmd = new DeleteCard(par);
-        ArrayList<String> lst = new ArrayList<>(ilstLen);
+        String[] lst = new String[ilstLen];
             for (int i = 0; i < ilstLen; i++) {
-                lst.add(mCardList.get(i).GetCardData());
+                lst[i] = mCardList.get(i).GetCardData();
             }
             DeleteCard_Parameter par = new DeleteCard_Parameter(dt, lst);
           FC8800Command cmd = new Net.PC15.FC89H.Command.Card.DeleteCard(par);
@@ -1360,13 +1474,15 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
        
         AddCommandResultCallback(cmd.getClass().getName(), (x, y) -> {
             WriteCardListBySort_Result result = (WriteCardListBySort_Result) y;
-            ArrayList<Net.PC15.FC89H.Command.Data.CardDetail> _list =  result.CardList;
+            //ArrayList<Net.PC15.FC89H.Command.Data.CardDetail> _list =  result.CardList;
+            ArrayList<? extends CardDetail> _list =  result.CardList;
             x.append("上传完毕");
             if (result.FailTotal > 0) {
                 x.append("失败数量：");
                 x.append(result.FailTotal);
                 x.append("，卡号列表：\n");
-                for (Net.PC15.FC89H.Command.Data.CardDetail c : _list) {
+                //for (Net.PC15.FC89H.Command.Data.CardDetail c : _list) {
+                for (CardDetail c : _list) {
                     x.append(c.GetCardData());
                     x.append("\n");
                 }
@@ -1398,12 +1514,13 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
             WriteCardListBySequence_Result result = (WriteCardListBySequence_Result) y;
             x.append("上传完毕");
             //ArrayList<CardDetail> _list = (Net.PC15.FC89H.Command.Data.CardDetail)result.CardList;
-             ArrayList<Net.PC15.FC89H.Command.Data.CardDetail> _list =  result.CardList;
+             ArrayList<? extends CardDetail> _list =  result.CardList;
             if (result.FailTotal > 0) {
                 x.append("失败数量：");
                 x.append(result.FailTotal);
                 x.append("，卡号列表：\n");
-                for (Net.PC15.FC89H.Command.Data.CardDetail c : _list) {
+                //for (Net.PC15.FC89H.Command.Data.CardDetail c : _list) {
+                for (CardDetail c : _list) {
                     x.append(c.GetCardData());
                     x.append("\n");
                 }
@@ -1517,8 +1634,8 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         }
         dt.Timeout = 5000;//此函数超时时间设定长一些
 
-        ArrayList<String> lst = new ArrayList<String>();
-        lst.add(cd.GetCardData());
+        String[] lst = new String[1];
+        lst[0] = cd.GetCardData();
         DeleteCard_Parameter par = new DeleteCard_Parameter(dt, lst);
         Net.PC15.FC89H.Command.Card.DeleteCard cmd = new Net.PC15.FC89H.Command.Card.DeleteCard(par);
         AddCommandResultCallback(cmd.getClass().getName(), (x, y) -> {
@@ -1550,13 +1667,13 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         AddCommandResultCallback(cmd.getClass().getName(), (x, y) -> {
             WriteCardListBySequence_Result result = (WriteCardListBySequence_Result) y;
             x.append("上传完毕");
-            ArrayList<Net.PC15.FC89H.Command.Data.CardDetail> _list =  result.CardList;
+            ArrayList<? extends CardDetail> _list =  result.CardList;
             //ArrayList<Net.PC15.FC89H.Command.Data.CardDetail.CardDetail> list = (Net.PC15.FC89H.Command.Data.CardDetail)result.CardList;
             if (result.FailTotal > 0) {
                 x.append("失败数量：");
                 x.append(result.FailTotal);
                 x.append("，卡号列表：\n");
-                for (Net.PC15.FC89H.Command.Data.CardDetail c : _list) {
+                for (CardDetail c : _list) {
                     x.append(c.GetCardData());
                     x.append("\n");
                 }
@@ -1609,7 +1726,7 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         }
         dt.Timeout = 5000;//此函数超时时间设定长一些
 
-        ReadCardDetail_Parameter par = new ReadCardDetail_Parameter(dt, cd.CardDataHEX);
+        ReadCardDetail_Parameter par = new ReadCardDetail_Parameter(dt, cd.GetCardData());
         //ReadCardDetail cmd = new ReadCardDetail(par);
         FC8800Command cmd = new Net.PC15.FC89H.Command.Card.ReadCardDetail(par);
         AddCommandResultCallback(cmd.getClass().getName(), (x, y) -> {
@@ -1723,14 +1840,16 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
             x.append(CardTypeList[result.CardType]);
 
             if (result.DataBaseSize > 0) {
-                ArrayList<Net.PC15.FC89H.Command.Data.CardDetail> _List =  result.CardList;
+                //ArrayList<Net.PC15.FC89H.Command.Data.CardDetail> _List =  result.CardList;
+                //mCardList.clear();
+                mCardList = result.CardList;
                 String CardStatusList[] = new String[]{"正常", "挂失卡", "黑名单"};
                 DefaultTableModel tableModel = (DefaultTableModel) tblCard.getModel();
                 tableModel.setRowCount(0);// 清除原有行
 
                 int Index = 1;
                 StringBuilder builder = new StringBuilder(result.DataBaseSize * 140);
-                for (Net.PC15.FC89H.Command.Data.CardDetail cd : _List) {
+                for (Net.PC15.FC89H.Command.Data.CardDetail cd : mCardList) {
                    
                     Object[] arr = CardDetailToRow(cd, Index);
 
@@ -1833,6 +1952,8 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         CommandDetail dt = new CommandDetail();
 
         UDPDetail udp = new UDPDetail("255.255.255.255", 8101);
+        udp.LocalIP = "192.168.1.138";
+        udp.LocalPort = 8886;
         udp.Broadcast = true;
         dt.Connector = udp;
         dt.Identity = new FC8800Identity("0000000000000000", FC8800Command.NULLPassword, E_ControllerType.FC8900);
@@ -1981,6 +2102,11 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         par.Alarm.Alarm = 65535;//解除所有报警
         CloseAlarm cmd = new CloseAlarm(par);
         _Allocator.AddCommand(cmd);
+        
+        AddCommandResultCallback(cmd.getClass().getName(), (x, y) -> {
+            y = y;
+            
+        });
     }//GEN-LAST:event_butCloseAlarmActionPerformed
 
     private void butCloseWatchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_butCloseWatchActionPerformed
@@ -2183,6 +2309,198 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         });
         _Allocator.AddCommand(cmd);
     }//GEN-LAST:event_butReadConnectPasswordActionPerformed
+
+    private void WriteOpenAlarmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_WriteOpenAlarmActionPerformed
+        // TODO add your handling code here:
+        CommandDetail dt = getCommandDetail();
+        if (dt == null) {
+            return;
+        }
+
+        WriteOpenAlarmOption_Parameter par = new WriteOpenAlarmOption_Parameter(dt);
+        par.Option = Short.valueOf(txtOpenAlarm.getText());
+        WriteOpenAlarmOption cmd = new WriteOpenAlarmOption(par);
+        _Allocator.AddCommand(cmd);
+        
+        AddCommandResultCallback(cmd.getClass().getName(), (x, y) -> {
+            y = y;
+            
+        });
+    }//GEN-LAST:event_WriteOpenAlarmActionPerformed
+
+    //清空开门时段
+    private void butClearTimeGroupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_butClearTimeGroupActionPerformed
+        // TODO add your handling code here:
+        CommandDetail dt = getCommandDetail();
+        if (dt == null) {
+            return;
+        }
+        
+        CommandParameter par = new CommandParameter(dt);
+        ClearTimeGroup cmd = new ClearTimeGroup(par);
+        _Allocator.AddCommand(cmd);
+        
+        AddCommandResultCallback(cmd.getClass().getName(), (x, y) -> {
+            y = y;
+            x.append("命令完成");
+        });
+        
+    }//GEN-LAST:event_butClearTimeGroupActionPerformed
+
+    private void WriteSmogAlarmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_WriteSmogAlarmActionPerformed
+        // TODO add your handling code here:
+        CommandDetail dt = getCommandDetail();
+        if (dt == null) {
+            return;
+        }
+
+        CommandParameter par = new CommandParameter(dt);
+        SendSmogAlarm cmd = new SendSmogAlarm(par);
+        _Allocator.AddCommand(cmd);
+        
+        AddCommandResultCallback(cmd.getClass().getName(), (x, y) -> {
+            x.append("命令完成");
+        });
+    }//GEN-LAST:event_WriteSmogAlarmActionPerformed
+
+    private void ReadOpenAlarmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReadOpenAlarmActionPerformed
+        // TODO add your handling code here:
+        CommandDetail dt = getCommandDetail();
+        if (dt == null) {
+            return;
+        }
+
+        CommandParameter par = new CommandParameter(dt);
+        
+        ReadOpenAlarmOption cmd = new ReadOpenAlarmOption(par);
+        _Allocator.AddCommand(cmd);
+        
+        AddCommandResultCallback(cmd.getClass().getName(), (x, y) -> {
+            ReadOpenAlarmOption_Result _result = (ReadOpenAlarmOption_Result) y;
+            txtOpenAlarm.setText(String.valueOf(_result.OpenAlarm));
+            x.append("命令完成，烟雾报警状态：" + _result.OpenAlarm);
+        });
+    }//GEN-LAST:event_ReadOpenAlarmActionPerformed
+
+    private void ReadSmogAlarmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReadSmogAlarmActionPerformed
+        // TODO add your handling code here:
+        CommandDetail dt = getCommandDetail();
+        if (dt == null) {
+            return;
+        }
+
+        CommandParameter par = new CommandParameter(dt);
+        
+        ReadSmogAlarmState cmd = new ReadSmogAlarmState(par);
+        _Allocator.AddCommand(cmd);
+        
+        AddCommandResultCallback(cmd.getClass().getName(), (x, y) -> {
+            ReadSmogAlarmState_Result _result = (ReadSmogAlarmState_Result) y;
+            txtSmogAlarm.setText(String.valueOf(_result.SmogAlarm));
+            x.append("命令完成，烟雾报警状态：" + _result.SmogAlarm);
+        });
+    }//GEN-LAST:event_ReadSmogAlarmActionPerformed
+
+    //设置开门时段
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        // TODO add your handling code here:
+        CommandDetail dt = getCommandDetail();
+        if (dt == null) {
+            return;
+        }
+        ArrayList<WeekTimeGroup> _list = new ArrayList<WeekTimeGroup>();
+        for (int i = 0; i < 64; i++) {
+            WeekTimeGroup weekTimeGroup = new WeekTimeGroup(8);
+            for (E_WeekDay e : E_WeekDay.values()) {
+                DayTimeGroup dayTimeGroup = weekTimeGroup.GetItem(e);
+                    //每天时段
+                for (int j = 0; j < 8; j++)
+                {
+                    TimeSegment segment = dayTimeGroup.GetItem(j);
+                    segment.SetBeginTime(8, 0);
+                    segment.SetEndTime(18, 0);
+                }
+            }
+            _list.add(weekTimeGroup);
+           
+        }
+        AddTimeGroup_Parameter par = new AddTimeGroup_Parameter(dt,_list);
+        AddTimeGroup cmd = new AddTimeGroup(par);
+        _Allocator.AddCommand(cmd);
+        
+        AddCommandResultCallback(cmd.getClass().getName(), (x, y) -> {
+            y = y;
+            x.append("命令完成");
+        });
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    //采集开门时段
+    private void butReadTimeGroupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_butReadTimeGroupActionPerformed
+        // TODO add your handling code here:
+        CommandDetail dt = getCommandDetail();
+        if (dt == null) {
+            return;
+        }
+        
+        CommandParameter par = new CommandParameter(dt);
+        Net.PC15.FC8800.Command.TimeGroup.ReadTimeGroup cmd = new Net.PC15.FC8800.Command.TimeGroup.ReadTimeGroup(par);
+        _Allocator.AddCommand(cmd);
+        AddCommandResultCallback(cmd.getClass().getName(), (x, y) -> {
+            Net.PC15.FC8800.Command.TimeGroup.Result.ReadTimeGroup_Result _result = (Net.PC15.FC8800.Command.TimeGroup.Result.ReadTimeGroup_Result) y;
+            x.append("命令完成：开门时段数量:" + _result.DataBaseSize);
+        });
+    }//GEN-LAST:event_butReadTimeGroupActionPerformed
+
+    private void butReadFireAlarmStateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_butReadFireAlarmStateActionPerformed
+        // TODO add your handling code here:
+        CommandDetail dt = getCommandDetail();
+        if (dt == null) {
+            return;
+        }
+
+        CommandParameter par = new CommandParameter(dt);
+        ReadFireAlarmState cmd = new ReadFireAlarmState(par);
+        _Allocator.AddCommand(cmd);
+        
+        AddCommandResultCallback(cmd.getClass().getName(), (x, y) -> {
+            ReadFireAlarmState_Result r = (ReadFireAlarmState_Result) y;
+            x.append("命令完成,消防报警:" + r.FireAlarm);
+        });
+    }//GEN-LAST:event_butReadFireAlarmStateActionPerformed
+
+    //通知设备触发消防报警
+    private void butSendFireAlarmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_butSendFireAlarmActionPerformed
+        // TODO add your handling code here:
+        CommandDetail dt = getCommandDetail();
+        if (dt == null) {
+            return;
+        }
+
+        CommandParameter par = new CommandParameter(dt);
+        SendFireAlarm cmd = new SendFireAlarm(par);
+        _Allocator.AddCommand(cmd);
+        
+        AddCommandResultCallback(cmd.getClass().getName(), (x, y) -> {
+            x.append("命令完成:");
+        });
+    }//GEN-LAST:event_butSendFireAlarmActionPerformed
+
+    private void butReadWorkStatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_butReadWorkStatusActionPerformed
+        // TODO add your handling code here:
+        CommandDetail dt = getCommandDetail();
+        if (dt == null) {
+            return;
+        }
+
+        CommandParameter par = new CommandParameter(dt);
+        ReadWorkStatus cmd = new ReadWorkStatus(par);
+        _Allocator.AddCommand(cmd);
+        
+        AddCommandResultCallback(cmd.getClass().getName(), (x, y) -> {
+            ReadWorkStatus_Result r = (ReadWorkStatus_Result) y;
+            x.append("命令完成:" );
+        });
+    }//GEN-LAST:event_butReadWorkStatusActionPerformed
 
     private TCPDetail mReadTCPDetail;
     private void PirntTCPDetail(TCPDetail tcp, StringBuilder x) {
@@ -2635,7 +2953,11 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
     private javax.swing.JRadioButton RadTCPClient;
     private javax.swing.JRadioButton RadTCPServer;
     private javax.swing.JRadioButton RadUDP;
+    private javax.swing.JButton ReadOpenAlarm;
+    private javax.swing.JButton ReadSmogAlarm;
     private javax.swing.JTextField TxtCardExpiry;
+    private javax.swing.JButton WriteOpenAlarm;
+    private javax.swing.JButton WriteSmogAlarm;
     private javax.swing.ButtonGroup bgConnectType;
     private javax.swing.JButton butAddCardToList;
     private javax.swing.JButton butAutoSearchDoor;
@@ -2644,6 +2966,7 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
     private javax.swing.JButton butCardListAutoCreate;
     private javax.swing.JButton butCardListClear;
     private javax.swing.JButton butClearCardDataBase;
+    private javax.swing.JButton butClearTimeGroup;
     private javax.swing.JButton butClearTransactionDatabase;
     private javax.swing.JButton butCloseAlarm;
     private javax.swing.JButton butCloseDoor;
@@ -2657,13 +2980,16 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
     private javax.swing.JButton butReadCardDatabaseDetail;
     private javax.swing.JButton butReadCardDetail;
     private javax.swing.JButton butReadConnectPassword;
+    private javax.swing.JButton butReadFireAlarmState;
     private javax.swing.JButton butReadSN;
     private javax.swing.JButton butReadTCPSetting;
+    private javax.swing.JButton butReadTimeGroup;
     private javax.swing.JButton butReadTransactionDatabase;
     private javax.swing.JButton butReadTransactionDatabaseByIndex;
     private javax.swing.JButton butReadTransactionDatabaseDetail;
     private javax.swing.JButton butReadVersion;
     private javax.swing.JButton butResetConnectPassword;
+    private javax.swing.JButton butSendFireAlarm;
     private javax.swing.JButton butTransactionDatabaseEmpty;
     private javax.swing.JButton butUnlockDoor;
     private javax.swing.JButton butUploadCard;
@@ -2684,6 +3010,7 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
     private javax.swing.JComboBox<String> cmbTransactionType;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton5;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -2736,6 +3063,7 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
     private javax.swing.JTextField txtCardPassword;
     private javax.swing.JTextField txtLocalPort;
     private javax.swing.JTextArea txtLog;
+    private javax.swing.JTextField txtOpenAlarm;
     private javax.swing.JTextField txtOpenTimes;
     private javax.swing.JTextField txtPassword;
     private javax.swing.JTextField txtReadTransactionDatabaseByIndex;
@@ -2743,6 +3071,7 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
     private javax.swing.JTextField txtReadTransactionDatabasePacketSize;
     private javax.swing.JTextField txtReadTransactionDatabaseQuantity;
     private javax.swing.JTextField txtSN;
+    private javax.swing.JTextField txtSmogAlarm;
     private javax.swing.JTextField txtTCPServerIP;
     private javax.swing.JTextField txtTCPServerPort;
     private javax.swing.JTextField txtTransactionDatabaseReadIndex;

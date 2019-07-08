@@ -357,7 +357,7 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         jLabel24.setText("IP地址：");
         pnlTCPClient.add(jLabel24, new org.netbeans.lib.awtextra.AbsoluteConstraints(16, 20, 79, -1));
 
-        txtTCPServerIP.setText("192.168.1.66");
+        txtTCPServerIP.setText("192.168.1.235");
         pnlTCPClient.add(txtTCPServerIP, new org.netbeans.lib.awtextra.AbsoluteConstraints(99, 17, 223, -1));
 
         jLabel25.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -1334,10 +1334,10 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         //DeleteCard cmd = new DeleteCard(par);
         FC8800Command cmd = null;
         
-        ArrayList<Long> lst = new ArrayList<Long>(ilstLen);
-        for (int i = 0; i < ilstLen; i++) {
-           lst.add(mCardList.get(i).CardData);
-        }
+        String[] lst = new String[ilstLen];
+            for (int i = 0; i < ilstLen; i++) {
+                lst[i] = mCardList.get(i).GetCardData();
+            }
         DeleteCard_Parameter par = new DeleteCard_Parameter(dt, lst);
         cmd = new DeleteCard(par);
         _Allocator.AddCommand(cmd);
@@ -1358,17 +1358,17 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         WriteCardListBySort_Parameter par = new WriteCardListBySort_Parameter(dt, mCardList);
         //徐铭康修改
         //WriteCardListBySort cmd = new WriteCardListBySort(par);
-        FC8800Command cmd = new WriteCardListBySort(par);
+        WriteCardListBySort cmd = new WriteCardListBySort(par);
         AddCommandResultCallback(cmd.getClass().getName(), (x, y) -> {
             WriteCardListBySort_Result result = (WriteCardListBySort_Result) y;
-            mCardList =  result.CardList;
+            ArrayList<? extends CardDetail> _list =  result.CardList;
             x.append("上传完毕");
             if (result.FailTotal > 0) {
                 x.append("失败数量：");
                 x.append(result.FailTotal);
                 x.append("，卡号列表：\n");
-                for (CardDetail c : mCardList) {
-                    x.append(c.CardData);
+                for (CardDetail c : _list) {
+                    x.append(c.GetCardData());
                     x.append("\n");
                 }
             }
@@ -1397,14 +1397,14 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         FC8800Command cmd = new WriteCardListBySequence(par);
         AddCommandResultCallback(cmd.getClass().getName(), (x, y) -> {
             WriteCardListBySequence_Result result = (WriteCardListBySequence_Result) y;
-            mCardList =  result.CardList;
+             ArrayList<? extends CardDetail> _list =  result.CardList;
             x.append("上传完毕");
             if (result.FailTotal > 0) {
                 x.append("失败数量：");
                 x.append(result.FailTotal);
                 x.append("，卡号列表：\n");
-                for (CardDetail c : mCardList) {
-                    x.append(c.CardData);
+                 for (CardDetail c : _list) {
+                    x.append(c.GetCardData());
                     x.append("\n");
                 }
             }
@@ -1454,7 +1454,14 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
             long card = rnd.nextInt(max) % (max - min + 1) + min;
             //徐铭康修改
             //CardDetail cd = new CardDetail(card);
-            CardDetail cd = new CardDetail(card);
+            CardDetail cd = new CardDetail();
+            try {
+                cd.SetCardData(String.valueOf(card));
+            }
+            catch (Exception e){
+                JOptionPane.showMessageDialog(null, "生成随机卡号异常", "卡片管理", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             iSearch = CardDetail.SearchCardDetail(mCardList, cd);
             if (iSearch == -1) {
                 if (tmplst.indexOf(cd) == -1) {
@@ -1512,11 +1519,10 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         
         //徐铭康修改
         //DeleteCard cmd = new DeleteCard(par);
-        FC8800Command cmd = null;
-        ArrayList<Long> lst = new ArrayList<Long>(1);
-        lst.add(cd.CardData);
-            DeleteCard_Parameter par = new DeleteCard_Parameter(dt, lst);
-            cmd = new DeleteCard(par);
+        String[] lst = new String[1];
+        lst[0] = cd.GetCardData();
+        DeleteCard_Parameter par = new DeleteCard_Parameter(dt, lst);
+        DeleteCard cmd = new DeleteCard(par);
         
         _Allocator.AddCommand(cmd);
     }//GEN-LAST:event_butDeleteCardActionPerformed
@@ -1543,13 +1549,13 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         AddCommandResultCallback(cmd.getClass().getName(), (x, y) -> {
             WriteCardListBySequence_Result result = (WriteCardListBySequence_Result) y;
             x.append("上传完毕");
-            ArrayList<CardDetail> _list =  result.CardList;
+            ArrayList<? extends CardDetail> _list =  result.CardList;
             if (result.FailTotal > 0) {
                 x.append("失败数量：");
                 x.append(result.FailTotal);
                 x.append("，卡号列表：\n");
                 for (CardDetail c : _list) {
-                    x.append(c.CardData);
+                    x.append(c.GetCardData());
                     x.append("\n");
                 }
             }
@@ -1601,7 +1607,7 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         }
         dt.Timeout = 5000;//此函数超时时间设定长一些
 
-        ReadCardDetail_Parameter par = new ReadCardDetail_Parameter(dt, cd.CardData);
+        ReadCardDetail_Parameter par = new ReadCardDetail_Parameter(dt, cd.GetCardData());
         //ReadCardDetail cmd = new ReadCardDetail(par);
         FC8800Command cmd = new ReadCardDetail(par);
         AddCommandResultCallback(cmd.getClass().getName(), (x, y) -> {
@@ -1823,6 +1829,8 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         CommandDetail dt = new CommandDetail();
 
         UDPDetail udp = new UDPDetail("255.255.255.255", 8101);
+        udp.LocalIP = "192.168.1.138";
+        udp.LocalPort = 8886;
         udp.Broadcast = true;
         dt.Connector = udp;
         dt.Identity = new FC8800Identity("0000000000000000", FC8800Command.NULLPassword, E_ControllerType.FC8900);
@@ -2259,7 +2267,13 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         javax.swing.table.TableModel model = tblCard.getModel();
 
         long Card = Long.parseLong(model.getValueAt(numRow, 1).toString());
-        CardDetail cd = new CardDetail(Card);
+        CardDetail cd = new CardDetail();
+        try{
+        cd.SetCardData(String.valueOf(Card));
+        }
+        catch (Exception e){
+            
+        }
         int Index = mCardList.indexOf(cd);
         if (Index == -1) {
             return;
@@ -2374,7 +2388,7 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
             Privilege = PrivilegeList[4];// "防盗设置卡";
         }
         Object[] row = new Object[]{Index,
-            cd.CardData,
+            cd.GetCardData(),
             cd.Password.replaceAll("F", ""),
             TimeUtil.FormatTimeHHmm(cd.Expiry),
             CardStatusList[cd.CardStatus],
@@ -2443,8 +2457,13 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
 
         JCheckBox[] doors = new JCheckBox[]{chkCardDoor1, chkCardDoor2, chkCardDoor3, chkCardDoor4};
 
-        CardDetail cd = new CardDetail(CardData);//设定卡号
-        
+        CardDetail cd = new CardDetail();//设定卡号
+        try{
+            cd.SetCardData(Card);
+        }
+        catch (Exception e){
+            
+        }
         cd.Password = Password;//设定密码
         cd.Expiry = CardExpiry;//设定有效期
         cd.OpenTimes = iOpenTimes;//开门次数
