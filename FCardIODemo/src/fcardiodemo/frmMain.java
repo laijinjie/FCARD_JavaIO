@@ -1219,7 +1219,6 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         ReadTransactionDatabaseByIndex_Parameter par = new ReadTransactionDatabaseByIndex_Parameter(dt, e_TransactionDatabaseType.valueOf(type));
         par.ReadIndex = index;
         par.Quantity = Quantity;
-        //徐铭康修改
         //ReadTransactionDatabaseByIndex cmd = new ReadTransactionDatabaseByIndex(par);
         ReadTransactionDatabaseByIndex cmd = new ReadTransactionDatabaseByIndex(par);
 
