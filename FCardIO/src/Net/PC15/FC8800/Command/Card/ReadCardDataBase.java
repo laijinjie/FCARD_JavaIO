@@ -212,7 +212,7 @@ public class ReadCardDataBase extends FC8800Command {
                 CardDetail cd = new CardDetail();
                 cd.SetBytes(buf);
                 CardList.add(cd);
-                iCardSize++;
+                //iCardSize++;
             }
             buf.release();
         }
