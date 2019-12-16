@@ -5,7 +5,7 @@
  */
 package fcardiodemo;
 
-import org.jb2011.lnf.beautyeye.BeautyEyeLNFHelper;
+
 
 /**
  * 窗体启动类
