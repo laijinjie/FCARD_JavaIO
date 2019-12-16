@@ -6,7 +6,7 @@
 package testio;
 
 import Net.PC15.FC8800.Command.System.Parameter.WriteSN_Parameter;
-import Net.PC15.Command.CommandDetial;
+import Net.PC15.Command.CommandDetail;
 import Net.PC15.Command.INCommandRuntime;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.buffer.ByteBuf;
@@ -14,7 +14,7 @@ import io.netty.buffer.ByteBufUtil;
 import Net.PC15.Util.StringUtil;
 import Net.PC15.FC8800.FC8800Identity;
 import Net.PC15.Connector.E_ControllerType;
-import Net.PC15.Connector.TCPClient.TCPClientDetial;
+import Net.PC15.Connector.TCPClient.TCPClientDetail;
 import Net.PC15.FC8800.Command.*;
 import Net.PC15.FC8800.Command.Data.*;
 import Net.PC15.FC8800.Packet.*;
@@ -93,7 +93,7 @@ public class TestIO {
             System.out.println(StringUtil.BytesToString(buf));
         }
 
-        CommandDetial d = GetConnInfo();*/
+        CommandDetail d = GetConnInfo();*/
  /* E_WeekDay FistWeek=E_WeekDay.Thursday;
         byte[] WeekList=new byte[7];
         
@@ -302,10 +302,10 @@ public class TestIO {
         cmd.Release();
     }
 
-    public static CommandDetial GetConnInfo() {
-        CommandDetial detial = new CommandDetial();
+    public static CommandDetail GetConnInfo() {
+        CommandDetail detial = new CommandDetail();
         detial.Identity = new FC8800Identity("FC-8920A27060010", "ffffffff", E_ControllerType.FC8900);
-        TCPClientDetial tcp = new TCPClientDetial("192.168.1.30", 8000);
+        TCPClientDetail tcp = new TCPClientDetail("192.168.1.30", 8000);
 
         detial.Connector = tcp;
         return detial;

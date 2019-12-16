@@ -5,16 +5,16 @@
  */
 package testio.FCardIO;
 
-import Net.PC15.Command.CommandDetial;
+import Net.PC15.Command.CommandDetail;
 import Net.PC15.Command.CommandParameter;
 import Net.PC15.Command.INCommand;
 import Net.PC15.Command.INCommandResult;
 import Net.PC15.Connector.ConnectorAllocator;
-import Net.PC15.Connector.ConnectorDetial;
+import Net.PC15.Connector.ConnectorDetail;
 import Net.PC15.Connector.E_ControllerType;
 import Net.PC15.Connector.INConnectorEvent;
-import Net.PC15.Connector.TCPClient.TCPClientDetial;
-import Net.PC15.Connector.TCPServer.TCPServerClientDetial;
+import Net.PC15.Connector.TCPClient.TCPClientDetail;
+import Net.PC15.Connector.TCPServer.TCPServerClientDetail;
 import Net.PC15.Data.AbstractTransaction;
 import Net.PC15.Data.BytesData;
 import Net.PC15.Data.INData;
@@ -56,11 +56,11 @@ public class testTCPServer implements INConnectorEvent{
     }
 
     @Override
-    public void ClientOnline(TCPServerClientDetial client) {
+    public void ClientOnline(TCPServerClientDetail client) {
         //这里可以保存client对象，以便后续操作
         /*
         //示例调用远程开门
-        CommandDetial detial = new CommandDetial();
+        CommandDetail detial = new CommandDetail();
         detial.Connector = client;
         detial.Identity = new FC8800Identity("FC-8940A46060007", "FFFFFFFF", E_ControllerType.FC8900);
         OpenDoor_Parameter par = new OpenDoor_Parameter(detial);
@@ -74,15 +74,15 @@ public class testTCPServer implements INConnectorEvent{
     }
 
     @Override
-    public void ClientOffline(TCPServerClientDetial client) {
+    public void ClientOffline(TCPServerClientDetail client) {
         System.out.println("有客户端离线：" + client.Remote.toString() + "，客户端ID：" + client.ClientID);
     }
     @Override
-    public void WatchEvent(ConnectorDetial detial, INData event) {
+    public void WatchEvent(ConnectorDetail detial, INData event) {
         //在这里做一次身份验证
         if (event instanceof BytesData) {
             BytesData b = (BytesData) event;
-            TCPServerClientDetial cd = (TCPServerClientDetial) detial;
+            TCPServerClientDetail cd = (TCPServerClientDetail) detial;
 
             ByteBuf dBuf = b.GetBytes();
 
@@ -99,7 +99,7 @@ public class testTCPServer implements INConnectorEvent{
                     System.out.println("客户端ID:" + cd.ClientID + "(" + m.GetSN() + ")，收到数据包：" + ByteBufUtil.hexDump(dBuf));
                     //这时如果刷卡接收不到监控消息，还需要发送命令 BeginWatch
                     /*
-                        CommandDetial detial = new CommandDetial();
+                        CommandDetail detial = new CommandDetail();
                         detial.Connector = client;
                         detial.Identity = new FC8800Identity(m.GetSN(), "FFFFFFFF", E_ControllerType.FC8900);
                         CommandParameter par = new CommandParameter(detial);
@@ -169,7 +169,7 @@ public class testTCPServer implements INConnectorEvent{
     }
 
     @Override
-    public void ConnectorErrorEvent(ConnectorDetial detial) {
+    public void ConnectorErrorEvent(ConnectorDetail detial) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

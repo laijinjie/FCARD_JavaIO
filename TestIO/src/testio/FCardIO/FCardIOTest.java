@@ -91,7 +91,7 @@ public class FCardIOTest implements INConnectorEvent {
     }
 
     public void TestCommand() {
-        OpenDoor_Parameter par = new OpenDoor_Parameter(getCommandDetial());
+        OpenDoor_Parameter par = new OpenDoor_Parameter(getCommandDetail());
         par.Door.SetDoor(2, 1);
         par.Door.SetDoor(3, 1);
         INCommand cmd = new OpenDoor(par);
@@ -100,7 +100,7 @@ public class FCardIOTest implements INConnectorEvent {
     }
 
     public void TestReadAllCard() {
-        Net.PC15.Command.CommandDetail detial = getCommandDetial();
+        Net.PC15.Command.CommandDetail detial = getCommandDetail();
         detial.Timeout = 1000;
         ReadCardDataBase_Parameter par = new ReadCardDataBase_Parameter(detial, 1);
         INCommand cmd = new ReadCardDataBase(par);
@@ -116,9 +116,9 @@ public class FCardIOTest implements INConnectorEvent {
         _Allocator.AddCommand(cmd);
     }
 
-    private Net.PC15.Command.CommandDetail getCommandDetial() {
+    private Net.PC15.Command.CommandDetail getCommandDetail() {
         Net.PC15.Command.CommandDetail detial = new Net.PC15.Command.CommandDetail();
-        detial.Connector = new TCPClientDetial("192.168.1.169", 8000);
+        detial.Connector = new TCPClientDetail("192.168.1.169", 8000);
         detial.Identity = new FC8800Identity("FC-8940A46060007", "FFFFFFFF", E_ControllerType.FC8900);
         return detial;
     }
@@ -140,11 +140,11 @@ public class FCardIOTest implements INConnectorEvent {
 
                 Collections.sort(r.CardList);
                 ArrayList<CardDetail> CardList = r.CardList;
-                int iSearch = CardDetail.SearchCardDetail(CardList, 123);
+                int iSearch = CardDetail.SearchCardDetail(CardList, "123");
 
                 for (int i = 0; i < len; i++) {
                     CardDetail cd = CardList.get(i);
-                    iSearch = CardDetail.SearchCardDetail(CardList, cd.CardData);
+                    iSearch = CardDetail.SearchCardDetail(CardList, cd.GetCardData());
                     if (iSearch != i) {
 
                     }
@@ -170,7 +170,7 @@ public class FCardIOTest implements INConnectorEvent {
     }
 
     @Override
-    public void ConnectorErrorEvent(ConnectorDetial detial) {
+    public void ConnectorErrorEvent(ConnectorDetail detial) {
         System.out.println("ConnectorErrorEvent");
     }
 
@@ -190,10 +190,10 @@ public class FCardIOTest implements INConnectorEvent {
     }
 
     @Override
-    public void WatchEvent(ConnectorDetial detial, INData event) {
+    public void WatchEvent(ConnectorDetail detial, INData event) {
         if (event instanceof BytesData) {
             BytesData b = (BytesData) event;
-            TCPServerClientDetial cd = (TCPServerClientDetial) detial;
+            TCPServerClientDetail cd = (TCPServerClientDetail) detial;
 
             ByteBuf dBuf = b.GetBytes();
 
@@ -255,11 +255,11 @@ public class FCardIOTest implements INConnectorEvent {
     }
 
     @Override
-    public void ClientOnline(TCPServerClientDetial client) {
+    public void ClientOnline(TCPServerClientDetail client) {
         System.out.println("有客户端上线：" + client.Remote.toString() + "，客户端ID：" + client.ClientID);
         workService.submit(() -> {
             try {
-                CommandDetial detial = getCommandDetial();
+                CommandDetail detial = getCommandDetail();
                 detial.Connector = client;
                 CommandParameter par = new CommandParameter(detial);
 
@@ -279,7 +279,7 @@ public class FCardIOTest implements INConnectorEvent {
     }
 
     @Override
-    public void ClientOffline(TCPServerClientDetial client) {
+    public void ClientOffline(TCPServerClientDetail client) {
         System.out.println("有客户端离线：" + client.Remote.toString() + "，客户端ID：" + client.ClientID);
     }
 }
