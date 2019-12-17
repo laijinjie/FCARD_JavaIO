@@ -4,13 +4,13 @@
  * and open the template in the editor.
  */
 package Demo;
-import Net.PC15.Command.CommandDetial;
+import Net.PC15.Command.CommandDetail;
 import Net.PC15.Command.CommandParameter;
 import Net.PC15.Command.INCommand;
 import Net.PC15.Command.INCommandResult;
 import Net.PC15.Connector.*;
-import Net.PC15.Connector.TCPClient.TCPClientDetial;
-import Net.PC15.Connector.TCPServer.TCPServerClientDetial;
+import Net.PC15.Connector.TCPClient.TCPClientDetail;
+import Net.PC15.Connector.TCPServer.TCPServerClientDetail;
 import Net.PC15.Data.INData;
 import Net.PC15.FC8800.Command.Data.FC8800WatchTransaction;
 import Net.PC15.FC8800.Command.DateTime.Parameter.WriteTimeDefine_Parameter;
@@ -38,13 +38,13 @@ public class SetDateTime  implements INConnectorEvent{
 
     public void Set() {
         //创建连接信息对象
-        CommandDetial commandDetial = new CommandDetial();
-        TCPClientDetial tcpClientDetial = new TCPClientDetial("192.168.1.116", 8000);  //设置IP ， 端口(默认8000)      
-        commandDetial.Connector = tcpClientDetial;//连接信息对象
-        commandDetial.Identity = new FC8800Identity("MC-5824T25070244", "FFFFFFFF", E_ControllerType.FC8800);//设置SN(16位字符)，密码(8位十六进制字符)，设备类型
-        commandDetial.Timeout = 5000;//设置超时
+        CommandDetail commandDetail = new CommandDetail();
+        TCPClientDetail tcpClientDetail = new TCPClientDetail("192.168.1.116", 8000);  //设置IP ， 端口(默认8000)      
+        commandDetail.Connector = tcpClientDetail;//连接信息对象
+        commandDetail.Identity = new FC8800Identity("MC-5824T25070244", "FFFFFFFF", E_ControllerType.FC8800);//设置SN(16位字符)，密码(8位十六进制字符)，设备类型
+        commandDetail.Timeout = 5000;//设置超时
         Calendar c = Calendar.getInstance();
-        WriteTimeDefine_Parameter par = new WriteTimeDefine_Parameter(commandDetial, c);
+        WriteTimeDefine_Parameter par = new WriteTimeDefine_Parameter(commandDetail, c);
         WriteTime cmd = new WriteTime(par);
         //添加命令到队列
         _Allocator.AddCommand(cmd);
@@ -52,28 +52,28 @@ public class SetDateTime  implements INConnectorEvent{
 
     public void SetCustomize() {
         // TODO add your handling code here:
-        CommandDetial commandDetial = new CommandDetial();
-        TCPClientDetial tcpClientDetial = new TCPClientDetial("192.168.1.116", 8000);//设置IP ， 端口(默认8000) 
-        commandDetial.Connector = tcpClientDetial;//连接信息对象
-        commandDetial.Identity = new FC8800Identity("MC-5824T25070244", "FFFFFFFF", E_ControllerType.FC8800);//设置SN(16位字符)，密码(8位十六进制字符)，设备类型
-        commandDetial.Timeout = 5000;
+        CommandDetail commandDetail = new CommandDetail();
+        TCPClientDetail tcpClientDetail = new TCPClientDetail("192.168.1.116", 8000);//设置IP ， 端口(默认8000) 
+        commandDetail.Connector = tcpClientDetail;//连接信息对象
+        commandDetail.Identity = new FC8800Identity("MC-5824T25070244", "FFFFFFFF", E_ControllerType.FC8800);//设置SN(16位字符)，密码(8位十六进制字符)，设备类型
+        commandDetail.Timeout = 5000;
         Calendar c = Calendar.getInstance();
         //设置时间
         c.set(2018, 1, 28, 8, 8, 8);
-        WriteTimeDefine_Parameter par = new WriteTimeDefine_Parameter(commandDetial, c);//参数化时间对象参数
+        WriteTimeDefine_Parameter par = new WriteTimeDefine_Parameter(commandDetail, c);//参数化时间对象参数
         WriteTimeDefine cmd = new WriteTimeDefine(par);
         //添加命令到队列
         _Allocator.AddCommand(cmd);
     }
 
     public void Get() {
-        CommandDetial commandDetial = new CommandDetial();
-        TCPClientDetial tcpClientDetial = new TCPClientDetial("192.168.1.59", 8000);//设置IP ， 端口(默认8000) 
+        CommandDetail commandDetail = new CommandDetail();
+        TCPClientDetail tcpClientDetail = new TCPClientDetail("192.168.1.59", 8000);//设置IP ， 端口(默认8000) 
 
-        commandDetial.Connector = tcpClientDetial;
-        commandDetial.Identity = new FC8800Identity("MC-5824T25070244", "FFFFFFFF", E_ControllerType.FC8800);//设置SN(16位字符)，密码(8位十六进制字符)，设备类型
-        commandDetial.Timeout = 5000;
-        CommandParameter par = new CommandParameter(commandDetial);
+        commandDetail.Connector = tcpClientDetail;
+        commandDetail.Identity = new FC8800Identity("MC-5824T25070244", "FFFFFFFF", E_ControllerType.FC8800);//设置SN(16位字符)，密码(8位十六进制字符)，设备类型
+        commandDetail.Timeout = 5000;
+        CommandParameter par = new CommandParameter(commandDetail);
         ReadTime cmd = new ReadTime(par);//初始化读取时间命令对象
         //添加命令到队列
         _Allocator.AddCommand(cmd);
@@ -122,7 +122,7 @@ public class SetDateTime  implements INConnectorEvent{
     }
 
     @Override
-    public void ConnectorErrorEvent(ConnectorDetial detial) {
+    public void ConnectorErrorEvent(ConnectorDetail detial) {
         try {
             StringBuilder strBuf = new StringBuilder(100);
             strBuf.append("网络通道故障，IP信息：");
@@ -172,7 +172,7 @@ public class SetDateTime  implements INConnectorEvent{
     }
 
     @Override
-    public void WatchEvent(ConnectorDetial detial, INData event) {
+    public void WatchEvent(ConnectorDetail detial, INData event) {
         try {
             StringBuilder strBuf = new StringBuilder(100);
             strBuf.append("数据监控:");
@@ -192,12 +192,12 @@ public class SetDateTime  implements INConnectorEvent{
         }
     }
         @Override
-    public void ClientOnline(TCPServerClientDetial client) {
+    public void ClientOnline(TCPServerClientDetail client) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void ClientOffline(TCPServerClientDetial client) {
+    public void ClientOffline(TCPServerClientDetail client) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

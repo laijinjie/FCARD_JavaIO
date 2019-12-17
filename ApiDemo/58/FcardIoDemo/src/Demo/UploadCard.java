@@ -4,12 +4,12 @@
  * and open the template in the editor.
  */
 package Demo;
-import Net.PC15.Command.CommandDetial;
+import Net.PC15.Command.CommandDetail;
 import Net.PC15.Command.INCommand;
 import Net.PC15.Command.INCommandResult;
 import Net.PC15.Connector.*;
-import Net.PC15.Connector.TCPClient.TCPClientDetial;
-import Net.PC15.Connector.TCPServer.TCPServerClientDetial;
+import Net.PC15.Connector.TCPClient.TCPClientDetail;
+import Net.PC15.Connector.TCPServer.TCPServerClientDetail;
 import Net.PC15.Data.INData;
 import Net.PC15.FC8800.Command.Card.ClearCardDataBase;
 import Net.PC15.FC8800.Command.Card.Parameter.ClearCardDataBase_Parameter;
@@ -43,16 +43,22 @@ public class UploadCard  implements INConnectorEvent{
     }
     //非排序区
     public void UploadCardList(){
-        CommandDetial commandDetial = new CommandDetial();
-        commandDetial.Timeout=8000;//此函数超时时间设定长一些
-        TCPClientDetial tcpClientDetial = new TCPClientDetial("192.168.1.59",8000);//IP  ， 端口(默认8000)
+        CommandDetail commandDetail = new CommandDetail();
+        commandDetail.Timeout=8000;//此函数超时时间设定长一些
+        TCPClientDetail tcpClientDetail = new TCPClientDetail("192.168.1.59",8000);//IP  ， 端口(默认8000)
         
-        commandDetial.Connector = tcpClientDetial;
-        commandDetial.Identity = new FC8800Identity("MC-5824T25070244","FFFFFFFF",E_ControllerType.FC8800);//设置SN(16位字符)，密码(8位十六进制字符)，设备类型
+        commandDetail.Connector = tcpClientDetail;
+        commandDetail.Identity = new FC8800Identity("MC-5824T25070244","FFFFFFFF",E_ControllerType.FC8800);//设置SN(16位字符)，密码(8位十六进制字符)，设备类型
         //创建卡片列表对象
-        ArrayList<CardDetail> mCardList = new ArrayList<>();
+        ArrayList<CardDetail> mCardList = new ArrayList<CardDetail>();
         //创建卡片
-        CardDetail cd = new CardDetail(2345678);//设置卡号
+        CardDetail cd = new CardDetail();//设置卡号
+        try{
+        cd.SetCardData("2345678");
+        }catch(Exception ex){          
+        }
+            
+        
         cd.Password = "8888";//设置卡密码
         Calendar CardExpiry = Calendar.getInstance();
         CardExpiry.setTime(new Date(2018,2, 28));//设置有效时间
@@ -64,7 +70,7 @@ public class UploadCard  implements INConnectorEvent{
         cd.SetNormal();//设定卡片没有特权
         cd.HolidayUse = true;//设定受节假日限制。
         mCardList.add(cd);
-        WriteCardListBySequence_Parameter par = new WriteCardListBySequence_Parameter(commandDetial, mCardList);
+        WriteCardListBySequence_Parameter par = new WriteCardListBySequence_Parameter(commandDetail, mCardList);
         WriteCardListBySequence cmd = new WriteCardListBySequence(par);
         //添加命令到队列
         _Allocator.AddCommand(cmd);
@@ -72,15 +78,20 @@ public class UploadCard  implements INConnectorEvent{
     //排序区
     public void UploadSortCardList(){
         //创建连接信息对象
-        CommandDetial commandDetial = new CommandDetial();
-        commandDetial.Timeout=8000;//此函数超时时间设定长一些
-        TCPClientDetial tcpClientDetial = new TCPClientDetial("192.168.1.116",8000);//IP  ， 端口(默认8000)
-        commandDetial.Connector = tcpClientDetial;
-        //commandDetial.Timeout = 10000;
-        commandDetial.Identity = new FC8800Identity("MC-5824T25070244","FFFFFFFF",E_ControllerType.FC8800);//设置SN(16位字符)，密码(8位十六进制字符)，设备类型
-        ArrayList<CardDetail> mCardList = new ArrayList<>();
+        CommandDetail commandDetail = new CommandDetail();
+        commandDetail.Timeout=8000;//此函数超时时间设定长一些
+        TCPClientDetail tcpClientDetail = new TCPClientDetail("192.168.1.116",8000);//IP  ， 端口(默认8000)
+        commandDetail.Connector = tcpClientDetail;
+        //commandDetail.Timeout = 10000;
+        commandDetail.Identity = new FC8800Identity("MC-5824T25070244","FFFFFFFF",E_ControllerType.FC8800);//设置SN(16位字符)，密码(8位十六进制字符)，设备类型
+        ArrayList<CardDetail> mCardList = new ArrayList<CardDetail>();
         //创建卡片信息
-        CardDetail cd = new CardDetail(8765432);//设置卡号
+        CardDetail cd = new CardDetail();//设置卡号
+          try{
+       cd.SetCardData("8765432");
+        }catch(Exception ex){          
+        }
+       
         cd.Password = "88888888";//设置卡密码
         Calendar CardExpiry = Calendar.getInstance();
         CardExpiry.setTime(new Date(2018,2, 28));//设置有效时间
@@ -93,7 +104,7 @@ public class UploadCard  implements INConnectorEvent{
         cd.SetNormal();//设定卡片没有特权
         cd.HolidayUse = true;//设定受节假日限制。
         mCardList.add(cd);
-        WriteCardListBySort_Parameter par = new WriteCardListBySort_Parameter(commandDetial, mCardList);//初始化卡片参数
+        WriteCardListBySort_Parameter par = new WriteCardListBySort_Parameter(commandDetail, mCardList);//初始化卡片参数
         WriteCardListBySort cmd = new WriteCardListBySort(par);//初始化命令对象
         //添加命令到队列
         _Allocator.AddCommand(cmd);
@@ -101,13 +112,13 @@ public class UploadCard  implements INConnectorEvent{
     //清空卡片列表
     public void ClearCards(){
         //创建连接信息对象
-        CommandDetial commandDetial = new CommandDetial();
-        TCPClientDetial tcpClientDetial = new TCPClientDetial("192.168.1.116",8000); //IP  ， 端口(默认8000)   
-        commandDetial.Connector = tcpClientDetial;
-        //commandDetial.Timeout = 10000;
-        commandDetial.Identity = new FC8800Identity("MC-5824T25070244","FFFFFFFF",E_ControllerType.FC8800);//设置SN(16位字符)，密码(8位十六进制字符)，设备类型
-        commandDetial.Timeout = 5000;
-        ClearCardDataBase_Parameter par = new ClearCardDataBase_Parameter(commandDetial, 3);//初始化命令参数对象
+        CommandDetail commandDetail = new CommandDetail();
+        TCPClientDetail tcpClientDetail = new TCPClientDetail("192.168.1.116",8000); //IP  ， 端口(默认8000)   
+        commandDetail.Connector = tcpClientDetail;
+        //commandDetail.Timeout = 10000;
+        commandDetail.Identity = new FC8800Identity("MC-5824T25070244","FFFFFFFF",E_ControllerType.FC8800);//设置SN(16位字符)，密码(8位十六进制字符)，设备类型
+        commandDetail.Timeout = 5000;
+        ClearCardDataBase_Parameter par = new ClearCardDataBase_Parameter(commandDetail, 3);//初始化命令参数对象
         ClearCardDataBase cmd = new ClearCardDataBase(par);//初始化命令对象
         //添加命令到队列
         _Allocator.AddCommand(cmd);
@@ -154,7 +165,7 @@ public class UploadCard  implements INConnectorEvent{
     }
 
     @Override
-    public void ConnectorErrorEvent(ConnectorDetial detial) {
+    public void ConnectorErrorEvent(ConnectorDetail detial) {
         try {
             StringBuilder strBuf = new StringBuilder(100);
             strBuf.append("网络通道故障，IP信息：");
@@ -205,7 +216,7 @@ public class UploadCard  implements INConnectorEvent{
     }
 
     @Override
-    public void WatchEvent(ConnectorDetial detial, INData event) {
+    public void WatchEvent(ConnectorDetail detial, INData event) {
         try {
             StringBuilder strBuf = new StringBuilder(100);
             strBuf.append("数据监控:");
@@ -226,12 +237,12 @@ public class UploadCard  implements INConnectorEvent{
         }
     }
     @Override
-    public void ClientOnline(TCPServerClientDetial client) {
+    public void ClientOnline(TCPServerClientDetail client) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void ClientOffline(TCPServerClientDetial client) {
+    public void ClientOffline(TCPServerClientDetail client) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

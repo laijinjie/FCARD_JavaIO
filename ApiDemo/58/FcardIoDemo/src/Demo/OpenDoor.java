@@ -4,12 +4,12 @@
  * and open the template in the editor.
  */
 package Demo;
-import Net.PC15.Command.CommandDetial;
+import Net.PC15.Command.CommandDetail;
 import Net.PC15.Command.INCommand;
 import Net.PC15.Command.INCommandResult;
 import Net.PC15.Connector.*;
-import Net.PC15.Connector.TCPClient.TCPClientDetial;
-import Net.PC15.Connector.TCPServer.TCPServerClientDetial;
+import Net.PC15.Connector.TCPClient.TCPClientDetail;
+import Net.PC15.Connector.TCPServer.TCPServerClientDetail;
 import Net.PC15.Data.INData;
 import Net.PC15.FC8800.Command.Data.FC8800WatchTransaction;
 import Net.PC15.FC8800.Command.Door.Parameter.OpenDoor_Parameter;
@@ -34,12 +34,12 @@ public class OpenDoor  implements INConnectorEvent{
         //添加监听
         _Allocator.AddListener(this);
         //定义控制器连接信息
-        CommandDetial commandDetial = new CommandDetial();
-        TCPClientDetial tcpClientDetial = new TCPClientDetial("192.168.1.59", 8000);//IP地址，端口(默认8000)
-        commandDetial.Connector = tcpClientDetial;
-        commandDetial.Identity = new FC8800Identity("MC-5824T25070244", "FFFFFFFF", E_ControllerType.FC8800);//设置SN(16位字符)，密码(8位十六进制字符)，设备类型
+        CommandDetail commandDetail = new CommandDetail();
+        TCPClientDetail tcpClientDetail = new TCPClientDetail("192.168.1.59", 8000);//IP地址，端口(默认8000)
+        commandDetail.Connector = tcpClientDetail;
+        commandDetail.Identity = new FC8800Identity("MC-5824T25070244", "FFFFFFFF", E_ControllerType.FC8800);//设置SN(16位字符)，密码(8位十六进制字符)，设备类型
         //定义命令参数
-        OpenDoor_Parameter openDoor_parameter = new OpenDoor_Parameter(commandDetial);//初始化开门参数
+        OpenDoor_Parameter openDoor_parameter = new OpenDoor_Parameter(commandDetail);//初始化开门参数
         openDoor_parameter.Door.SetDoor(1, 1);//设定1号门执行操作
         openDoor_parameter.Door.SetDoor(2, 1);//设定2号门不执行操作
         Net.PC15.FC8800.Command.Door.OpenDoor openDoor = new Net.PC15.FC8800.Command.Door.OpenDoor(openDoor_parameter);
@@ -49,13 +49,13 @@ public class OpenDoor  implements INConnectorEvent{
     }
 
     public void CloseDoor() {
-        CommandDetial commandDetial = new CommandDetial();
-        TCPClientDetial tcpClientDetial = new TCPClientDetial("192.168.1.59", 8000);//IP地址，端口(默认8000)
+        CommandDetail commandDetail = new CommandDetail();
+        TCPClientDetail tcpClientDetail = new TCPClientDetail("192.168.1.59", 8000);//IP地址，端口(默认8000)
         //定义控制器连接信息
-        commandDetial.Connector = tcpClientDetial;
-        commandDetial.Identity = new FC8800Identity("MC-5824T25070244", "FFFFFFFF", E_ControllerType.FC8800);//设置SN(16位字符)，密码(8位十六进制字符)，设备类型
+        commandDetail.Connector = tcpClientDetail;
+        commandDetail.Identity = new FC8800Identity("MC-5824T25070244", "FFFFFFFF", E_ControllerType.FC8800);//设置SN(16位字符)，密码(8位十六进制字符)，设备类型
         //定义命令参数
-        RemoteDoor_Parameter par = new RemoteDoor_Parameter(commandDetial);//初始化开门参数
+        RemoteDoor_Parameter par = new RemoteDoor_Parameter(commandDetail);//初始化开门参数
         par.Door.SetDoor(1, 1);//设定1号门执行操作
         par.Door.SetDoor(2, 1);//设定2号门不执行操作
         Net.PC15.FC8800.Command.Door.CloseDoor closeDoor = new Net.PC15.FC8800.Command.Door.CloseDoor(par);
@@ -110,7 +110,7 @@ public class OpenDoor  implements INConnectorEvent{
     }
 
     @Override
-    public void ConnectorErrorEvent(ConnectorDetial detial) {
+    public void ConnectorErrorEvent(ConnectorDetail detial) {
         try {
             StringBuilder strBuf = new StringBuilder(100);
             strBuf.append("网络通道故障，IP信息：");
@@ -161,7 +161,7 @@ public class OpenDoor  implements INConnectorEvent{
     }
 
     @Override
-    public void WatchEvent(ConnectorDetial detial, INData event) {
+    public void WatchEvent(ConnectorDetail detial, INData event) {
         try {
             StringBuilder strBuf = new StringBuilder(100);
             strBuf.append("数据监控:");
@@ -182,12 +182,12 @@ public class OpenDoor  implements INConnectorEvent{
     
     
     @Override
-    public void ClientOnline(TCPServerClientDetial client) {
+    public void ClientOnline(TCPServerClientDetail client) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void ClientOffline(TCPServerClientDetial client) {
+    public void ClientOffline(TCPServerClientDetail client) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     

@@ -36,41 +36,41 @@ public class DataMonitor implements INConnectorEvent {
         _Allocator.AddListener(this);
     }
     public void OpenMonitor(){
-          CommandDetial commandDetial = new CommandDetial();
-        TCPClientDetial tcpClientDetial = new TCPClientDetial("192.168.1.59", 8000);//IP地址，端口(默认8000)
+        CommandDetail   commandDetail = new CommandDetail();
+        TCPClientDetail tcpClientDetail = new TCPClientDetail("192.168.1.59", 8000);//IP地址，端口(默认8000)
         //定义控制器连接信息
-        commandDetial.Connector = tcpClientDetial;
-        commandDetial.Identity = new FC8800Identity("MC-5824T25070244", "FFFFFFFF", E_ControllerType.FC8800);//设置SN(16位字符)，密码(8位十六进制字符)，设备类型
-        if (commandDetial == null) {
+        commandDetail.Connector = tcpClientDetail;
+        commandDetail.Identity = new FC8800Identity("MC-5824T25070244", "FFFFFFFF", E_ControllerType.FC8800);//设置SN(16位字符)，密码(8位十六进制字符)，设备类型
+        if (commandDetail == null) {
             return;
         }
 
-        CommandParameter par = new CommandParameter(commandDetial);//命令参数对象
+        CommandParameter par = new CommandParameter(commandDetail);//命令参数对象
         BeginWatch cmd = new BeginWatch(par);//命令对象
 
-        _Allocator.OpenForciblyConnect(commandDetial.Connector);
+        _Allocator.OpenForciblyConnect(commandDetail.Connector);
         _Allocator.AddCommand(cmd);
     }
     
     public void CloseMonitor(){
-          CommandDetial commandDetial = new CommandDetial();
-        TCPClientDetial tcpClientDetial = new TCPClientDetial("192.168.1.116", 8000);//IP地址，端口(默认8000)
+          CommandDetail commandDetail = new CommandDetail();
+        TCPClientDetail tcpClientDetail = new TCPClientDetail("192.168.1.116", 8000);//IP地址，端口(默认8000)
         //定义控制器连接信息
-        commandDetial.Connector = tcpClientDetial;
-        commandDetial.Identity = new FC8800Identity("MC-5824T25070244", "FFFFFFFF", E_ControllerType.FC8800);//设置SN(16位字符)，密码(8位十六进制字符)，设备类型
-        if (commandDetial == null) {
+        commandDetail.Connector = tcpClientDetail;
+        commandDetail.Identity = new FC8800Identity("MC-5824T25070244", "FFFFFFFF", E_ControllerType.FC8800);//设置SN(16位字符)，密码(8位十六进制字符)，设备类型
+        if (commandDetail == null) {
             return;
         }
-        CommandParameter par = new CommandParameter(commandDetial);//命令参数对象
+        CommandParameter par = new CommandParameter(commandDetail);//命令参数对象
         CloseWatch cmd = new CloseWatch(par);//命令对象
 
-        _Allocator.CloseForciblyConnect(commandDetial.Connector);
+        _Allocator.CloseForciblyConnect(commandDetail.Connector);
         _Allocator.AddCommand(cmd);
     }
     
     //数据监控
     @Override
-    public void WatchEvent(ConnectorDetial detial, INData event) {
+    public void WatchEvent(ConnectorDetail detial, INData event) {
         try {
             StringBuilder strBuf = new StringBuilder(100);
             strBuf.append("数据监控:");
@@ -129,7 +129,7 @@ public class DataMonitor implements INConnectorEvent {
     }
 
     @Override
-    public void ConnectorErrorEvent(ConnectorDetial detial) {
+    public void ConnectorErrorEvent(ConnectorDetail detial) {
         try {
             StringBuilder strBuf = new StringBuilder(100);
             strBuf.append("网络通道故障，IP信息：");
@@ -182,12 +182,12 @@ public class DataMonitor implements INConnectorEvent {
     
     
     @Override
-    public void ClientOnline(TCPServerClientDetial client) {
+    public void ClientOnline(TCPServerClientDetail client) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void ClientOffline(TCPServerClientDetial client) {
+    public void ClientOffline(TCPServerClientDetail client) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
