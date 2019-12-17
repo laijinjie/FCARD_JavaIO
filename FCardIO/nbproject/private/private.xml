@@ -13,28 +13,9 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/E:/项目/2017/Java通讯库/FCardIO/src/Net/PC15/FC89H/Command/Data/CardTransaction.java</file>
-            <file>file:/E:/项目/2017/Java通讯库/FCardIO/src/Net/PC15/FC8800/Command/Card/WriteCardListBySort.java</file>
-            <file>file:/E:/项目/2017/Java通讯库/FCardIO/src/Net/PC15/Util/StringUtil.java</file>
-            <file>file:/E:/项目/2017/Java通讯库/FCardIO/src/Net/PC15/Packet/PacketDecompileAllocator.java</file>
-            <file>file:/E:/项目/2017/Java通讯库/FCardIO/src/Net/PC15/FC89H/Command/Card/ReadCardDataBase.java</file>
             <file>file:/E:/项目/2017/Java通讯库/FCardIO/src/Net/PC15/FC89H/Command/Data/CardDetail.java</file>
+            <file>file:/E:/项目/2017/Java通讯库/FCardIO/test/Net/PC15/FC89H/Command/Data/CardDetailTest.java</file>
             <file>file:/E:/项目/2017/Java通讯库/FCardIO/src/Net/PC15/FC8800/Command/Data/CardTransaction.java</file>
-            <file>file:/E:/项目/2017/Java通讯库/FCardIO/src/Net/PC15/FC8800/Command/Transaction/ReadTransactionDatabase.java</file>
-            <file>file:/E:/项目/2017/Java通讯库/FCardIO/src/Net/PC15/FC89H/Command/Card/ReadCardDetail.java</file>
-            <file>file:/E:/项目/2017/Java通讯库/FCardIO/src/Net/PC15/FC8800/Command/Transaction/ReadTransactionDatabaseDetail.java</file>
-            <file>file:/E:/项目/2017/Java通讯库/FCardIO/src/Net/PC15/FC8800/Command/FC8800CommandWatchResponse.java</file>
-            <file>file:/E:/项目/2017/Java通讯库/FCardIO/src/Net/PC15/FC8800/Command/System/ReadSmogAlarmOption.java</file>
-            <file>file:/E:/项目/2017/Java通讯库/FCardIO/src/Net/PC15/FC8800/Command/Data/FC8800WatchTransaction.java</file>
-            <file>file:/E:/项目/2017/Java通讯库/FCardIO/src/Net/PC15/FC8800/Command/Card/DeleteCard.java</file>
-            <file>file:/E:/项目/2017/Java通讯库/FCardIO/src/Net/PC15/FC8800/Command/System/Parameter/WriteSmogAlarmOption_Parameter.java</file>
-            <file>file:/E:/项目/2017/Java通讯库/FCardIO/src/Net/PC15/FC8800/Command/Card/WriteCardListBySequence.java</file>
-            <file>file:/E:/项目/2017/Java通讯库/FCardIO/src/Net/PC15/FC89H/Command/Card/DeleteCard.java</file>
-            <file>file:/E:/项目/2017/Java通讯库/FCardIO/src/Net/PC15/FC8800/Command/System/WriteSmogAlarmOption.java</file>
-            <file>file:/E:/项目/2017/Java通讯库/FCardIO/src/Net/PC15/FC8800/Command/Transaction/ReadTransactionDatabaseByIndex.java</file>
-            <file>file:/E:/项目/2017/Java通讯库/FCardIO/src/Net/PC15/FC8800/Command/Data/CardDetail.java</file>
-            <file>file:/E:/项目/2017/Java通讯库/FCardIO/src/Net/PC15/FC89H/Command/Card/WriteCardListBySort.java</file>
-            <file>file:/E:/项目/2017/Java通讯库/FCardIO/src/Net/PC15/FC89H/Command/Transaction/ReadTransactionDatabase.java</file>
-            <file>file:/E:/项目/2017/Java通讯库/FCardIO/src/Net/PC15/FC89H/Command/Card/WriteCardListBySequence.java</file>
         </group>
     </open-files>
 </project-private>

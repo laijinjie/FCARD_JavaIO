@@ -25,101 +25,79 @@ public class CardDetail implements INData, Comparable<CardDetail> {
     public int compareTo(CardDetail o) {
         if (o.CardData.equals(CardData)) {
             return 0;
-        }  else {
+        } else {
             return -1;
         }
 
         //return Long.compare(CardData, o.CardData);
     }
-    
+
     @Override
-    public boolean equals(Object o)
-    {
-        if(o instanceof CardDetail)
-        {
-            return compareTo((CardDetail)o)==0;
-        }else
-        {
+    public boolean equals(Object o) {
+        if (o instanceof CardDetail) {
+            return compareTo((CardDetail) o) == 0;
+        } else {
             return false;
         }
-        
+
     }
-    
 
     @Override
     public int GetDataLen() {
         return 0x21;//33字节
     }
-    
-    public void SetCardData(String value) throws Exception{
+
+    public void SetCardData(String value) throws Exception {
         /**/
-        if (value == null || value.length() == 0 ) {
-            System.out.println("ERROR! 卡号不能为空!");
+        if (value == null || value.length() == 0) {
             throw new Exception("卡号不能为空");
         }
-        
-        if (!Net.PC15.Util.StringUtil.CanParseInt(value)) {
-            System.out.println("ERROR! 卡号不是数字格式!");
+
+        if (!Net.PC15.Util.StringUtil.IsNum(value)) {
             throw new Exception("卡号不是数字格式");
         }
+
+        if (value.length() > 10) {
+            throw new Exception("卡号长度过长");
+        }
+
         //BigInteger biLongMax = new BigInteger("18446744073709551615");
-        BigInteger biLongMax = new BigInteger(String.valueOf(Long.MAX_VALUE));
-	BigInteger biCardData = new BigInteger(value);
-                
-        if (biLongMax.compareTo(biCardData) <= 0) {
-            System.out.println("ERROR! 卡号超过最大值!");
+        long lCardMax = 0xffffffffL;
+        long biCardData = Long.valueOf(value);
+
+        if (lCardMax < biCardData) {
             throw new Exception("卡号超过最大值");
         }
-        
+
         CardData = value;
     }
-    
+
     /// <summary>
-        /// 将卡号序列化并写入buf中
-        /// </summary>
-        /// <param name="data"></param>
-    public void WriteCardData(ByteBuf data)  throws Exception{
+    /// 将卡号序列化并写入buf中
+    /// </summary>
+    /// <param name="data"></param>
+    public void WriteCardData(ByteBuf data) throws Exception {
         data.writeByte(0);
-         if (CardData == null || CardData.length() == 0 ) {
-            System.out.println("ERROR! 卡号不能为空!");
-            throw new Exception("卡号不能为空");
+        if (CardData == null ) {
+            data.writeInt(0);
         }
-        
-        if (!Net.PC15.Util.StringUtil.CanParseInt(CardData)) {
-            System.out.println("ERROR! 卡号不是数字格式!");
-            throw new Exception("卡号不是数字格式");
+        else
+        {
+            long biCardData = Long.valueOf(CardData);
+            data.writeInt((int)biCardData);
         }
-        //BigInteger biLongMax = new BigInteger("18446744073709551615");
-        BigInteger biLongMax = new BigInteger(String.valueOf(Long.MAX_VALUE));
-	BigInteger biCardData = new BigInteger(CardData);
-                
-        if (biLongMax.compareTo(biCardData) <= 0) {
-            System.out.println("ERROR! 卡号超过最大值!");
-            throw new Exception("卡号超过最大值");
-        }
-         data.writeInt(Integer.valueOf(CardData));
-        //String CardDataHex = new BigInteger(CardData,10).toString(16);
-        //写入 
-        //CardDataHex = Net.PC15.Util.StringUtil.FillString(CardDataHex, 8, "0", false);
-        //Net.PC15.Util.StringUtil.HextoByteBuf(CardDataHex,data);
-       
+
     }
-    
+
     /// <summary>
-        /// 从buf中读取卡号
-        /// </summary>
-        /// <param name="data"></param>
-        public void ReadCardData(ByteBuf data){
-            data.readByte();
-            CardData = String.valueOf( data.readUnsignedInt());
-            /*
-            byte[] btCardData = new byte[4];
-            data.readBytes(btCardData, 0, 4);
-            CardData = ByteUtil.ByteToHex(btCardData);
-            CardData = Net.PC15.Util.StringUtil.LTrim(CardData,'0');
-            CardData = Net.PC15.Util.StringUtil.HexStr2Str(CardData,16);
-            */
-        }
+    /// 从buf中读取卡号
+    /// </summary>
+    /// <param name="data"></param>
+    public void ReadCardData(ByteBuf data) {
+        data.readByte();
+        CardData = String.valueOf(data.readUnsignedInt());
+    }
+
     @Override
     public void SetBytes(ByteBuf data) {
         ReadCardData(data);
@@ -163,17 +141,15 @@ public class CardDetail implements INData, Comparable<CardDetail> {
         return null;
     }
 
-    public void GetBytes(ByteBuf data){
-        try
-        {
-        WriteCardData(data);
-        }
-        catch (Exception e){
+    public void GetBytes(ByteBuf data) {
+        try {
+            WriteCardData(data);
+        } catch (Exception e) {
             return;
         }
         Password = StringUtil.FillHexString(Password, 8, "F", true);
         long pwd = Long.parseLong(Password, 16);
-        data.writeInt((int)pwd);
+        data.writeInt((int) pwd);
 
         byte[] btTime = new byte[6];
         TimeUtil.DateToBCD_yyMMddhhmm(btTime, Expiry);
@@ -278,19 +254,18 @@ public class CardDetail implements INData, Comparable<CardDetail> {
     public Calendar RecordTime;
 
     public CardDetail() {
-        CardData = null;
+        CardData = "0";
         Password = null;
         Expiry = null;
         TimeGroup = new byte[4];
         Door = 0;
         Privilege = 0;
         CardStatus = 0;
-        Holiday = new byte[]{(byte)255,(byte)255,(byte)255,(byte)255};
+        Holiday = new byte[]{(byte) 255, (byte) 255, (byte) 255, (byte) 255};
         RecordTime = null;
         EnterStatus = 0;
         HolidayUse = false;
     }
-
 
     /**
      * 获取指定门的开门时段号
@@ -503,22 +478,22 @@ public class CardDetail implements INData, Comparable<CardDetail> {
      * @return 在集合中的索引号
      */
     public static int SearchCardDetail(ArrayList<CardDetail> list, String SearchCard) {
-        int max, min, mid;
         CardDetail search = new CardDetail();
-        search.CardData = SearchCard;
-
-        return SearchCardDetail(list,search);
-
+        try {
+            search.SetCardData(SearchCard);
+            return SearchCardDetail(list, search);
+        } catch (Exception e) {
+             return -1;
+        }
     }
-    
+
     /**
      * 使用折半查询方式搜索卡片集合
      *
      * @param list 已经过排序的卡片集合
-     * @param SearchCard 需要搜索的卡片卡号
+     * @param search 需要搜索的卡片卡号
      * @return 在集合中的索引号
      */
-    
     public static int SearchCardDetail(ArrayList<CardDetail> list, CardDetail search) {
         int max, min, mid;
         max = list.size() - 1;
@@ -538,6 +513,5 @@ public class CardDetail implements INData, Comparable<CardDetail> {
         return -1;
 
     }
-    
 
 }

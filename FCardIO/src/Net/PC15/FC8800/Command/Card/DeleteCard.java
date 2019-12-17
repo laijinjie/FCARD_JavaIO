@@ -11,22 +11,25 @@ import Net.PC15.FC8800.Command.FC8800Command;
 import Net.PC15.FC8800.Packet.FC8800PacketCompile;
 import Net.PC15.FC8800.Packet.FC8800PacketModel;
 import Net.PC15.Util.ByteUtil;
+import Net.PC15.Util.StringUtil;
+import Net.PC15.Util.UInt32Util;
 import io.netty.buffer.ByteBuf;
 import java.math.BigInteger;
 
 /**
  * 删除卡片
+ *
  * @author 赖金杰
  */
 public class DeleteCard extends FC8800Command {
-    
+
     protected int mIndex;//指示当前命令进行的步骤
     protected String[] _List;
-    
-    public DeleteCard(){
-        
+
+    public DeleteCard() {
+
     }
-    
+
     public DeleteCard(DeleteCard_Parameter par) {
         _Parameter = par;
         _List = par.CardList;
@@ -47,7 +50,7 @@ public class DeleteCard extends FC8800Command {
         int iSize = 0;
         int iIndex = 0;
         int ListLen = _List.length;
-        
+
         FC8800PacketCompile compile = (FC8800PacketCompile) _Packet;
         FC8800PacketModel p = (FC8800PacketModel) _Packet.GetPacket();
         ByteBuf dataBuf = p.GetDatabuff();
@@ -57,28 +60,9 @@ public class DeleteCard extends FC8800Command {
             iIndex = i;
             iSize += 1;
             dataBuf.writeByte(0);
-            //dataBuf.writeInt((int)_List[iIndex]);
-            String cardData = _List[iIndex];
-            if (cardData == null || cardData.length() == 0 ) {
-                System.out.println("ERROR! 卡号不能为空!");
-                return;
-            }
-        
-            if (!Net.PC15.Util.StringUtil.CanParseInt(cardData)) {
-                System.out.println("ERROR! 卡号不是数字格式!");
-                return;
-            }
-             BigInteger biLongMax = new BigInteger(String.valueOf(Long.MAX_VALUE));
-                BigInteger biCardData = new BigInteger(cardData);
+            long lCard = StringUtil.StringNumtoUInt32(_List[iIndex]);
+            dataBuf.writeInt((int) lCard);
 
-                if (biLongMax.compareTo(biCardData) <= 0) {
-                    System.out.println("ERROR! 卡号超过最大值!");
-                   return;
-                }
-             //传16进制
-         String CardDataHex = new BigInteger(cardData,10).toString(16);
-        CardDataHex = Net.PC15.Util.StringUtil.FillString(CardDataHex, 8, "0", false);
-        Net.PC15.Util.StringUtil.HextoByteBuf(CardDataHex,dataBuf);
             if (iSize == iMaxSize) {
                 break;
             }
@@ -91,20 +75,20 @@ public class DeleteCard extends FC8800Command {
         mIndex = iIndex + 1;
         CommandReady();
     }
-    
+
     @Override
     protected void Release0() {
         _Parameter = null;
         _Result = null;
         _List = null;
     }
-    
+
     @Override
     protected boolean _CommandStep(INConnectorEvent oEvent, FC8800PacketModel model) {
         if (CheckResponseOK(model)) {
             CommandNext(oEvent);
             return true;
-        } 
+        }
         return false;
     }
 
@@ -119,7 +103,7 @@ public class DeleteCard extends FC8800Command {
         } else {
             RaiseCommandCompleteEvent(oEvent);
         }
-        
+
     }
 
 }

@@ -7,6 +7,7 @@ package Net.PC15.Util;
 
 import io.netty.buffer.ByteBuf;
 import java.lang.StringBuilder;
+import java.math.BigInteger;
 import java.util.Random;
 
 /**
@@ -115,38 +116,6 @@ public class StringUtil {
             buf.writeByte((byte) iData);
             iIndex++;
         }
-    }
-    
-    public static byte[] HextoByte(String hexString) {
-        int i, iIndex = 0, iData;
-        if (IsNullOrEmpty(hexString)) {
-            return null;
-        }
-        if (!IsHex(hexString)) {
-            return null;
-        }
-
-        //确定字符串长度必须是2的倍数
-        if ((hexString.length() % 2) == 1) {
-            hexString = "0" + hexString;
-        }
-        //生成转换值列表
-        byte[] digits = HexToByte_Digit;
-
-        //生成缓存
-        byte[] sbuf = hexString.getBytes();
-        int ilen = sbuf.length;
-        //开始转换
-        byte[] b = new byte[sbuf.length];
-        for (i = 0; i < ilen; i++) {
-            iData = digits[sbuf[i++] & 0x000000ff] * 16;
-            iData = iData + digits[sbuf[i]];
-            
-            b[i] = (byte)iData;
-            //buf.writeByte((byte) iData);
-            iIndex++;
-        }
-        return b;
     }
 
     /**
@@ -325,167 +294,65 @@ public class StringUtil {
         return FillString(str, iLen, fillstr, fill_right);
 
     }
-    
-    public static String[] LongToString(long longArray[]) {
-         if (longArray == null || longArray.length < 1) {
-             return null;
-         }
-         String  stringArray[] = new String[longArray.length];
-         for (int i = 0; i < stringArray.length; i++ ) {
-             try {
-              stringArray[i] = String.valueOf(longArray[i]);
-             } catch (NumberFormatException e) {
-              stringArray[i] = null;
-                 continue;
-             }
-         }
-         return stringArray;
-     }
-    
-        /**
-        * 16进制直接转换成为字符串(无需Unicode解码)
-        * @param hexStr
-        * @return
-        */
-       public static String HexStr2Str(String hexStr,int ii) {
-           for(int i=0;i < hexStr.length();i++){
-			char cc = hexStr.charAt(i);
-			if(cc=='0'||cc=='1'||cc=='2'||cc=='3'||cc=='4'||cc=='5'||cc=='6'||cc=='7'||cc=='8'||cc=='9'||cc=='A'||cc=='B'||cc=='C'||
-					cc=='D'||cc=='E'||cc=='F'||cc=='a'||cc=='b'||cc=='c'||cc=='c'||cc=='d'||cc=='e'||cc=='f'){
-				continue;
-			}else{
-				return hexStr;
-			}
-		}
-           Integer x = Integer.parseInt(hexStr,ii);
-           return String.valueOf(x);
-       }
-       
-       public static boolean CanParseHex(String hexStr,int ii) {
-           for(int i=0;i < hexStr.length();i++){
-			char cc = hexStr.charAt(i);
-			if(cc=='0'||cc=='1'||cc=='2'||cc=='3'||cc=='4'||cc=='5'||cc=='6'||cc=='7'||cc=='8'||cc=='9'||cc=='A'||cc=='B'||cc=='C'||
-					cc=='D'||cc=='E'||cc=='F'||cc=='a'||cc=='b'||cc=='c'||cc=='c'||cc=='d'||cc=='e'||cc=='f'){
-				continue;
-			}else{
-				return false;
-			}
-		}
-          return true;
-       }
-       
-       public static boolean CanParseInt(String str){
-        if(str == null){ //验证是否为空
-            return false;
 
+    /**
+     * *
+     * 数字字符串转为UInt32数值
+     *
+     * @return
+     */
+    public static long StringNumtoUInt32(String sNum) {
+        if (sNum == null || sNum.length() == 0 || !IsNum(sNum)) {
+            return 0;
+        }
+        if (sNum.length() > 10) {
+            return 0;
         }
 
-        return str.matches("\\d+"); //使用正则表达式判断该字符串是否为数字，第一个\是转义符，\d+表示匹配1个或 //多个连续数字，"+"和"*"类似，"*"表示0个或多个
-
-      }
-       
-       /**
-        * 字符串转化成为16进制字符串
-        * @param s
-        * @return
-        */
-       public static String StrTo16(String s) {
-           String str = "";
-           for (int i = 0; i < s.length(); i++) {
-               int ch = (int) s.charAt(i);
-               String s4 = Integer.toHexString(ch);
-               str = str + s4;
-           }
-           return str;
-       }
-       
-       public static String bytesToHexFun2(byte[] bytes) {
-           char[] HEX_CHAR = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
-        char[] buf = new char[bytes.length * 2];
-        int index = 0;
-        for(byte b : bytes) { // 利用位运算进行转换，可以看作方法一的变种
-            buf[index++] = HEX_CHAR[b >>> 4 & 0xf];
-            buf[index++] = HEX_CHAR[b & 0xf];
-        }
-
-        return new String(buf);
+        long value = Long.valueOf(sNum);
+        return UInt32Util.UInt32(value);
     }
-       
-       /**
-	 * 获取16进制随机数
-	 * @param len
-	 * @return
-	 * @throws CoderException
-	 */
-	public static String randomHexString(int len)  {
-		try {
-			StringBuffer result = new StringBuffer();
-			for(int i=0;i<len;i++) {
-				result.append(Integer.toHexString(new Random().nextInt(16)));
-			}
-			return result.toString().toUpperCase();
-			
-		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
-			
-		}
-		return null;
-		
-	}
-        
-        /**
-	 * 仿照String的trim()
-	 * @param strArg：需要进行去掉前后空格符的字符串
-	 * @return：返回字符串的副本，该副本进行去掉了首尾空格符
-	 */
-	public static String LTrim(String strArg,char text){
-		
-		char[] cVal=strArg.toCharArray();
-		int p1=0;
-		int len=cVal.length;
-		
-		//从首到尾进行遍历，如果发现了第一个不是  ' ' 就break:表示终止了遍历，找到了首部到尾部第一个不为 ' ' 的位置
-		while(p1 < len){
-			if (cVal[p1] == text) {
-				p1 += 1;
-			}else{
-				break;
-			}
-		}
-		
-		//这说明  strArg 压根就是由空格字符组成的字符串
-		if (p1 == len) {
-			return "";
-		}
-		
-		//从尾部到首部进行遍历，如果发现了第一个不是  ' ' 就break:表示终止了遍历，找到了尾部到首部第一个不为 ' ' 的位置
-		int p2=len-1;
-                /*
-		while(p2 >= 0){
-			if (cVal[p2] == ' ') {
-				p2 -= 1;
-			}else{
-				break;
-			}
-		}
-		*/
-		String subStr=strArg.substring(p1,p2+1);
-		return subStr;
-	}
-        
-        public static String str2HexStr(String str) {
-            char[] chars = "0123456789ABCDEF".toCharArray();
-            StringBuilder sb = new StringBuilder("");
-            byte[] bs = str.getBytes();
-            int bit;
-            for (int i = 0; i < bs.length; i++) {
-                bit = (bs[i] & 0x0f0) >> 4;
-                sb.append(chars[bit]);
-                bit = bs[i] & 0x0f;
-                sb.append(chars[bit]);
-                // sb.append(' ');
-            }
-            return sb.toString().trim();
+
+    /**
+     * *
+     * 数字字符串转为9Byte数值,并返回十六进制
+     *
+     * @return
+     */
+    public static String StringNumto9Byte_Hex(String sNum) {
+        String sNull = "00";
+        if (sNum == null || sNum.length() == 0 || !IsNum(sNum)) {
+            return sNull;
         }
+        if (sNum.length() > 22) {
+            return sNull;
+        }
+        BigInteger value = new BigInteger(sNum);
+        return value.toString(16);
+    }
+
+    /**
+     * 数字字符串转为9Byte数值,并返回字节数组
+     *
+     * @param sNum
+     * @return
+     */
+    public static byte[] StringNumto9Byte(String sNum) {
+
+        String sHex = StringNumto9Byte_Hex(sNum);
+        byte[] buf = HexToByte(sHex);
+        if(buf.length == 9)
+        {
+            return HexToByte(sHex);
+        }
+        else
+        {
+            int iIndex = 9-buf.length;
+            byte[] ret = new byte[9];
+            System.arraycopy(buf, 0, ret, iIndex, buf.length);
+            return ret;
+        }
+        
+    }
+
 }

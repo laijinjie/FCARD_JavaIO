@@ -12,6 +12,7 @@ import Net.PC15.Util.ByteUtil;
 import io.netty.buffer.ByteBuf;
 import java.math.BigInteger;
 import Net.PC15.FC8800.Command.Card.Parameter.DeleteCard_Parameter;
+import Net.PC15.Util.StringUtil;
 /**
  * 删除卡片，针对FC89H使用
  * @author 徐铭康
@@ -51,30 +52,9 @@ public class DeleteCard extends Net.PC15.FC8800.Command.Card.DeleteCard {
         for (int i = mIndex; i < ListLen; i++) {
             iIndex = i;
             iSize += 1;
-            dataBuf.writeByte(0);
-            String cardData = _List[iIndex];
-            if (cardData == null || cardData.length() == 0 ) {
-                System.out.println("ERROR! 卡号不能为空!");
-                return;
-            }
-        
-            if (!Net.PC15.Util.StringUtil.CanParseInt(cardData)) {
-                System.out.println("ERROR! 卡号不是数字格式!");
-                return;
-            }
-             BigInteger biLongMax = new BigInteger("18446744073709551615");
-                BigInteger biCardData = new BigInteger(cardData);
+            byte[] buf = StringUtil.StringNumto9Byte( _List[iIndex]);
+            dataBuf.writeBytes(buf);
 
-                if (biLongMax.compareTo(biCardData) <= 0) {
-                    System.out.println("ERROR! 卡号超过最大值!");
-                   return;
-                }
-         
-         //传16进制
-         String CardDataHex = new BigInteger(cardData,10).toString(16);
-        CardDataHex = Net.PC15.Util.StringUtil.FillString(CardDataHex, 16, "0", false);
-        Net.PC15.Util.StringUtil.HextoByteBuf(CardDataHex,dataBuf);
-            //Net.PC15.Util.StringUtil.HextoByteBuf(,dataBuf);
             if (iSize == iMaxSize) {
                 break;
             }

@@ -75,7 +75,7 @@ public class CardTransaction extends AbstractTransaction {
     /**
      * 卡号
      */
-    public long CardData;
+    public String CardData;
     /**
      * 读卡器号
      */
@@ -93,7 +93,7 @@ public class CardTransaction extends AbstractTransaction {
                 _IsNull = true;
                 //return;
             }
-            CardData = data.readUnsignedInt();
+            CardData =String.valueOf(data.readUnsignedInt());
             byte[] btTime = new byte[6];
             data.readBytes(btTime, 0, 6);
             _TransactionDate = TimeUtil.BCDTimeToDate_yyMMddhhmmss(btTime);
