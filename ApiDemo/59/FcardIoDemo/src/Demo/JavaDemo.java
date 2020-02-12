@@ -17,7 +17,6 @@ public class JavaDemo {
         //数据监控
         DataMonitor dm = new DataMonitor(a);
         dm.OpenMonitor();
-        
         OpenDoor od = new OpenDoor(a);
         
         od.CloseDoor();
