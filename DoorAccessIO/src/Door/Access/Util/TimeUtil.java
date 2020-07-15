@@ -93,7 +93,7 @@ public class TimeUtil {
                 btData[i] = 0;
             }
         } else {
-            int MONTH = date.get(Calendar.DAY_OF_MONTH) - 1;//这里获取到的周，周日表示1，周一表示2 ... 周六表示 7
+            int MONTH = date.get(Calendar.DAY_OF_WEEK) - 1;//这里获取到的周，周日表示1，周一表示2 ... 周六表示 7
             if (MONTH == 0) {
                 MONTH = 7;
             }

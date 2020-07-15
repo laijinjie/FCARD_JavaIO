@@ -135,7 +135,7 @@ public class TCPClientConnector extends AbstractConnector {
                             ByteBuf sendBuf = _ClientChannel.alloc().buffer(packetBuf.readableBytes());
                             sendBuf.writeBytes(packetBuf);
                             packetBuf.resetReaderIndex();
-                            //System.out.println("发送指令：" + ByteBufUtil.hexDump(sendBuf));
+                         //   System.out.println("发送指令：" + ByteBufUtil.hexDump(sendBuf));
                             _WriteFuture = _ClientChannel.writeAndFlush(sendBuf);
                             _ActivityCommand.SendCommand(_Event);
                             _WriteFuture.addListener(new WriteCallback(this));
@@ -374,7 +374,7 @@ public class TCPClientConnector extends AbstractConnector {
         synchronized (this) {
             try {
                 if (_ActivityCommand != null) {
-                    //System.out.println(" 已收到数据：\n" + ByteBufUtil.hexDump(msg));
+             //       System.out.println(" 已收到数据：\n" + ByteBufUtil.hexDump(msg));
                     boolean ret = _ActivityCommand.CheckResponse(_Event, msg);
                     if (ret) {
                         if (_ActivityCommand.getIsCommandOver()) {

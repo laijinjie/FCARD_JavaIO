@@ -376,6 +376,7 @@ public class frmMain extends javax.swing.JFrame implements INConnectorEvent {
         pnlTCPClient.add(jLabel24, new org.netbeans.lib.awtextra.AbsoluteConstraints(16, 20, 79, -1));
 
         txtTCPServerIP.setText("192.168.1.66");
+        txtTCPServerIP.setName(""); // NOI18N
         pnlTCPClient.add(txtTCPServerIP, new org.netbeans.lib.awtextra.AbsoluteConstraints(99, 17, 223, -1));
 
         jLabel25.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
