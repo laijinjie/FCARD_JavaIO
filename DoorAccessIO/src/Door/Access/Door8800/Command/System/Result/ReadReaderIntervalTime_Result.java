@@ -13,7 +13,7 @@ import Door.Access.Command.INCommandResult;
  */
 public class ReadReaderIntervalTime_Result implements INCommandResult{
     /**
-     * 读卡间隔时间. <br/>
+     * 读卡间隔时间. <br>
      * 最大65535秒。0表示无限制
      */
     public int IntervalTime;

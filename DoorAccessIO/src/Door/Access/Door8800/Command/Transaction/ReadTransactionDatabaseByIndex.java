@@ -18,8 +18,8 @@ import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
- * 读记录数据库<br/>
- * 按指定索引号开始读指定类型的记录数据库，并读取指定数量。<br/>
+ * 读记录数据库<br>
+ * 按指定索引号开始读指定类型的记录数据库，并读取指定数量。<br>
  * 成功返回结果参考 {@link ReadTransactionDatabaseByIndex_Result}
  *
  * @author 赖金杰
@@ -108,7 +108,6 @@ public class ReadTransactionDatabaseByIndex extends Door8800Command {
 
         ArrayList<AbstractTransaction> trList = new ArrayList<>(iSize);
         result.TransactionList = trList;
-
         Class TransactionType;
         switch (result.DatabaseType) {
             case OnCardTransaction:

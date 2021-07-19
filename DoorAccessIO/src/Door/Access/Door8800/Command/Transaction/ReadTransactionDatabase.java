@@ -26,8 +26,8 @@ import java.util.Calendar;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
- * 读取新记录<br/>
- * 读指定类型的记录数据库最新记录，并读取指定数量。<br/>
+ * 读取新记录<br>
+ * 读指定类型的记录数据库最新记录，并读取指定数量。<br>
  * 成功返回结果参考 {@link ReadTransactionDatabase_Result}
  *
  * @author 赖金杰
@@ -66,7 +66,6 @@ public class ReadTransactionDatabase extends Door8800Command {
         ReadTransactionDatabase_Result result = new ReadTransactionDatabase_Result();
         result.DatabaseType = thisParameter.DatabaseType;
         _Result = result;
-
         CreatePacket(8, 1);
     }
 

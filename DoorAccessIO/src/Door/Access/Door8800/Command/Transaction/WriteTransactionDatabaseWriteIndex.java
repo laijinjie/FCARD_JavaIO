@@ -11,7 +11,7 @@ import Door.Access.Util.ByteUtil;
 import io.netty.buffer.ByteBuf;
 
 /**
- * 修改指定记录数据库的写索引<br/>
+ * 修改指定记录数据库的写索引<br>
  * 记录尾地址
  *
  * @author 赖金杰

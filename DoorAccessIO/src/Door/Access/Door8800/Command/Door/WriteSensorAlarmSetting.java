@@ -11,8 +11,8 @@ import Door.Access.Util.ByteUtil;
 import io.netty.buffer.ByteBuf;
 
 /**
- * 门磁报警功能<br/>
- * 当无有效开门验证时（远程开门、刷卡、密码、出门按钮），检测到门磁打开时就会报警。<br/>
+ * 门磁报警功能<br>
+ * 当无有效开门验证时（远程开门、刷卡、密码、出门按钮），检测到门磁打开时就会报警。<br>
  *
  * @author 赖金杰
  */

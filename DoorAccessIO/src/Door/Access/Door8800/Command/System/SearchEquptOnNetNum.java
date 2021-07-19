@@ -14,8 +14,8 @@ import Door.Access.Util.ByteUtil;
 import io.netty.buffer.ByteBuf;
 
 /**
- * 搜索控制器--搜索不是指定网络标记的控制器.<br/>
- * 成功返回结果参考 {@link SearchEquptOnNetNum_Result}<br/>
+ * 搜索控制器--搜索不是指定网络标记的控制器.<br>
+ * 成功返回结果参考 {@link SearchEquptOnNetNum_Result}<br>
  * <h3>注意：此命令不会触发事件 {@link INConnectorEvent#CommandCompleteEvent(Door.Access.Command.INCommand, Door.Access.Command.INCommandResult)
  * }<br>
  * 此命令在搜索完毕后返回事件为 {@link INConnectorEvent#CommandTimeout(Door.Access.Command.INCommand)

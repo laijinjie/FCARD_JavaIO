@@ -13,8 +13,8 @@ import Door.Access.Door8800.Packet.Door8800PacketModel;
 import io.netty.buffer.ByteBuf;
 
 /**
- * 读卡间隔时间参数.<br/>
- * 成功返回结果参考 {@link ReadReaderIntervalTime_Result}<br/>
+ * 读卡间隔时间参数.<br>
+ * 成功返回结果参考 {@link ReadReaderIntervalTime_Result}<br>
  * 门的读卡间隔功能启用，需要调用函数 {@link Door.Access.Door8800.Command.Door.ReadReaderInterval}
  *
  * @author 赖金杰

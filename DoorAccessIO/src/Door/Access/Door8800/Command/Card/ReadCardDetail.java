@@ -12,22 +12,29 @@ import Door.Access.Door8800.Command.Data.CardDetail;
 import Door.Access.Door8800.Command.Door8800Command;
 import Door.Access.Door8800.Packet.Door8800PacketModel;
 import Door.Access.Util.ByteUtil;
+import Door.Access.Util.StringUtil;
 import io.netty.buffer.ByteBuf;
+import java.math.BigInteger;
 
 /**
- * 读取单个卡片在控制器中的信息<br/>
+ * 读取单个卡片在控制器中的信息<br>
  * 成功返回结果参考 {@link ReadCardDetail_Result}
  *
  * @author 赖金杰
  */
 public class ReadCardDetail extends Door8800Command {
 
+      BigInteger MaxCardData=new  BigInteger("FFFFFFFFFF",16);
     public ReadCardDetail(ReadCardDetail_Parameter par) {
         _Parameter = par;
         ByteBuf dataBuf = ByteUtil.ALLOCATOR.buffer(5);
-        dataBuf.writeByte(0);
-        dataBuf.writeInt(Integer.valueOf(par.CardData));
-        CreatePacket(7, 3, 1, 5, dataBuf);
+           if(MaxCardData.compareTo(par.CardData)== -1){
+            new Exception("CardData Beyond the limit");
+        }
+         dataBuf.writeByte(0); 
+         long biCardData = Long.valueOf(par.CardData.toString());//biCardData是1099511627775
+         dataBuf.writeInt((int)biCardData);
+         CreatePacket(7, 3, 1, 5, dataBuf);
     }
 
     @Override

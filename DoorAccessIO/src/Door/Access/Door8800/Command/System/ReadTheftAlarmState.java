@@ -13,7 +13,7 @@ import Door.Access.Door8800.Packet.Door8800PacketModel;
 import io.netty.buffer.ByteBuf;
 
 /**
- * 获取防盗主机布防状态.<br/>
+ * 获取防盗主机布防状态.<br>
  * 成功返回结果参考 {@link ReadTheftAlarmState_Result}
  *
  * @author 赖金杰

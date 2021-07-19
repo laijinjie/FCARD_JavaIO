@@ -16,7 +16,7 @@ import Door.Access.Command.CommandParameter;
 public class WriteCardDeadlineTipDay_Parameter extends CommandParameter {
 
     /**
-     * 有效期即将过期提醒时间<p/>
+     * 有效期即将过期提醒时间<br>
      * 取值范围: 1-255。0--表示关闭;默认值是30天
      */
     public short Day;

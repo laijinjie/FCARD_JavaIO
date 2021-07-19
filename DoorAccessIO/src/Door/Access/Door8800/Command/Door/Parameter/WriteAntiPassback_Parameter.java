@@ -9,15 +9,15 @@ import Door.Access.Command.CommandDetail;
 import Door.Access.Command.CommandParameter;
 
 /**
- * 防潜返<br/>
- * 刷卡进门后，必须刷卡出门才能再次刷卡进门。<br/>
+ * 防潜返<br>
+ * 刷卡进门后，必须刷卡出门才能再次刷卡进门。<br>
  *
  * @author 赖金杰
  */
 public class WriteAntiPassback_Parameter extends CommandParameter {
 
     /**
-     * 门号<br/>
+     * 门号<br>
      * 门端口在控制板中的索引号，取值：1-4
      */
     public int DoorNum;

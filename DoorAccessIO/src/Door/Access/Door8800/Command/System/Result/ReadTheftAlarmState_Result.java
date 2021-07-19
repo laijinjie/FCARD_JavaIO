@@ -15,7 +15,7 @@ import Door.Access.Command.INCommandResult;
 public class ReadTheftAlarmState_Result implements INCommandResult {
 
     /**
-     * 布防状态.<br/>
+     * 布防状态.<br>
      * <ul>
      * <li>1 &emsp; 延时布防              </li>
      * <li>2 &emsp; 已布防                </li>
@@ -28,7 +28,7 @@ public class ReadTheftAlarmState_Result implements INCommandResult {
     public int TheftState;
 
     /**
-     * 防盗主机报警状态.<br/>
+     * 防盗主机报警状态.<br>
      * 0未报警，1已报警
      */
     public int TheftAlarm;

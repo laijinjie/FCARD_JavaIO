@@ -9,7 +9,7 @@ import Door.Access.Command.CommandParameter;
 import Door.Access.Door8800.Command.Door8800Command;
 
 /**
- * 开始数据监控.<br/>
+ * 开始数据监控.<br>
  * 数据监控打开后，刷卡时会触发事件 {@link Door.Access.Connector.INConnectorEvent#WatchEvent}
  *
  * @author 赖金杰

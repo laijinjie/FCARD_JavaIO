@@ -35,14 +35,14 @@ public class UDPDetail extends ConnectorDetail {
      */
     public int LocalPort;
 
-    /**
-     * 指示使用UDP广播包来发送此命令
-     */
-    public boolean Broadcast;
 
-    public UDPDetail(String ip, int port) {
-        IP = ip;
-        Port = port;
+
+    public UDPDetail(String sRemoteIP, int iRemotePort,
+            String sLocalIP,int iLocalPort) {
+        IP = sRemoteIP;
+        Port = iRemotePort;
+        LocalIP = sLocalIP;
+        LocalPort = iLocalPort;
 
     }
 
@@ -56,9 +56,27 @@ public class UDPDetail extends ConnectorDetail {
         UDPDetail c = (UDPDetail) super.clone();
         c.IP = IP;
         c.Port = Port;
-        c.Broadcast = Broadcast;
         c.LocalIP = LocalIP;
         c.LocalPort = LocalPort;
         return c;
     }
+
+    public String ToString() {
+        StringBuilder keybuf = new StringBuilder(100);
+        keybuf.append("UDPLocal:");
+        keybuf.append(LocalIP);
+        keybuf.append(":");
+        keybuf.append(LocalPort);
+        return keybuf.toString();
+    }
+
+    public String getClientKey() {
+        StringBuilder keybuf = new StringBuilder(100);
+        keybuf.append("UDPClient:");
+        keybuf.append(IP);
+        keybuf.append(":");
+        keybuf.append(Port);
+        return keybuf.toString();
+    }
+
 }

@@ -26,7 +26,7 @@ public class ReadSystemStatus_Result implements INCommandResult{
      */
     public int RestartCount;
     /**
-     * UPS供电状态.<br/>
+     * UPS供电状态.<br>
      * 0--表示电源取电；1--表示UPS供电
      */
     public int UPS;

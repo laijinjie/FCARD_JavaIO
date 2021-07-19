@@ -10,7 +10,7 @@ import Door.Access.Command.CommandParameter;
 import Door.Access.Door8800.Command.Data.DoorPortDetail;
 
 /**
- * 执行远程操作时的门参数<br/>
+ * 执行远程操作时的门参数<br>
  * 远程关门、远程锁定，远程常开，远程解锁
  *
  * @author 赖金杰
@@ -18,7 +18,7 @@ import Door.Access.Door8800.Command.Data.DoorPortDetail;
 public class RemoteDoor_Parameter extends CommandParameter {
 
     /**
-     * 指定远程操作的门参数<br/>
+     * 指定远程操作的门参数<br>
      * 门的值为1表示操作，0表示不操作
      */
     public DoorPortDetail Door;

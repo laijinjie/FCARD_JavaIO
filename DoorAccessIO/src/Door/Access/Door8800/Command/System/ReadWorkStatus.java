@@ -15,7 +15,7 @@ import Door.Access.Door8800.Packet.Door8800PacketModel;
 import io.netty.buffer.ByteBuf;
 
 /**
- * 获取控制器各端口工作状态信息.<br/>
+ * 获取控制器各端口工作状态信息.<br>
  * 成功返回结果参考 {@link ReadWorkStatus_Result}
  *
  * @author 赖金杰

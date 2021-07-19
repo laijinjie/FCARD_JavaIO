@@ -16,7 +16,7 @@ import Door.Access.Command.CommandParameter;
 public class WriteRecordMode_Parameter extends CommandParameter {
 
     /**
-     * 记录存储方式.<br/>
+     * 记录存储方式.<br>
      * 0是满循环，1表示满不循环
      */
     public short Mode;

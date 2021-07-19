@@ -15,7 +15,7 @@ import Door.Access.Command.INCommandResult;
 public class ReadFireAlarmState_Result implements INCommandResult {
 
     /**
-     * 消防报警.<br/>
+     * 消防报警.<br>
      * 状态：0--未开启报警；1--已开启报警
      */
     public short FireAlarm;

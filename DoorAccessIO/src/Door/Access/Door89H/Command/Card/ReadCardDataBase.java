@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
- * 从控制器中读取卡片数据，针对Door89H使用<br/>
+ * 从控制器中读取卡片数据，针对Door89H使用<br>
  * 成功返回结果参考 {@link ReadCardDataBase_Result}
  *
  * @author 徐铭康

@@ -92,8 +92,7 @@ public class TCPClientConnector extends AbstractConnector {
                 if ((_CommandList.peek() != null) || _IsForcibly) {
                     UpdateActivityTime();
                     ConnectServer();
-                }else
-                {
+                } else {
                     CheckChanelIsInvalid();//检查是否已失效
                 }
                 break;
@@ -120,7 +119,7 @@ public class TCPClientConnector extends AbstractConnector {
                 }
                 break;
             case OnConnected:
-                
+
                 //已连接则检查命令是否已准备好
                 _ActivityCommand = _CommandList.peek();
                 if (_ActivityCommand != null) {
@@ -135,7 +134,7 @@ public class TCPClientConnector extends AbstractConnector {
                             ByteBuf sendBuf = _ClientChannel.alloc().buffer(packetBuf.readableBytes());
                             sendBuf.writeBytes(packetBuf);
                             packetBuf.resetReaderIndex();
-                         //   System.out.println("发送指令：" + ByteBufUtil.hexDump(sendBuf));
+                            // System.out.println("发送指令：" + ByteBufUtil.hexDump(sendBuf));
                             _WriteFuture = _ClientChannel.writeAndFlush(sendBuf);
                             _ActivityCommand.SendCommand(_Event);
                             _WriteFuture.addListener(new WriteCallback(this));
@@ -243,8 +242,11 @@ public class TCPClientConnector extends AbstractConnector {
         }
         //System.out.println("Door.Access.Connector.TCPClient.TCPClientConnector.ConnectServer() -- 准备连接服务器：" + _RemoteDetail.IP + ":" + _RemoteDetail.Port);
         _Status = E_ConnectorStatus.OnConnecting;
-
-        _ConnectFuture = _ClientAllocator.connect(_RemoteDetail.IP, _RemoteDetail.Port);
+        int time = 3000;
+        if (_ActivityCommand != null) {
+            time = _ActivityCommand.getCommandParameter().getCommandDetail().Connector.Timeout;
+        }
+        _ConnectFuture = _ClientAllocator.connect(_RemoteDetail.IP, _RemoteDetail.Port, time);
         _ClientChannel = _ConnectFuture.channel();
         _ConnectDate = Calendar.getInstance();//设置连接时间
         _IsCancelConnect = false;
@@ -374,7 +376,7 @@ public class TCPClientConnector extends AbstractConnector {
         synchronized (this) {
             try {
                 if (_ActivityCommand != null) {
-             //       System.out.println(" 已收到数据：\n" + ByteBufUtil.hexDump(msg));
+                    // System.out.println(" 已收到数据：\n" + ByteBufUtil.hexDump(msg));
                     boolean ret = _ActivityCommand.CheckResponse(_Event, msg);
                     if (ret) {
                         if (_ActivityCommand.getIsCommandOver()) {

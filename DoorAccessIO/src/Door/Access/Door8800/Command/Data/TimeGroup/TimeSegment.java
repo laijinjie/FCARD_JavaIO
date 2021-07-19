@@ -26,7 +26,7 @@ public class TimeSegment {
     /**
      * 设置开始时间
      *
-     * @param iHour 开始时间的小时部分 取值范围 0-23
+     * @param Hour 开始时间的小时部分 取值范围 0-23
      * @param Minute 开始时间的分钟部分 取值范围 0-59
      */
     public void SetBeginTime(int Hour, int Minute) {
@@ -48,7 +48,7 @@ public class TimeSegment {
     /**
      * 设置结束时间
      *
-     * @param iHour 开始时间的小时部分 取值范围 0-23
+     * @param Hour 开始时间的小时部分 取值范围 0-23
      * @param Minute 开始时间的分钟部分 取值范围 0-59
      */
     public void SetEndTime(int Hour, int Minute) {

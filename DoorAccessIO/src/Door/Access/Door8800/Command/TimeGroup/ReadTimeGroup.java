@@ -112,9 +112,9 @@ public class ReadTimeGroup extends Door8800Command {
             buf.release();
         }
 
-        for (ByteBuf buf : mBufs){
+    //    for (ByteBuf buf : mBufs){
         
-        }
+     //   }
         result.List = list;
         return result;
     }

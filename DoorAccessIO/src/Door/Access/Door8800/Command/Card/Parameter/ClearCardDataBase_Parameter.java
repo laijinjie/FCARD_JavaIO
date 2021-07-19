@@ -16,7 +16,7 @@ import Door.Access.Command.CommandParameter;
 public class ClearCardDataBase_Parameter extends CommandParameter {
 
     /**
-     * 待清空的卡片数据库类型<br/>
+     * 待清空的卡片数据库类型<br>
      * <ul>
      * <li>1 &emsp; 排序卡区域   </li>
      * <li>2 &emsp; 非排序卡区域 </li>

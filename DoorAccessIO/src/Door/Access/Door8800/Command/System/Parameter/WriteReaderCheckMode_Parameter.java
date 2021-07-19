@@ -16,7 +16,7 @@ import Door.Access.Command.CommandParameter;
 public class WriteReaderCheckMode_Parameter extends CommandParameter {
 
     /**
-     * 读卡器校验.<br/>
+     * 读卡器校验.<br>
      * 0不启用，1启用，2启用校验，但不提示非法数据或线路异常。
      */
     public short ReaderCheckMode;

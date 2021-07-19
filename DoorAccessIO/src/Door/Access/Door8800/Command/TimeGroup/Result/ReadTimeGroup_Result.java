@@ -16,12 +16,12 @@ import java.util.ArrayList;
 public class ReadTimeGroup_Result <T> implements INCommandResult {
 
     /**
-     * 读取到的卡片列表
+     * 读取到的时段列表
      */
     public ArrayList<WeekTimeGroup> List;    
     
     /**
-     * 读取到的卡片数量
+     * 读取到的时段数量
      */
     public int DataBaseSize;
     @Override

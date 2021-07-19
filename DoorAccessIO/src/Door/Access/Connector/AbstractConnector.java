@@ -63,6 +63,12 @@ public abstract class AbstractConnector implements INConnector {
      * 检查通道是否已失效 1分钟无连接，无命令任务则自动失效
      */
     protected void CheckChanelIsInvalid() {
+        if(_isRelease) return;
+        if(_isInvalid)return;
+        if(_IsForcibly||!_CommandList.isEmpty()){
+            _isInvalid=false;
+            return;
+        }       
         long lConnectMillis = _ActivityDate.getTimeInMillis();
         long lNowMillis = Calendar.getInstance().getTimeInMillis();
         long lElapse = lNowMillis - lConnectMillis;//已经过事件
@@ -166,8 +172,8 @@ public abstract class AbstractConnector implements INConnector {
 
     /**
      * 连接错误时，触发此回到函数
-     *
-     * @param oEvent
+     * @param cmd
+     * @param bIsStopCommand 
      */
     protected void RaiseConnectorErrorEvent(INCommand cmd, boolean bIsStopCommand) {
         if (!bIsStopCommand) {

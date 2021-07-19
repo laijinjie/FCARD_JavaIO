@@ -15,7 +15,7 @@ import Door.Access.Command.INCommandResult;
 public class ReadCheckInOut_Result implements INCommandResult {
 
     /**
-     * 防潜回功能参数.<br/>
+     * 防潜回功能参数.<br>
      * 01--单独每个门检测防潜回；02--整个控制器统一防潜回
      */
     public short Mode;

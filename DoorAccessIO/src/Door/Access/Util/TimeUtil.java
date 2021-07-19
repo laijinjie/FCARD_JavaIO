@@ -5,8 +5,11 @@
  */
 package Door.Access.Util;
 
+import io.netty.buffer.ByteBuf;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 
 /**
@@ -72,6 +75,49 @@ public class TimeUtil {
         Calendar dTime = new GregorianCalendar(2000 + year, month - 1, dayOfMonth, hourOfDay, 0, 0);
         return dTime;
     }
+public  static Calendar BCDTimeToDate_yyyyMMddhhmmss(ByteBuf buf){
+    buf =ByteUtil.BCDToBytes(buf, buf.readerIndex(), 7);
+    int year = buf.readByte();
+    int year1 = buf.readByte();
+    int month = buf.readByte();
+    int day = buf.readByte();
+    int hour = buf.readByte();
+    int minute = buf.readByte();
+    int sec = buf.readByte();
+    Calendar calendar=Calendar.getInstance();
+    calendar.setTime(new Date(Long.MIN_VALUE));
+    if (year > 99)
+    {
+        return calendar;
+    }
+    if (year1 > 99)
+    {
+        return calendar;
+    }
+    if (month == 0 || month > 12)
+    {
+        return calendar;
+    }
+    if (day == 0 || day > 31)
+    {
+        return calendar;
+    }
+    if (hour > 23)
+    {
+        return calendar;
+    }
+
+    if (minute > 59)
+    {
+        return calendar;
+    }
+    if (sec > 59)
+    {
+        return calendar;
+    }
+    calendar.set(year * 100 + year1, month-1, day, hour, minute, sec);
+    return calendar;
+}
 
     public static void DateToBCD_yyMMddhh(byte[] btData, Calendar date) {
         if (date == null) {

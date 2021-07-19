@@ -16,13 +16,14 @@ import Door.Access.Command.CommandParameter;
 public class DoorPort_Parameter extends CommandParameter {
 
     /**
-     * 门索引号<br/>
+     * 门索引号<br>
      * 取值范围 1-4
      */
     public int Door;
 
     public DoorPort_Parameter(CommandDetail detail, int iDoor) {
         super(detail);
+        Door=iDoor;
     }
 
 }

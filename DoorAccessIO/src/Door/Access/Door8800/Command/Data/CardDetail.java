@@ -190,36 +190,36 @@ public class CardDetail implements INData, Comparable<CardDetail> {
      */
     public Calendar Expiry;
     /**
-     * 开门时段<br/>
-     * 1-4门的开门时段；时段取值范围：1-64<br/>
-     * TimeGroup[0] -- 1门的时段<br/>
-     * TimeGroup[1] -- 2门的时段<br/>
-     * TimeGroup[2] -- 3门的时段<br/>
-     * TimeGroup[3] -- 4门的时段<br/>
+     * 开门时段<br>
+     * 1-4门的开门时段；时段取值范围：1-64<br>
+     * TimeGroup[0] -- 1门的时段<br>
+     * TimeGroup[1] -- 2门的时段<br>
+     * TimeGroup[2] -- 3门的时段<br>
+     * TimeGroup[3] -- 4门的时段<br>
      */
     protected byte[] TimeGroup;
     /**
-     * 有效次数,取值范围：0-65535;<br.>
+     * 有效次数,取值范围：0-65535;<br>
      * 0表示次数用光了。65535表示不受限制
      */
     public int OpenTimes;
 
     /**
-     * 开门权限<br/>
-     * 1-4门的开门权限；false--无权，true--有权开门<br/>
-     * bit0 -- 1门的权限<br/>
-     * bit1 -- 2门的权限<br/>
-     * bit2 -- 3门的权限<br/>
-     * bit3 -- 4门的权限<br/>
+     * 开门权限<br>
+     * 1-4门的开门权限；false--无权，true--有权开门<br>
+     * bit0 -- 1门的权限<br>
+     * bit1 -- 2门的权限<br>
+     * bit2 -- 3门的权限<br>
+     * bit3 -- 4门的权限<br>
      */
     protected int Door;
 
     /**
      * 特权, 
      * 普通卡：普通开门卡
-     * 首卡：当开启首卡功能时，在某个时段（周时段，天时段）如果首卡不刷卡，其他卡无法使用<br/>
-     * 常开卡：在非常开时间刷卡时，可以保持门常开状态<br/>
-     * 巡更卡，不会开门，只要刷卡记录<br/>
+     * 首卡：当开启首卡功能时，在某个时段（周时段，天时段）如果首卡不刷卡，其他卡无法使用<br>
+     * 常开卡：在非常开时间刷卡时，可以保持门常开状态<br>
+     * 巡更卡，不会开门，只要刷卡记录<br>
      * 防盗设置卡，刷卡时会启动防盗状态
      * <ul>
      * <li>0 &emsp; 普通卡      </li>
@@ -232,7 +232,7 @@ public class CardDetail implements INData, Comparable<CardDetail> {
     protected int Privilege;
 
     /**
-     * 卡片状态<br/>
+     * 卡片状态<br>
      * 0：正常状态；1：挂失；2：黑名单
      */
     public byte CardStatus;
@@ -329,7 +329,7 @@ public class CardDetail implements INData, Comparable<CardDetail> {
     /**
      * 设置指定门是否有权限
      *
-     * @param iIndex 门号，取值范围：1-4
+     * @param iDoor 门号，取值范围：1-4
      * @param bUse true 有权限，false 无权限。
      */
     public void SetDoor(int iDoor, boolean bUse) {

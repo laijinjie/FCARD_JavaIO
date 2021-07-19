@@ -16,12 +16,12 @@ import Door.Access.Door8800.Command.Data.DoorPortDetail;
 public class ReadRelayOption_Result implements INCommandResult {
 
     /**
-     * 继电器参数<br/>
+     * 继电器参数<br>
      * <ul>
-     * <li>1 &emsp; 不输出（默认） COM & NC                                                     </li>
-     * <li>2 &emsp; 输出 COM & NO                                                     </li>
+     * <li>1 &emsp; 不输出（默认） COM&amp;NC                                                     </li>
+     * <li>2 &emsp; 输出 COM&amp;NO                                                     </li>
      * <li>3 &emsp; 读卡切换输出状态（当读到合法卡后自动自动切换到当前相反的状态。）例如卷闸门。 </li>
-     * </ul><br/>
+     * </ul><br>
      */
     public DoorPortDetail door;
 

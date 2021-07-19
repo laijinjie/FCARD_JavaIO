@@ -16,7 +16,7 @@ import Door.Access.Door8800.Command.Data.DoorPortDetail;
 public class OpenDoor_Parameter extends CommandParameter {
 
     /**
-     * 指定远程开门的门信息<br/>
+     * 指定远程开门的门信息<br>
      * 值为1表示开门，0表示不开门
      */
     public DoorPortDetail Door;

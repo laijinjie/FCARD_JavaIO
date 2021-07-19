@@ -11,8 +11,8 @@ import io.netty.buffer.ByteBuf;
 import java.math.BigInteger;
 
 /**
- * 针对Door89H使用，刷卡记录<br/>
- * TransactionCode 事件代码含义表：<br/>
+ * 针对Door89H使用，刷卡记录<br>
+ * TransactionCode 事件代码含义表：<br>
  * <ul>
  * <li>1 &emsp; 合法开门                                                         </li>
  * <li>2 &emsp; 密码开门------------卡号为密码                                   </li>

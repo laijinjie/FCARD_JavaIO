@@ -14,8 +14,8 @@ import Door.Access.Util.ByteUtil;
 import io.netty.buffer.ByteBuf;
 
 /**
- * 开门保持时间<br/>
- * 继电器开锁后释放时间<br/>
+ * 开门保持时间<br>
+ * 继电器开锁后释放时间<br>
  * 成功返回结果参考 {@link ReadRelayReleaseTime_Result}
  *
  * @author 赖金杰
@@ -26,7 +26,7 @@ public class ReadRelayReleaseTime extends Door8800Command {
         _Parameter = par;
         ByteBuf dataBuf = ByteUtil.ALLOCATOR.buffer(1);
         dataBuf.writeByte(par.Door);
-        CreatePacket(3, 8, 0, 1, dataBuf);
+        CreatePacket(0x03, 0x08, 0x00, 0x01, dataBuf);
     }
 
     @Override
@@ -36,7 +36,7 @@ public class ReadRelayReleaseTime extends Door8800Command {
 
     @Override
     protected boolean _CommandStep(INConnectorEvent oEvent, Door8800PacketModel model) {
-        if (CheckResponse_Cmd(model, 3, 1, 0, 4)) {
+        if (CheckResponse_Cmd(model, 0x03, 0x08)) {
             ByteBuf buf = model.GetDatabuff();
 
             ReadRelayReleaseTime_Result r = new ReadRelayReleaseTime_Result();

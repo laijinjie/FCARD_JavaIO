@@ -17,13 +17,13 @@ import Door.Access.Door8800.Command.Data.DoorPortDetail;
 public class WriteReaderOption_Parameter extends CommandParameter {
 
     /**
-     * 读卡器字节数<br/>
+     * 读卡器字节数<br>
      * <ul>
      * <li>1 &emsp; 韦根26(三字节)</li>
      * <li>2 &emsp; 韦根34(四字节)</li>
      * <li>3 &emsp; 韦根26(二字节)</li>
      * <li>4 &emsp; 禁用          </li>
-     * </ul><br/>
+     * </ul><br>
      */
     public DoorPortDetail door;
 

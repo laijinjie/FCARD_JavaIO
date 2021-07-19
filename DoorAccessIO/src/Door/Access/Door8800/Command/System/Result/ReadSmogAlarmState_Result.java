@@ -14,7 +14,7 @@ import Door.Access.Command.INCommandResult;
 public class ReadSmogAlarmState_Result implements INCommandResult {
 
     /**
-     * 烟雾报警参数.<br/>
+     * 烟雾报警参数.<br>
      * 状态：0--未开启报警；1--已开启报警
      */
     public short SmogAlarm;

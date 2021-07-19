@@ -16,7 +16,7 @@ import Door.Access.Command.CommandParameter;
 public class WriteBuzzer_Parameter extends CommandParameter {
 
     /**
-     * 主板蜂鸣器.<br/>
+     * 主板蜂鸣器.<br>
      * 0不启用，1启用。
      */
     public short Buzzer;

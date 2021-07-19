@@ -13,7 +13,7 @@ import Door.Access.Command.INCommandResult;
  */
 public class ReadFireAlarmOption_Result implements INCommandResult{
     /**
-     * 消防报警功能参数.<br/>
+     * 消防报警功能参数.<br>
      * <ul>
      * <li>值 &emsp; 解释                                   </li>
      * <li>0 &emsp; 不启用                                 </li>

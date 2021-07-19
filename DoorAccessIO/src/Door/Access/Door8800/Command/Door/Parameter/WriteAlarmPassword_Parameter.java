@@ -10,15 +10,15 @@ import Door.Access.Command.CommandParameter;
 import Door.Access.Util.StringUtil;
 
 /**
- * 胁迫报警功能<br/>
- * 功能开启后，在密码键盘读卡器上输入特定密码后就会报警；<br/>
+ * 胁迫报警功能<br>
+ * 功能开启后，在密码键盘读卡器上输入特定密码后就会报警；<br>
  *
  * @author 赖金杰
  */
 public class WriteAlarmPassword_Parameter extends CommandParameter {
 
     /**
-     * 门号<br/>
+     * 门号<br>
      * 门端口在控制板中的索引号，取值：1-4
      */
     public int DoorNum;
@@ -34,7 +34,7 @@ public class WriteAlarmPassword_Parameter extends CommandParameter {
     protected String Password;
 
     /**
-     * 报警选项<br/>
+     * 报警选项<br>
      * <ul>
      * <li>1 &emsp; 不开门，报警输出           </li>
      * <li>2 &emsp; 开门，报警输出             </li>

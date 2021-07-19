@@ -13,7 +13,7 @@ import Door.Access.Door8800.Packet.Door8800PacketModel;
 import io.netty.buffer.ByteBuf;
 
 /**
- * 有效期即将过期提醒时间.<br/>
+ * 有效期即将过期提醒时间.<br>
  * 成功返回结果参考 {@link ReadCardDeadlineTipDay_Result}
  *
  * @author 赖金杰

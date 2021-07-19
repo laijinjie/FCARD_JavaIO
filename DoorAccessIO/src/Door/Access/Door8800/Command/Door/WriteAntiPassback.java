@@ -11,8 +11,8 @@ import Door.Access.Util.ByteUtil;
 import io.netty.buffer.ByteBuf;
 
 /**
- * 防潜返<br/>
- * 刷卡进门后，必须刷卡出门才能再次刷卡进门。<br/>
+ * 防潜返<br>
+ * 刷卡进门后，必须刷卡出门才能再次刷卡进门。<br>
  *
  * @author 赖金杰
  */

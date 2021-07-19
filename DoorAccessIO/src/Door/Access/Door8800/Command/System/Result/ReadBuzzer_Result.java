@@ -15,7 +15,7 @@ import Door.Access.Command.INCommandResult;
 public class ReadBuzzer_Result implements INCommandResult {
 
     /**
-     * 主板蜂鸣器.<br/>
+     * 主板蜂鸣器.<br>
      * 0不启用，1启用。
      */
     public short Buzzer;

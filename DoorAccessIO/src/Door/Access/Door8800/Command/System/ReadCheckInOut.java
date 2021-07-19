@@ -13,7 +13,7 @@ import Door.Access.Door8800.Packet.Door8800PacketModel;
 import io.netty.buffer.ByteBuf;
 
 /**
- * 防潜回参数.<br/>
+ * 防潜回参数.<br>
  * 成功返回结果参考 {@link ReadCheckInOut_Result}
  *
  * @author 赖金杰

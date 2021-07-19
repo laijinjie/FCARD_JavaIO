@@ -13,7 +13,7 @@ import Door.Access.Door8800.Packet.Door8800PacketModel;
 import io.netty.buffer.ByteBuf;
 
 /**
- * 黑名单报警功能开关.<br/>
+ * 黑名单报警功能开关.<br>
  * 成功返回结果参考 {@link ReadBalcklistAlarmOption_Result}
  *
  * @author 赖金杰

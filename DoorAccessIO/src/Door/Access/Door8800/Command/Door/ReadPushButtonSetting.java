@@ -14,8 +14,8 @@ import Door.Access.Util.ByteUtil;
 import io.netty.buffer.ByteBuf;
 
 /**
- * 出门按钮功能<br/>
- * 可设定出门按钮的按下5秒后常开，还可以设定出门按钮的使用时段<br/>
+ * 出门按钮功能<br>
+ * 可设定出门按钮的按下5秒后常开，还可以设定出门按钮的使用时段<br>
  * 成功返回结果参考 {@link ReadPushButtonSetting_Result}
  *
  * @author 赖金杰
@@ -38,13 +38,12 @@ public class ReadPushButtonSetting extends Door8800Command {
     @Override
     protected boolean _CommandStep(INConnectorEvent oEvent, Door8800PacketModel model) {
         if (CheckResponse_Cmd(model, 3, 0xF, 0, 0xE3)) {
-            ByteBuf buf = model.GetDatabuff();
-            
+            ByteBuf buf = model.GetDatabuff();          
             ReadPushButtonSetting_Result r = new ReadPushButtonSetting_Result();
             r.DoorNum = buf.readByte();
             r.Use = buf.readBoolean();
             r.NormallyOpen = buf.readBoolean();
-            r.TimeGroup.SetBytes(buf);
+            r.TimeGroup.SetWeekTimeGroupBytes(buf);
             //设定返回值
             _Result = r;
             

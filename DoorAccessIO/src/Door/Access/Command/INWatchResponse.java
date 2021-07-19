@@ -26,7 +26,6 @@ public interface INWatchResponse {
      *
      * @param oEvent
      * @param bData
-     * @return
      */
     public void CheckResponse(ConnectorDetail connectorDetail, INConnectorEvent oEvent, ByteBuf bData);
 }

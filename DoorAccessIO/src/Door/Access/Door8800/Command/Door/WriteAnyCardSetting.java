@@ -11,8 +11,8 @@ import Door.Access.Util.ByteUtil;
 import io.netty.buffer.ByteBuf;
 
 /**
- * 全卡开门功能<br/>
- * 所有的卡都能开门，不需要权限首选注册，只要读卡器能识别就能开门。<br/>
+ * 全卡开门功能<br>
+ * 所有的卡都能开门，不需要权限首选注册，只要读卡器能识别就能开门。<br>
  *
  * @author 赖金杰
  */

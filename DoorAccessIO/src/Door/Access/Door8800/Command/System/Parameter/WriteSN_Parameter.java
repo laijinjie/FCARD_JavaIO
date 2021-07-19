@@ -35,7 +35,6 @@ public class WriteSN_Parameter extends CommandParameter {
     /**
      * 设置控制器SN
      *
-     * @return
      */
     public void SetSN(String sn) {
         if (StringUtil.IsNullOrEmpty(sn)) {

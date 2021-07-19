@@ -11,7 +11,7 @@ import Door.Access.Util.ByteUtil;
 import io.netty.buffer.ByteBuf;
 
 /**
- * 远程锁定门，锁定后不能读卡开门，仅可以密码开门，不能按钮开门<br/>
+ * 远程锁定门，锁定后不能读卡开门，仅可以密码开门，不能按钮开门<br>
  * 每个门的值0表示不执行操作，1表示执行操作
  *
  * @author 赖金杰

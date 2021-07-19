@@ -15,7 +15,7 @@ import Door.Access.Command.INCommandResult;
 public class ReadOpenAlarmOption_Result implements INCommandResult {
 
     /**
-     * 匪警报警功能参数.<br/>
+     * 匪警报警功能参数.<br>
      * <ul>
      * <li>值 &emsp; 解释                                                                                                                                                 </li>
      * <li>0 &emsp; 关闭此功能                                                                                                                                            </li>

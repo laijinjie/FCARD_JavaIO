@@ -26,6 +26,10 @@ import Door.Access.Util.ByteUtil;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -41,6 +45,8 @@ import java.util.concurrent.TimeUnit;
 public class ConnectorAllocator {
 
     private static ConnectorAllocator staticConnectorAllocator;
+
+    public   static boolean IsUDPBind;
 
     public synchronized static ConnectorAllocator GetAllocator() {
         if (staticConnectorAllocator == null) {
@@ -93,7 +99,7 @@ public class ConnectorAllocator {
     /**
      * 增加事件监听者
      *
-     * @param _EventListener
+     * @param listener
      */
     public void AddListener(INConnectorEvent listener) {
         if (_IsRelease) {
@@ -110,7 +116,7 @@ public class ConnectorAllocator {
     /**
      * 删除监听者
      *
-     * @param _EventListener
+     * @param listener
      */
     public void DeleteListener(INConnectorEvent listener) {
         if (_IsRelease) {
@@ -393,14 +399,39 @@ public class ConnectorAllocator {
         }
     }
 
-    protected INConnector SearchUDPClient(UDPDetail detail, boolean bNew) {
-        StringBuilder keybuf = new StringBuilder(100);
-        keybuf.append("UDP:");
-        keybuf.append(detail.LocalIP);
-        keybuf.append(":");
-        keybuf.append(detail.LocalPort);
-        String sKey = keybuf.toString();
+    public void UDPBind(String ip ,int port) {
+        if(IsUDPBind){
+            return;
+        }
+        if(!isPortUsing(ip,port)){
+             throw new UnsupportedOperationException("UDPBind ip or port error ");
+        }
+        UDPDetail detail=new UDPDetail ("",1,ip,port);
+        UDPConnector connector = (UDPConnector)SearchUDPClient(detail, true);
+        connector.UDPBind();
+        IsUDPBind=true;
+    }
+     /**
+      * 检测Ip和端口是否可用
+      * @param host
+      * @param port
+      * @return 
+      */
+     public static boolean isPortUsing(String host,int port){
+         boolean flag = false;
+         try {
+             InetAddress theAddress = InetAddress.getByName(host);
+             ServerSocket server= new ServerSocket(port,10,theAddress);
+             server.close();
+             flag = true;
+         } catch (Exception e) {
 
+         }
+         return flag;
+     }
+    protected INConnector SearchUDPClient(UDPDetail detail, boolean bNew) {
+        if(detail.Port <=0 || detail.LocalPort <=0) return null;
+        String sKey = detail.ToString();
         if (_ConnectorMap.containsKey(sKey)) {
             return _ConnectorMap.get(sKey);
         } else {

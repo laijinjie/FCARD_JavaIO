@@ -17,7 +17,7 @@ import Door.Access.Door8800.Command.Data.DoorPortDetail;
 public class ReadWorkStatus_Result implements INCommandResult {
 
     /**
-     * 门继电器物理状态.<br/>
+     * 门继电器物理状态.<br>
      * <ul>
      * <li>0 &emsp; 表示COM和NC常闭                </li>
      * <li>1 &emsp; 表示COM和NO常闭                </li>
@@ -26,17 +26,17 @@ public class ReadWorkStatus_Result implements INCommandResult {
      */
     public DoorPortDetail RelayState;
     /**
-     * 运行状态.<br/>
+     * 运行状态.<br>
      * 常开还是常闭，0表示常闭，1常开
      */
     public DoorPortDetail DoorLongOpenState;
     /**
-     * 门磁开关.<br/>
+     * 门磁开关.<br>
      * 0表关，1表示开
      */
     public DoorPortDetail DoorState;
     /**
-     * 门报警状态.<br/>
+     * 门报警状态.<br>
      * <ul>
      * <li>0 &emsp; 非法刷卡报警 </li>
      * <li>1 &emsp; 门磁报警     </li>
@@ -48,7 +48,7 @@ public class ReadWorkStatus_Result implements INCommandResult {
     public DoorPortDetail DoorAlarmState;
 
     /**
-     * 设备报警状态.<br/>
+     * 设备报警状态.<br>
      * <ul>
      * <li>0 &emsp; 匪警报警           </li>
      * <li>1 &emsp; 防盗报警           </li>
@@ -60,7 +60,7 @@ public class ReadWorkStatus_Result implements INCommandResult {
     public int AlarmState;
 
     /**
-     * 继电器逻辑状态.<br/>
+     * 继电器逻辑状态.<br>
      * <h2>继电器的逻辑开关状态</h2>
      * <ul>
      * <li>0--继电器关；</li>
@@ -68,7 +68,7 @@ public class ReadWorkStatus_Result implements INCommandResult {
      * <li>2--双稳态；  </li>
      * </ul>
      * <h2>门序号值说明</h2>
-     * 1-4是表示门的继电器，这个继电器状态需要根据门的继电器类型判断真实物理状况或者根据第一组状态值【门继电器物理状态】判断。<br/>
+     * 1-4是表示门的继电器，这个继电器状态需要根据门的继电器类型判断真实物理状况或者根据第一组状态值【门继电器物理状态】判断。<br>
      * 5-8是报警继电器，目前定义只有0或1两个状态。<br>
      * 状态0表示：COM和NC导通<br>
      * 状态1表示：COM和NO导通<br>
@@ -83,13 +83,13 @@ public class ReadWorkStatus_Result implements INCommandResult {
     public DoorPortDetail LockState;
 
     /**
-     * 锁定状态.<br/>
+     * 锁定状态.<br>
      * 4个门，0--未锁定，1--锁定
      */
     public DoorPortDetail PortLockState;
 
     /**
-     * 监控状态.<br/>
+     * 监控状态.<br>
      * 0--未开启监控；1--开启监控
      */
     public int WatchState;
@@ -100,7 +100,7 @@ public class ReadWorkStatus_Result implements INCommandResult {
     public DoorLimit EnterTotal;
 
     /**
-     * 防盗主机布防状态.<br/>
+     * 防盗主机布防状态.<br>
      * <ul>
      * <li>1 &emsp; 延时布防              </li>
      * <li>2 &emsp; 已布防                </li>

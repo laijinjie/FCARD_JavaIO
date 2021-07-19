@@ -15,7 +15,7 @@ import Door.Access.Command.INCommandResult;
 public class ReadSmogAlarmOption_Result implements INCommandResult {
 
     /**
-     * 烟雾报警功能参数.<br/>
+     * 烟雾报警功能参数.<br>
      * <ul>
      * <li>值 &emsp; 解释                                                                    </li>
      * <li>0 &emsp; 关闭此功能（默认）                                                                  </li>

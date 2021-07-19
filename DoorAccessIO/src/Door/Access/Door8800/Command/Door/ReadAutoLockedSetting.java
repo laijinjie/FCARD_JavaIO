@@ -14,7 +14,7 @@ import Door.Access.Util.ByteUtil;
 import io.netty.buffer.ByteBuf;
 
 /**
- * 定时锁定门，可设定一周内任意时间的门锁定时段。<br/>
+ * 定时锁定门，可设定一周内任意时间的门锁定时段。<br>
  * 成功返回结果参考 {@link ReadAutoLockedSetting_Result}
  *
  * @author 赖金杰

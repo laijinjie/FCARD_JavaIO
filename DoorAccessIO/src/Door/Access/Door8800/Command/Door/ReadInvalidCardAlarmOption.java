@@ -14,7 +14,7 @@ import Door.Access.Util.ByteUtil;
 import io.netty.buffer.ByteBuf;
 
 /**
- * 未注册卡读卡时报警功能<br/>
+ * 未注册卡读卡时报警功能<br>
  * 成功返回结果参考 {@link ReadInvalidCardAlarmOption_Result}
  *
  * @author 赖金杰

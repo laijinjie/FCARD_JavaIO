@@ -43,12 +43,15 @@ public class TCPClientAllocator {
      *
      * @param IP
      * @param Port
+     * @param timeout 单位毫秒
      * @return
      */
-    public ChannelFuture connect(String IP, int Port) {
+    public ChannelFuture connect(String IP, int Port,int timeout) {
         if (TCPInitializer == null) {
             return null;
         }
+        
+        TCPBootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, timeout);//最大30秒连接超时
         return TCPBootstrap.connect(IP, Port);
     }
 

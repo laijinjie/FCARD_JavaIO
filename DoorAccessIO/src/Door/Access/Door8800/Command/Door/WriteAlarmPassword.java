@@ -12,8 +12,8 @@ import Door.Access.Util.StringUtil;
 import io.netty.buffer.ByteBuf;
 
 /**
- * 胁迫报警功能<br/>
- * 功能开启后，在密码键盘读卡器上输入特定密码后就会报警；<br/>
+ * 胁迫报警功能<br>
+ * 功能开启后，在密码键盘读卡器上输入特定密码后就会报警；<br>
  *
  * @author 赖金杰
  */

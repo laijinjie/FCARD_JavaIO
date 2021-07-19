@@ -14,7 +14,7 @@ import Door.Access.Command.INCommandResult;
 public class ReadKeyboard_Result implements INCommandResult{
 
     /**
-     * 读卡器密码键盘启用功能开关.<br/>
+     * 读卡器密码键盘启用功能开关.<br>
      *
      * <ul>
      * <li>Bit0 &emsp; 1号读头</li>

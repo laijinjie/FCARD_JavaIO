@@ -11,7 +11,7 @@ import Door.Access.Util.ByteUtil;
 import io.netty.buffer.ByteBuf;
 
 /**
- * 设置控制器单个门的读卡器验证方式参数<br/>
+ * 设置控制器单个门的读卡器验证方式参数<br>
  * 读卡器验证方式是按周时段划分，验证方式分为：只读卡\只密码\读卡加密码\手动输入卡号+密码
  *
  * @author 赖金杰

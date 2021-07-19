@@ -17,7 +17,7 @@ import Door.Access.Door8800.Command.Data.BroadcastDetail;
 public class WriteBroadcast_Parameter extends CommandParameter {
 
     /**
-     * 语音段开关.<br/>
+     * 语音段开关.<br>
      * 语音段对照可参考《Door8800语音表》 每个开关true 表示启用，false 表示禁用
      */
     public BroadcastDetail Broadcast;

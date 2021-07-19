@@ -19,7 +19,6 @@ import io.netty.channel.socket.nio.NioDatagramChannel;
 public class UDPAllocator {
 
     private Bootstrap UDPBootstrap;
-    
     public UDPAllocator() {
         
         UDPBootstrap = new Bootstrap(); //初始化客户端快速构造器

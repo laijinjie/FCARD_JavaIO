@@ -27,8 +27,8 @@ public abstract class AbstractCommand implements INCommand {
      */
     protected INCommandResult _Result;
     /**
-     * 最大进度数<br/>
-     * 当有发生变化时，应调用 {@Link AbstractCommand.RaiseCommandProcessEvent()}
+     * 最大进度数<br>
+     * 当有发生变化时，应调用  RaiseCommandProcessEvent
      */
     protected int _ProcessMax;
     /**

@@ -17,7 +17,7 @@ import Door.Access.Door8800.Command.Transaction.e_TransactionDatabaseType;
 public class WriteTransactionDatabaseWriteIndex_Parameter extends CommandParameter {
 
     /**
-     * 记录数据库类型<br/>
+     * 记录数据库类型<br>
      * <ul>
      * <li>1 &emsp; 读卡记录    </li>
      * <li>2 &emsp; 出门开关记录</li>
@@ -29,7 +29,7 @@ public class WriteTransactionDatabaseWriteIndex_Parameter extends CommandParamet
      */
     public e_TransactionDatabaseType DatabaseType;
     /**
-     * 数据库中的写索引号<br/>
+     * 数据库中的写索引号<br>
      * 记录尾地址
      */
     public int WriteIndex;

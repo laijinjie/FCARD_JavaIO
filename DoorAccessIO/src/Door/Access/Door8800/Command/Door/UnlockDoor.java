@@ -9,7 +9,7 @@ import Door.Access.Door8800.Command.Door8800Command;
 import Door.Access.Util.ByteUtil;
 import io.netty.buffer.ByteBuf;
 /**
- * 远程解除门锁定状态<br/>
+ * 远程解除门锁定状态<br>
  * 每个门的值0表示不执行操作，1表示执行操作
  *
  * @author 赖金杰

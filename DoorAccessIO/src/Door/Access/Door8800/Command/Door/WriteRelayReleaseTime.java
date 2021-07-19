@@ -11,8 +11,8 @@ import Door.Access.Util.ByteUtil;
 import io.netty.buffer.ByteBuf;
 
 /**
- * 开门保持时间<br/>
- * 继电器开锁后释放时间<br/>
+ * 开门保持时间<br>
+ * 继电器开锁后释放时间<br>
  *
  * @author 赖金杰
  */

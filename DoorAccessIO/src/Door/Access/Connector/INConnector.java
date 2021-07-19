@@ -89,7 +89,6 @@ public interface INConnector extends Runnable {
     /**
      * 停止指定类型的命令，终止命令继续执行
      *
-     * @param oEvent 事件触发器
      * @param dtl 命令详情
      */
     public void StopCommand(INIdentity dtl);

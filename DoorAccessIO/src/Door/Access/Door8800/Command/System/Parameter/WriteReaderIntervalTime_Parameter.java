@@ -14,7 +14,7 @@ import Door.Access.Command.CommandParameter;
  */
 public class WriteReaderIntervalTime_Parameter extends CommandParameter {
     /**
-     * 读卡间隔时间. <br/>
+     * 读卡间隔时间. <br>
      * 最大65535秒。0表示无限制
      */
     public int IntervalTime;

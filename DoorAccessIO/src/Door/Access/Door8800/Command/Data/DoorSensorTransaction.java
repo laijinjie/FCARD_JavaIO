@@ -10,8 +10,8 @@ import Door.Access.Util.TimeUtil;
 import io.netty.buffer.ByteBuf;
 
 /**
- * 门磁记录<br/>
- * TransactionCode 事件代码含义表：<br/>
+ * 门磁记录<br>
+ * TransactionCode 事件代码含义表：<br>
  * <ul>
  * <li>1 &emsp; 开门               </li>
  * <li>2 &emsp; 关门               </li>

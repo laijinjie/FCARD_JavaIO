@@ -19,15 +19,16 @@ import java.util.ArrayList;
 
 /**
  * 设置开门时段
+ *
  * @author 徐铭康
  */
 public class AddTimeGroup extends Door8800Command {
 
-     protected int mIndex;  //指示当前命令进行的步骤
+    protected int mIndex;  //指示当前命令进行的步骤
     protected ArrayList<WeekTimeGroup> List;
-    
-    public AddTimeGroup(AddTimeGroup_Parameter par){
-        
+
+    public AddTimeGroup(AddTimeGroup_Parameter par) {
+
         List = par.List;
         _Parameter = par;
 
@@ -35,59 +36,63 @@ public class AddTimeGroup extends Door8800Command {
         mIndex = 0;
         //初始化缓冲空间
         _CreatePacket();
-        WriteNext();
+        //    WriteNext();
     }
-    
-    protected void _CreatePacket(){
-        
+
+    protected void _CreatePacket() {
+
         ByteBuf dataBuf = ByteUtil.ALLOCATOR.buffer(225);
         CreatePacket(0x06, 0x03, 0, 225, dataBuf);
     }
 
     @Override
     protected void Release0() {
-        
-        
+
     }
 
     private void WriteNext() {
-        
-        
         Door8800PacketCompile compile = (Door8800PacketCompile) _Packet;
         Door8800PacketModel p = (Door8800PacketModel) _Packet.GetPacket();
         ByteBuf dataBuf = p.GetDatabuff();
         dataBuf.clear();
-        dataBuf.writeByte(mIndex + 1);
-        
-        List.get(mIndex).GetBytes(dataBuf);        
+        WeekTimeGroup wtg = List.get(mIndex);
+        int groupIndex = wtg.GetIndex();
+        if (groupIndex == 0) {
+            groupIndex = mIndex + 1;
+        }
+        if (groupIndex > 64) {
+            groupIndex = 1;
+        }
+        dataBuf.writeByte(groupIndex);
+        wtg.GetBytes(dataBuf);
+        _ProcessStep = mIndex;
         p.SetDataLen(dataBuf.readableBytes());//重置数据长度
         compile.Compile();//重新编译
-         mIndex++;
+        mIndex++;
         CommandReady();
     }
-    
-     @Override
+
+    @Override
     protected boolean _CommandStep(INConnectorEvent oEvent, Door8800PacketModel model) {
         if (CheckResponseOK(model)) {
-            
+
             CommandNext(oEvent);
             return true;
         }
         return false;
     }
-    
+
     /**
      * 命令继续执行
      */
-    protected void CommandNext(INConnectorEvent oEvent){
+    protected void CommandNext(INConnectorEvent oEvent) {
         //增加命令进度
         _ProcessStep = mIndex;
-        if (mIndex < List.size()) {
+        if (mIndex < List.size() && mIndex < 64) {
             WriteNext();
         } else {
-            
-            
+            RaiseCommandCompleteEvent(oEvent);
         }
-        
+
     }
 }

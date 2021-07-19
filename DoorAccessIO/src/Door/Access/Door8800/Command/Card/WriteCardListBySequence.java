@@ -18,9 +18,9 @@ import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
- * 将卡片列表写入到控制器非排序区<br/>
- * 控制器非排序区写入少量卡时效率高<br/>
- * 但是当区域内存储卡片超过5000时，写入卡片效率会逐渐降低<br/>
+ * 将卡片列表写入到控制器非排序区<br>
+ * 控制器非排序区写入少量卡时效率高<br>
+ * 但是当区域内存储卡片超过5000时，写入卡片效率会逐渐降低<br>
  * 建议：当写入卡数量大于2000张时，应清空所有卡，然后将所有卡片上传到排序区，应使用{@link WriteCardListBySort}
  * 成功返回结果参考 {@link WriteCardListBySequence_Result}
  *

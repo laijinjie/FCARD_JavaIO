@@ -13,7 +13,7 @@ import Door.Access.Door8800.Packet.Door8800PacketModel;
 import io.netty.buffer.ByteBuf;
 
 /**
- * 读取控制器4个门的读卡器字节数<br/>
+ * 读取控制器4个门的读卡器字节数<br>
  * 成功返回结果参考 {@link ReadReaderOption_Result}
  *
  * @author 赖金杰

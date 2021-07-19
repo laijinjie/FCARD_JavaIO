@@ -15,7 +15,7 @@ import Door.Access.Door8800.Command.Door8800Command;
  */
 public class ReadLockInteraction_Result implements INCommandResult{
     /**
-     * 互锁功能开关.<br/>
+     * 互锁功能开关.<br>
      * 4个门的互锁状态，各门端口的取值：1--已启用互锁功能，0--不启用互锁功能
      */
     public final DoorPortDetail DoorPort;

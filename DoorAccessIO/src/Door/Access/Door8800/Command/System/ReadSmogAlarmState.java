@@ -13,7 +13,7 @@ import Door.Access.Door8800.Packet.Door8800PacketModel;
 import io.netty.buffer.ByteBuf;
 
 /**
- * 获取烟雾报警状态.<br/>
+ * 获取烟雾报警状态.<br>
  * 成功返回结果参考 {@link ReadSmogAlarmState_Result}
  *
  * @author 赖金杰

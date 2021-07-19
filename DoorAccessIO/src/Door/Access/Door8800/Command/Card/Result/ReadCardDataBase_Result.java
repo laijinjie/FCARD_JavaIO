@@ -25,7 +25,7 @@ public class ReadCardDataBase_Result<T> implements INCommandResult {
     public int DataBaseSize;
     
     /**
-     * 待读取的卡片数据库类型<br/>
+     * 待读取的卡片数据库类型<br>
      * <ul>
      * <li>1 &emsp; 排序卡区域   </li>
      * <li>2 &emsp; 非排序卡区域 </li>

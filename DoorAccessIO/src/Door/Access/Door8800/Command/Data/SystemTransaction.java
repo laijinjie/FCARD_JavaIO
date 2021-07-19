@@ -11,18 +11,18 @@ import Door.Access.Util.TimeUtil;
 import io.netty.buffer.ByteBuf;
 
 /**
- * 系统记录<br/>
- * TransactionCode 事件代码含义表：<br/>
+ * 系统记录<br>
+ * TransactionCode 事件代码含义表：<br>
  * <ul>
  * <li>1 &emsp; 系统加电                         </li>
  * <li>2 &emsp; 系统错误复位（看门狗）           </li>
  * <li>3 &emsp; 设备格式化记录                   </li>
- * <li>4 &emsp; 系统高温记录，温度大于>75        </li>
+ * <li>4 &emsp; 系统高温记录，温度大于75        </li>
  * <li>5 &emsp; 系统UPS供电记录                  </li>
- * <li>6 &emsp; 温度传感器损坏，温度大于>100     </li>
- * <li>7 &emsp; 电压过低，小于<09V               </li>
-* <
- * li>8 &emsp; 电压过高，大于>14V               </li>
+ * <li>6 &emsp; 温度传感器损坏，温度大于100     </li>
+ * <li>7 &emsp; 电压过低，小于09V               </li>
+* 
+ * <li>8 &emsp; 电压过高，大于14V               </li>
  * <li>9 &emsp; 读卡器接反。                     </li>
  * <li>10 &emsp; 读卡器线路未接好。              </li>
  * <li>11 &emsp; 无法识别的读卡器                </li>

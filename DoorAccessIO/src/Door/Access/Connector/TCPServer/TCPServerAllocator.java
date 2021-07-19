@@ -70,7 +70,6 @@ public class TCPServerAllocator {
      * 将客户端保存在列表中
      *
      * @param client
-     * @param clientID
      */
     public void AddClient(TCPServer_ClientConnector client) {
         StringBuilder keybuf = new StringBuilder(100);

@@ -16,7 +16,7 @@ import Door.Access.Door8800.Command.Data.BroadcastDetail;
 public class ReadWatchState_Result implements INCommandResult {
 
     /**
-     * 监控状态.<br/>
+     * 监控状态.<br>
      * 0--未开启监控；1--已开启监控
      */
     public int State;

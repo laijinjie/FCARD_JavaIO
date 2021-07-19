@@ -13,7 +13,7 @@ import Door.Access.Door8800.Packet.Door8800PacketModel;
 import io.netty.buffer.ByteBuf;
 
 /**
- * 读取控制器作为客户端时，和服务器的保活间隔时间.<br/>
+ * 读取控制器作为客户端时，和服务器的保活间隔时间.<br>
  * 成功返回结果参考 {@link ReadKeepAliveInterval_Result}
  *
  * @author 赖金杰

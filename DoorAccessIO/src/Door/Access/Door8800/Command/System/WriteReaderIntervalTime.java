@@ -11,7 +11,7 @@ import Door.Access.Util.ByteUtil;
 import io.netty.buffer.ByteBuf;
 
 /**
- * 读卡间隔时间参数<br/>
+ * 读卡间隔时间参数<br>
  * 门是否启用读卡间隔，需要调用函数 {@link Door.Access.Door8800.Command.Door.WriteReaderInterval}
  * @author 赖金杰
  */

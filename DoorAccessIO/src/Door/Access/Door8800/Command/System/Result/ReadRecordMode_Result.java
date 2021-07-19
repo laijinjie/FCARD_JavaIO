@@ -15,7 +15,7 @@ import Door.Access.Command.INCommandResult;
 public class ReadRecordMode_Result implements INCommandResult {
 
     /**
-     * 记录存储方式.<Br/>
+     * 记录存储方式.<br>
      * 0是满循环，1表示满不循环
      */
     public short RecordMode;

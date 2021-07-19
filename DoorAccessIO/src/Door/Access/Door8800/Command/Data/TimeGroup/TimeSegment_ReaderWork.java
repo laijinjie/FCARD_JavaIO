@@ -54,7 +54,7 @@ public class TimeSegment_ReaderWork extends TimeSegment {
     }
 
     /**
-     * 验证工作方式<br/>
+     * 验证工作方式<br>
      * <ul>
      * <li>Bit0 &emsp; 只读卡           </li>
      * <li>Bit1 &emsp; 只密码           </li>

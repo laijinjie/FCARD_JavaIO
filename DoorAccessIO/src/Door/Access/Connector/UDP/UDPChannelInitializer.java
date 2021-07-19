@@ -6,6 +6,7 @@
 package Door.Access.Connector.UDP;
 
 import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.handler.timeout.IdleStateHandler;
 
@@ -19,6 +20,7 @@ public class UDPChannelInitializer
     @Override
     protected void initChannel(NioDatagramChannel ch) throws Exception {
         ch.pipeline().addLast(new IdleStateHandler(20, 20, 0));//超时检查
+        ch.config().setOption(ChannelOption.SO_BROADCAST, true);
     }
     
 }

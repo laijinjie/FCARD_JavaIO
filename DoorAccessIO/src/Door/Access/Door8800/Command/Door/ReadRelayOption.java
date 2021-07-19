@@ -13,12 +13,12 @@ import Door.Access.Door8800.Packet.Door8800PacketModel;
 import io.netty.buffer.ByteBuf;
 
 /**
- * 读取控制器继电器参数<br/>
+ * 读取控制器继电器参数<br>
  * <ul>
- * <li>1 &emsp; 不输出（默认） COM & NC                                                     </li>
- * <li>2 &emsp; 输出 COM & NO                                                     </li>
+ * <li>1 &emsp; 不输出（默认）"COM\\u0024NC"</li>
+ * <li>2 &emsp; 输出 "COM\\u0024NO";                                                     </li>
  * <li>3 &emsp; 读卡切换输出状态（当读到合法卡后自动自动切换到当前相反的状态。）例如卷闸门。 </li>
- * </ul><br/>
+ * </ul><br>
  * 成功返回结果参考 {@link ReadRelayOption_Result}
  *
  * @author 赖金杰

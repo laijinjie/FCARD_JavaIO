@@ -6,7 +6,7 @@
 package Door.Access.Door8800.Command.Data;
 
 /**
- * 报警类型--用于解除报警<br/>
+ * 报警类型--用于解除报警<br>
  * <ul>
  * <li>00--非法卡报警</li>
  * <li>01--门磁报警</li>

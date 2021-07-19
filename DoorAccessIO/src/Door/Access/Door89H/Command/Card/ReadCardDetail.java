@@ -12,22 +12,28 @@ import Door.Access.Door89H.Command.Data.CardDetail;
 import Door.Access.Door8800.Command.Door8800Command;
 import Door.Access.Door8800.Packet.Door8800PacketModel;
 import Door.Access.Util.ByteUtil;
+import Door.Access.Util.StringUtil;
+import Door.Access.Util.UInt32Util;
 import io.netty.buffer.ByteBuf;
+import java.math.BigInteger;
 
 /**
- * 读取单个卡片在控制器中的信息，针对Door89H使用<br/>
+ * 读取单个卡片在控制器中的信息，针对Door89H使用<br>
  * 成功返回结果参考 {@link ReadCardDetail_Result}
  *
  * @author 徐铭康
  */
 public class ReadCardDetail extends Door8800Command {
-
+    BigInteger MaxCardData=new  BigInteger("FFFFFFFFFFFFFFFFFF",16);
     public ReadCardDetail(ReadCardDetail_Parameter par) {
         _Parameter = par;
         ByteBuf dataBuf = ByteUtil.ALLOCATOR.buffer(9);
-        dataBuf.writeByte(0);
-        //dataBuf.writeInt((int) par.CardData);
-        Door.Access.Util.StringUtil.HextoByteBuf(String.valueOf(par.CardData),dataBuf);
+        if(MaxCardData.compareTo(par.CardData)== -1){
+            new Exception("CardData Beyond the limit");
+        }
+        String cardData=StringUtil.FillHexString(par.CardData.toString(16),18, "0", false);
+        StringUtil.HextoByteBuf(cardData, dataBuf);
+       // dataBuf.writeBytes(bCardData);
         CreatePacket(7, 3, 1, 9, dataBuf);
     }
 
@@ -53,10 +59,8 @@ public class ReadCardDetail extends Door8800Command {
                 cd.SetBytes(buf);
                 r.Card = cd;
             }
-
             //设定返回值
             _Result = r;
-
             RaiseCommandCompleteEvent(oEvent);
             return true;
         } else {

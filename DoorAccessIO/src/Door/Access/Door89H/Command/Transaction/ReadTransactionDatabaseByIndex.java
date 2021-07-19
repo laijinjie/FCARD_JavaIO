@@ -20,8 +20,8 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 
 /**
- * 针对Door89H使用，读记录数据库<br/>
- * 按指定索引号开始读指定类型的记录数据库，并读取指定数量。<br/>
+ * 针对Door89H使用，读记录数据库<br>
+ * 按指定索引号开始读指定类型的记录数据库，并读取指定数量。<br>
  * 成功返回结果参考 {@link ReadTransactionDatabaseByIndex_Result}
  *
  * @author 徐铭康

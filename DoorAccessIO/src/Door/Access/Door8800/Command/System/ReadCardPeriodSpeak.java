@@ -13,7 +13,7 @@ import Door.Access.Door8800.Packet.Door8800PacketModel;
 import io.netty.buffer.ByteBuf;
 
 /**
- * 卡片到期提示参数.<br/>
+ * 卡片到期提示参数.<br>
  * 成功返回结果参考 {@link ReadCardPeriodSpeak_Result}
  *
  * @author 赖金杰

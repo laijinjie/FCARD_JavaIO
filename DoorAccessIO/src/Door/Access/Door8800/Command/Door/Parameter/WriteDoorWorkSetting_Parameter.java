@@ -17,7 +17,7 @@ import Door.Access.Door8800.Command.Data.TimeGroup.WeekTimeGroup;
 public class WriteDoorWorkSetting_Parameter extends CommandParameter {
 
     /**
-     * 门号<br/>
+     * 门号<br>
      * 门端口在控制板中的索引号，取值：1-4
      */
     public int DoorNum;
@@ -28,7 +28,7 @@ public class WriteDoorWorkSetting_Parameter extends CommandParameter {
     public boolean Use;
 
     /**
-     * 门工作方式；<br/>
+     * 门工作方式；<br>
      * <ul>
      * <li>1 &emsp; 普通        </li>
      * <li>2 &emsp; 多卡        </li>
@@ -40,7 +40,7 @@ public class WriteDoorWorkSetting_Parameter extends CommandParameter {
     public int DoorWorkType;
 
     /**
-     * 常开工作模式选项<br/>
+     * 常开工作模式选项<br>
      * <ul>
      * <li>1 &emsp; 合法卡在时段内即可常开                      </li>
      * <li>2 &emsp; 授权中标记为常开卡的在指定时段内刷卡即可常开</li>
@@ -50,7 +50,7 @@ public class WriteDoorWorkSetting_Parameter extends CommandParameter {
     public int HoldDoorOption;
 
     /**
-     * 周时段<br/>
+     * 周时段<br>
      * 用于在工作模式设定为首卡，常开时，在时段内会生效。 首卡模式在时段外工作方式需要参考 首卡开门参数。 常开模式时段外会自动退出常开。
      */
     public WeekTimeGroup timeGroup;

@@ -15,7 +15,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.Calendar;
 
 /**
- * 从控制器中读取控制器时间<br/>
+ * 从控制器中读取控制器时间<br>
  * 成功返回结果参考 {@link ReadTime_Result}
  *
  * @author 赖金杰

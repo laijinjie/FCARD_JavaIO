@@ -296,8 +296,7 @@ public class TCPDetail implements INData {
     /**
      * 检查IPv4地址是否符合格式。
      *
-     * @param IP IPv4地址
-     * @return true 符合
+     * @param ip IPv4地址
      */
     public static boolean CheckIP(String ip) {
         if (StringUtil.IsNullOrEmpty(ip)) {

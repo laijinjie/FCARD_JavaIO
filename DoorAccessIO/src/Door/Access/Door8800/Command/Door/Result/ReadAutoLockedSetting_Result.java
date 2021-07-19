@@ -16,7 +16,7 @@ import Door.Access.Door8800.Command.Data.TimeGroup.WeekTimeGroup;
 public class ReadAutoLockedSetting_Result implements INCommandResult {
 
     /**
-     * 门号<br/>
+     * 门号<br>
      * 门端口在控制板中的索引号，取值：1-4
      */
     public int DoorNum;
@@ -26,7 +26,7 @@ public class ReadAutoLockedSetting_Result implements INCommandResult {
      */
     public boolean Use;
     /**
-     * 定时锁定时段<br/>
+     * 定时锁定时段<br>
      * 功能开启后，在时段内的时候门将进入自动锁定状态
      */
     public WeekTimeGroup timeGroup;

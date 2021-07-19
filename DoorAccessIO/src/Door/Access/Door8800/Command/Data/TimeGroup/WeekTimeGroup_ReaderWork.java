@@ -5,11 +5,13 @@
  */
 package Door.Access.Door8800.Command.Data.TimeGroup;
 
+import Door.Access.Door8800.Command.Data.E_WeekDay;
 import Door.Access.Util.ByteUtil;
 import io.netty.buffer.ByteBuf;
 
 /**
  * 读卡认证方式中的周时段详情
+ * GetItem 类型需要转换成DayTimeGroup_ReaderWork
  * @author 赖金杰
  */
 public class WeekTimeGroup_ReaderWork extends WeekTimeGroup{
@@ -32,7 +34,10 @@ public class WeekTimeGroup_ReaderWork extends WeekTimeGroup{
             mDay[i] = new DayTimeGroup_ReaderWork(DaySegmentCount);
         }
     }
-    
+       @Override
+    public DayTimeGroup_ReaderWork GetItem(E_WeekDay week) {
+        return (DayTimeGroup_ReaderWork) super.GetItem(week);
+    }
     @Override
     public WeekTimeGroup Clone() {
         WeekTimeGroup_ReaderWork w = new WeekTimeGroup_ReaderWork(DaySegmentCount);

@@ -15,8 +15,8 @@ import io.netty.buffer.ByteBuf;
 import java.util.Collections;
 
 /**
- * 针对Door89H使用，将卡片列表写入到控制器排序区<br/>
- * 控制器排序区每次写入都会清空重头写，所以添加少量卡(小于100)时应使用{@link WriteCardListBySort}<br/>
+ * 针对Door89H使用，将卡片列表写入到控制器排序区<br>
+ * 控制器排序区每次写入都会清空重头写，所以添加少量卡(小于100)时应使用{@link WriteCardListBySort}<br>
  * 成功返回结果参考 {@link WriteCardListBySort_Result}
  *
  * @author 徐铭康

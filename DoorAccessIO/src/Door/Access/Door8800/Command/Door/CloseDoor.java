@@ -11,7 +11,7 @@ import Door.Access.Util.ByteUtil;
 import io.netty.buffer.ByteBuf;
 
 /**
- * 远程关门指令<br/>
+ * 远程关门指令<br>
  * 每个门的值0表示不执行操作，1表示执行操作
  *
  * @author 赖金杰

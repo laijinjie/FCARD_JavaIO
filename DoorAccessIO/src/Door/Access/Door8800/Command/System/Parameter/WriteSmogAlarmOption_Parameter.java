@@ -16,7 +16,7 @@ import Door.Access.Command.CommandParameter;
 public class WriteSmogAlarmOption_Parameter extends CommandParameter {
 
     /**
-     * 烟雾报警功能参数.<br/>
+     * 烟雾报警功能参数.<br>
      * <ul>
      * <li>值 &emsp; 解释                                                                    </li>
      * <li>0 &emsp; 关闭此功能（默认）                                                                  </li>

@@ -5,12 +5,12 @@
  */
 package Door.Access.Door8800.Command;
 
-
 import Door.Access.Command.AbstractCommand;
 import Door.Access.Command.E_CommandStatus;
 import Door.Access.Connector.INConnectorEvent;
 import Door.Access.Door8800.Door8800Identity;
 import Door.Access.Door8800.Packet.*;
+import Door.Access.Packet.INPacket;
 import Door.Access.Packet.INPacketModel;
 import Door.Access.Util.StringUtil;
 import io.netty.buffer.ByteBuf;
@@ -51,8 +51,27 @@ public abstract class Door8800Command extends AbstractCommand {
         if (_Packet != null) {
             _Packet.Release();
         }
-        _Packet = new Door8800PacketCompile(sn, lPassword, (short) iCmdType, (short) iCmdIndex, (short) iCmdPar, iDataLen, Databuf);
+        if (identity.Broadcast) {
+            //0xBFBFAABB
+            _Packet = new Door8800PacketCompile(sn, lPassword, 3217009339l, (short) iCmdType, (short) iCmdIndex, (short) iCmdPar, iDataLen, Databuf);
+        } else {
+            _Packet = new Door8800PacketCompile(sn, lPassword, (short) iCmdType, (short) iCmdIndex, (short) iCmdPar, iDataLen, Databuf);
+        }
+
         CommandReady();
+    }
+
+    @Override
+    public INPacket GetPacket() {
+        Door8800PacketCompile Compile = (Door8800PacketCompile) _Packet;
+        Door8800PacketModel SendModel = (Door8800PacketModel) Compile.GetPacket();
+        long code = SendModel.GetCode();
+        if (code != 3217009339l)//0xBFBFAABB
+        {
+            SendModel.SetCode(code + 1);
+            Compile.Compile();
+        }
+        return _Packet;
     }
 
     @Override
@@ -136,6 +155,15 @@ public abstract class Door8800Command extends AbstractCommand {
     }
 
     protected boolean CheckResponse_Cmd(Door8800PacketModel model, int CmdType, int CmdIndex, int CmdPar, int DataLen) {
+        return (model.GetCmdType() == (0x30 + CmdType) && model.GetCmdIndex() == CmdIndex && model.GetCmdPar() == CmdPar && model.GetDataLen() == DataLen);
+    }
+
+    protected boolean CheckResponse_Cmd(Door8800PacketModel model, int DataLen) {
+        Door8800PacketCompile Compile = (Door8800PacketCompile) _Packet;
+        Door8800PacketModel SendModel = (Door8800PacketModel) Compile.GetPacket();
+        int CmdType = SendModel.GetCmdType();
+        int CmdIndex = SendModel.GetCmdIndex();
+        int CmdPar = SendModel.GetCmdPar();
         return (model.GetCmdType() == (0x30 + CmdType) && model.GetCmdIndex() == CmdIndex && model.GetCmdPar() == CmdPar && model.GetDataLen() == DataLen);
     }
 }

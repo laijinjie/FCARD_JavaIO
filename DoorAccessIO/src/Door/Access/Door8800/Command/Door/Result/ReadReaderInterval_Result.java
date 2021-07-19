@@ -15,7 +15,7 @@ import Door.Access.Command.INCommandResult;
 public class ReadReaderInterval_Result implements INCommandResult {
 
     /**
-     * 门号<br/>
+     * 门号<br>
      * 门端口在控制板中的索引号，取值：1-4
      */
     public int DoorNum;
@@ -26,7 +26,7 @@ public class ReadReaderInterval_Result implements INCommandResult {
     public boolean Use;
 
     /**
-     * 重复读卡时的记录响应模式<br/>
+     * 重复读卡时的记录响应模式<br>
      * *<ul>
      * <li>1 &emsp; 记录读卡，不开门，有提示   </li>
      * <li>2 &emsp; 不记录读卡，不开门，有提示 </li>

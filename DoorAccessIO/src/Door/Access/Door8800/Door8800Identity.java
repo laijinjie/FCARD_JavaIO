@@ -19,7 +19,11 @@ public class Door8800Identity implements INIdentity {
     private String mPassword; //通讯密码 十六进制表示 4-8个字节
     private String mSN;//SN 16位
     private E_ControllerType mType;
-
+    /**
+     * 指示使用UDP广播包来发送此命令
+     */
+    public boolean Broadcast;
+    
     public Door8800Identity(String sn, String pwd, E_ControllerType type) {
         SetSN(sn);
         SetPassword(pwd);

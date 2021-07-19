@@ -20,12 +20,12 @@ import Door.Access.Door8800.Command.Data.TheftAlarmSetting;
 public class ReadAllSystemSetting_Result implements INCommandResult {
 
     /**
-     * 记录存储方式.<br/>
+     * 记录存储方式.<br>
      * 0是满循环，1表示满不循环
      */
     public short RecordMode;
     /**
-     * 读卡器密码键盘启用功能开关.<br/>
+     * 读卡器密码键盘启用功能开关.<br>
      *
      * <ul>
      * <li>Bit0 &emsp; 1号读头</li>
@@ -40,12 +40,12 @@ public class ReadAllSystemSetting_Result implements INCommandResult {
      */
     public short Keyboard;
     /**
-     * 互锁功能开关.<br/>
+     * 互锁功能开关.<br>
      * 4个门的互锁状态，各门端口的取值：1--已启用互锁功能，0--不启用互锁功能
      */
     public DoorPortDetail LockInteraction;
     /**
-     * 消防报警功能参数.<br/>
+     * 消防报警功能参数.<br>
      * <ul>
      * <li>值 &emsp; 解释                                   </li>
      * <li>0 &emsp; 不启用                                 </li>
@@ -57,7 +57,7 @@ public class ReadAllSystemSetting_Result implements INCommandResult {
      */
     public short FireAlarmOption;
     /**
-     * 匪警报警功能参数.<br/>
+     * 匪警报警功能参数.<br>
      * <ul>
      * <li>值 &emsp; 解释                                                                                                                                                 </li>
      * <li>0 &emsp; 关闭此功能                                                                                                                                            </li>
@@ -69,27 +69,27 @@ public class ReadAllSystemSetting_Result implements INCommandResult {
      */
     public short OpenAlarmOption;
     /**
-     * 读卡间隔时间. <br/>
+     * 读卡间隔时间. <br>
      * 最大65535秒。0表示无限制
      */
     public int ReaderIntervalTime;
     /**
-     * 语音播报开关.<br/>
+     * 语音播报开关.<br>
      * 语音段对照可参考《Door8800语音表》 每个开关true 表示启用，false 表示禁用
      */
     public BroadcastDetail SpeakOpen;
     /**
-     * 读卡器校验.<br/>
+     * 读卡器校验.<br>
      * 0不启用，1启用，2启用校验，但不提示非法数据或线路异常。
      */
     public short ReaderCheckMode;
     /**
-     * 主板蜂鸣器.<br/>
+     * 主板蜂鸣器.<br>
      * 0不启用，1启用。
      */
     public short BuzzerMode;
     /**
-     * 烟雾报警功能参数.<br/>
+     * 烟雾报警功能参数.<br>
      * <ul>
      * <li>值 &emsp; 解释                                                                    </li>
      * <li>0 &emsp; 关闭此功能（默认）                                                                  </li>
@@ -100,12 +100,12 @@ public class ReadAllSystemSetting_Result implements INCommandResult {
      */
     public short SmogAlarmOption;
     /**
-     * 门内人数限制.<br/>
-     * 上限值：0--表示不受限制.<br/>
-     * 全局上限优先级最高，全局上限如果大于 0 则设备使用全局上限.<br/>
-     * 例如：<br/>
-     * 全局上限为100,1门上限为50,2门上限为100,。。。。4门上限为1000 <br/>
-     * 设备将使用全局上限100，即整个主板上进入数不能超过100。<br/>
+     * 门内人数限制.<br>
+     * 上限值：0--表示不受限制.<br>
+     * 全局上限优先级最高，全局上限如果大于 0 则设备使用全局上限.<br>
+     * 例如：<br>
+     * 全局上限为100,1门上限为50,2门上限为100,。。。。4门上限为1000 <br>
+     * 设备将使用全局上限100，即整个主板上进入数不能超过100。<br>
      * 此数据重启后清空。
      */
     public DoorLimit EnterDoorLimit;
@@ -114,12 +114,12 @@ public class ReadAllSystemSetting_Result implements INCommandResult {
      */
     public TheftAlarmSetting TheftAlarmPar;
     /**
-     * 防潜回功能参数.<br/>
+     * 防潜回功能参数.<br>
      * 01--单独每个门检测防潜回；02--整个控制器统一防潜回
      */
     public short CheckInOut;
     /**
-     * 卡片到期提示.<br/>
+     * 卡片到期提示.<br>
      * 0不启用，1启用
      */
     public short CardPeriodSpeak;

@@ -6,7 +6,8 @@
 package Door.Access.Door8800.Command.Data.TimeGroup;
 
 /**
- * 读卡认证方式中的每日时段详情
+ * 读卡认证方式中的每日时段详情 GetItem 类型需要转换成 TimeSegment_ReaderWork
+ *
  * @author 赖金杰
  */
 public class DayTimeGroup_ReaderWork extends DayTimeGroup {
@@ -28,4 +29,9 @@ public class DayTimeGroup_ReaderWork extends DayTimeGroup {
         }
     }
 
+    @Override
+    public TimeSegment_ReaderWork GetItem(int iIndex) {
+        return (TimeSegment_ReaderWork) super.GetItem(iIndex);
+    }
 }
+

@@ -19,7 +19,7 @@ import java.util.Calendar;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
- * 从控制器中读取卡片数据<br/>
+ * 从控制器中读取卡片数据<br>
  * 成功返回结果参考 {@link ReadCardDataBase_Result}
  *
  * @author 赖金杰

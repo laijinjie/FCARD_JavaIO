@@ -5,19 +5,19 @@
  */
 package Door.Access.Door8800.Command.Door;
 
-import Door.Access.Door8800.Command.Door.Parameter.WriteReaderOption_Parameter;
+import Door.Access.Door8800.Command.Door.Parameter.WriteRelayOption_Parameter;
 import Door.Access.Door8800.Command.Door8800Command;
 import Door.Access.Util.ByteUtil;
 import io.netty.buffer.ByteBuf;
 
 /**
- * 控制器继电器参数<br/>
+ * 控制器继电器参数<br>
  *
  * @author 赖金杰
  */
 public class WriteRelayOption extends Door8800Command {
 
-    public WriteRelayOption(WriteReaderOption_Parameter par) {
+    public WriteRelayOption(WriteRelayOption_Parameter par) {
         _Parameter = par;
         ByteBuf dataBuf = ByteUtil.ALLOCATOR.buffer(4);
         dataBuf.writeBytes(par.door.DoorPort);

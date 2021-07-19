@@ -14,7 +14,7 @@ import Door.Access.Util.ByteUtil;
 import io.netty.buffer.ByteBuf;
 
 /**
- * 门的工作模式，可设定多卡、首卡、常开 这三种特殊工作模式。<br/>
+ * 门的工作模式，可设定多卡、首卡、常开 这三种特殊工作模式。<br>
  * 成功返回结果参考 {@link ReadDoorWorkSetting_Result}
  *
  * @author 赖金杰

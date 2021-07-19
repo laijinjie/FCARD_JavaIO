@@ -10,7 +10,7 @@ import Door.Access.Door8800.Command.System.Parameter.WriteReadCardSpeak_Paramete
 import io.netty.buffer.ByteBuf;
 
 /**
- * 定时读卡播报语音参数.<br/>
+ * 定时读卡播报语音参数.<br>
  * 成功返回结果参考 {@link WriteReadCardSpeak_Parameter}
  *
  * @author 赖金杰

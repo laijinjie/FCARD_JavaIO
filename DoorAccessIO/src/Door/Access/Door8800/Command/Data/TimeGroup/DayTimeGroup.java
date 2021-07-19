@@ -19,7 +19,8 @@ public class DayTimeGroup {
 
     /**
      * 初始化天时段
-     * @param SegmentCount  一天中的时段数量
+     *
+     * @param SegmentCount 一天中的时段数量
      */
     public DayTimeGroup(int SegmentCount) {
         SetSegmentCount(SegmentCount);
@@ -52,6 +53,7 @@ public class DayTimeGroup {
 
     /**
      * 获取一个时段，进行操作
+     *
      * @param iIndex 此时段在这一天当中的索引号，索引从0开始
      * @return 时间段
      */
@@ -60,6 +62,21 @@ public class DayTimeGroup {
             throw new IllegalArgumentException("iIndex<0 || iIndex > GetSegmentCount()");
         }
         return mSegment[iIndex];
+    }
+
+    /**
+     * 设置一个时段
+     *
+     * @param ts 时段
+     * @param index 此时段在这一天当中的索引号，索引从0开始
+     * @return
+     */
+    public boolean SetItem(TimeSegment ts, int index) {
+        if (index < 0 || index > GetSegmentCount()) {
+            throw new IllegalArgumentException("iIndex<0 || iIndex > GetSegmentCount()");
+        }
+        mSegment[index] = ts;
+        return true;
     }
 
     /**

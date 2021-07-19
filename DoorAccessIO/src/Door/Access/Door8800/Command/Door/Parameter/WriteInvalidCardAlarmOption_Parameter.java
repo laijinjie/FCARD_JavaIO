@@ -16,7 +16,7 @@ import Door.Access.Command.CommandParameter;
 public class WriteInvalidCardAlarmOption_Parameter extends CommandParameter {
 
     /**
-     * 门号<br/>
+     * 门号<br>
      * 门端口在控制板中的索引号，取值：1-4
      */
     public int DoorNum;
