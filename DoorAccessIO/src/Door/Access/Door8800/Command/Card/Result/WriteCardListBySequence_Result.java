@@ -26,6 +26,8 @@ public class WriteCardListBySequence_Result implements INCommandResult {
      */
     public ArrayList<? extends CardDetail> CardList;
 
+    public long OverflowCount;
+
     public WriteCardListBySequence_Result() {
         
     }

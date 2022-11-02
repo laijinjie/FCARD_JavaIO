@@ -35,7 +35,7 @@ public class TimeSegment_ReaderWork extends TimeSegment {
          * 手动输入卡号+密码
          */
         InputCardAndPassword(3);
-        
+
         private final int value;
 
         //构造器默认也只能是private, 从而保证构造函数只能在内部使用
@@ -63,7 +63,7 @@ public class TimeSegment_ReaderWork extends TimeSegment {
      * </ul>
      */
     protected int mWortType;
-    
+
     public TimeSegment_ReaderWork() {
         super();
         mWortType = 0;
@@ -85,7 +85,7 @@ public class TimeSegment_ReaderWork extends TimeSegment {
             iByteValue = iByteValue >> (iBitIndex);
         }
         return iByteValue == 1;
-        
+
     }
 
     /**
@@ -95,7 +95,7 @@ public class TimeSegment_ReaderWork extends TimeSegment {
      * @param bUse 开关状态 开关true 表示启用，false 表示禁用
      */
     public void SetWorkType(ReaderWorkType type, boolean bUse) {
-        
+
         if (bUse == GetWorkType(type)) {
             return;
         }
@@ -114,8 +114,19 @@ public class TimeSegment_ReaderWork extends TimeSegment {
      * @param bBuf
      */
     public void GetBytes(ByteBuf bBuf) {
-        super.GetBytes(bBuf);
-        bBuf.writeByte(ByteUtil.ByteToBCD((byte) mWortType));
+        //  super.GetBytes(bBuf);
+        if (mBeginTime[0] == 0 && mBeginTime[1] == 0 && mEndTime[0] == 0 && mEndTime[1] == 0) {
+            bBuf.writeByte(255);
+            bBuf.writeByte(255);
+            bBuf.writeByte(255);
+            bBuf.writeByte(255);
+        } else {
+            bBuf.writeByte(ByteUtil.ByteToBCD((byte) mBeginTime[0]));
+            bBuf.writeByte(ByteUtil.ByteToBCD((byte) mBeginTime[1]));
+            bBuf.writeByte(ByteUtil.ByteToBCD((byte) mEndTime[0]));
+            bBuf.writeByte(ByteUtil.ByteToBCD((byte) mEndTime[1]));
+        }
+        bBuf.writeByte(mWortType);
     }
 
     /**
@@ -125,8 +136,8 @@ public class TimeSegment_ReaderWork extends TimeSegment {
      */
     public void SetBytes(ByteBuf bBuf) {
         super.SetBytes(bBuf);
-        
+
         mWortType = bBuf.readByte();
     }
-    
+
 }

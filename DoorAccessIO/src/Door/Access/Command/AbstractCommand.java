@@ -339,6 +339,17 @@ public abstract class AbstractCommand implements INCommand {
 //        INCommand cmd,INCommandResult result
         //System.out.println("Door.Access.Command.AbstractCommand.RaiseCommandCompleteEvent() -- 发送命令完成事件");
         CommandOver();
+        RaiseCommandCompleteEvent1(oEvent);
+    }
+    /**
+     * 当命令完成时，会触发此函数回调
+     *
+     * @param oEvent
+     */
+    public void RaiseCommandCompleteEvent1(INConnectorEvent oEvent) {
+//        INCommand cmd,INCommandResult result
+        //System.out.println("Door.Access.Command.AbstractCommand.RaiseCommandCompleteEvent() -- 发送命令完成事件");
+      //  CommandOver();
         if (oEvent != null) {
             oEvent.CommandCompleteEvent(this, _Result);
         }
@@ -347,7 +358,6 @@ public abstract class AbstractCommand implements INCommand {
             cmdEvent.CommandCompleteEvent(this, _Result);
         }
     }
-
     /**
      * 命令发生进程发生变化
      *

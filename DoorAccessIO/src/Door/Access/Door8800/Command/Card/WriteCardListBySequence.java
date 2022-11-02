@@ -7,6 +7,7 @@ package Door.Access.Door8800.Command.Card;
 
 import Door.Access.Connector.INConnectorEvent;
 import Door.Access.Door8800.Command.Card.Parameter.WriteCardListBySequence_Parameter;
+import Door.Access.Door8800.Command.Card.Result.ReadCardDatabaseDetail_Result;
 import Door.Access.Door8800.Command.Card.Result.WriteCardListBySequence_Result;
 import Door.Access.Door8800.Command.Data.CardDetail;
 import Door.Access.Door8800.Command.Door8800Command;
@@ -14,6 +15,7 @@ import Door.Access.Door8800.Packet.Door8800PacketCompile;
 import Door.Access.Door8800.Packet.Door8800PacketModel;
 import Door.Access.Util.ByteUtil;
 import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -27,40 +29,43 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * @author 赖金杰
  */
 public class WriteCardListBySequence extends Door8800Command {
-    
+
     protected int mIndex;//指示当前命令进行的步骤
     protected ArrayList<? extends CardDetail> _List;
     protected ConcurrentLinkedQueue<ByteBuf> mBufs;
-    
-    public WriteCardListBySequence(){
-        
+
+    public WriteCardListBySequence() {
+
     }
-    
+
     public WriteCardListBySequence(WriteCardListBySequence_Parameter par) {
         _Parameter = par;
         _List = par.CardList;
         _ProcessMax = par.CardList.size();
         mIndex = 0;
         //初始化缓冲空间
-        _CreatePacket();
-        WriteNext();
+
+        CreatePacket(7, 1);//查询容量信息
     }
-    
-    protected void _CreatePacket(){
-        int iLen = (5 * 0x21) + 4;
-        ByteBuf dataBuf = ByteUtil.ALLOCATOR.buffer(iLen);
-        CreatePacket(7, 4, 0, iLen, dataBuf);
+
+    protected void _CreatePacket() {
+        if(mIndex==0){
+            int iLen = (5 * 0x21) + 4;
+            ByteBuf dataBuf = ByteUtil.ALLOCATOR.buffer(iLen);
+            CreatePacket(7, 4, 0, iLen, dataBuf);
+        }
+        WriteNext();
     }
 
     /**
      * 写入下一个卡号
      */
-    protected void WriteNext(){
+    protected void WriteNext() {
         int iMaxSize = 5; //每个数据包最大5个卡
         int iSize = 0;
         int iIndex = 0;
         int ListLen = _List.size();
-        
+
         Door8800PacketCompile compile = (Door8800PacketCompile) _Packet;
         Door8800PacketModel p = (Door8800PacketModel) _Packet.GetPacket();
         ByteBuf dataBuf = p.GetDatabuff();
@@ -79,11 +84,14 @@ public class WriteCardListBySequence extends Door8800Command {
             dataBuf.setInt(0, iSize);
         }
         p.SetDataLen(dataBuf.readableBytes());//重置数据长度
+        p.SetCmdType((short) 7);
+        p.SetCmdIndex((short) 4);
+        p.SetCmdPar((short) 0);
         compile.Compile();//重新编译
         mIndex = iIndex + 1;
         CommandReady();
     }
-    
+
     @Override
     protected void Release0() {
         ClearBuf();
@@ -93,11 +101,29 @@ public class WriteCardListBySequence extends Door8800Command {
         _List = null;
         return;
     }
-    
+
     @Override
     protected boolean _CommandStep(INConnectorEvent oEvent, Door8800PacketModel model) {
-        if (CheckResponseOK(model)) {
-            
+        if (CheckResponse_Cmd(model, 7, 1, 0, 0x10)) {
+            ByteBuf buf = model.GetDatabuff();
+
+            buf.readUnsignedInt();
+            buf.readUnsignedInt();
+            long SequenceDataBaseSize = buf.readUnsignedInt();
+            long SequenceCardSize = buf.readUnsignedInt();
+            long size = SequenceDataBaseSize - SequenceCardSize;
+
+            if (_List.size() > size) {
+                WriteCardListBySequence_Result r = new WriteCardListBySequence_Result();
+                r.OverflowCount = _List.size() - size;
+                _Result = r;
+                RaiseCommandCompleteEvent(oEvent);
+            }else {
+                _CreatePacket();
+            }
+            return true;
+        } else if (CheckResponseOK(model)) {
+
             CommandNext(oEvent);
             return true;
         } else if (CheckResponse_Cmd(model, 7, 4, 0xFF)) {
@@ -112,7 +138,7 @@ public class WriteCardListBySequence extends Door8800Command {
     /**
      * 命令继续执行
      */
-    protected void CommandNext(INConnectorEvent oEvent){
+    protected void CommandNext(INConnectorEvent oEvent) {
         //增加命令进度
         _ProcessStep = mIndex;
         if (mIndex < _List.size()) {
@@ -120,11 +146,11 @@ public class WriteCardListBySequence extends Door8800Command {
         } else {
             WriteCardListBySequence_Result r = new WriteCardListBySequence_Result();
             _Result = r;
-            
+
             Analysis();
             RaiseCommandCompleteEvent(oEvent);
         }
-        
+
     }
 
     /**
@@ -134,12 +160,12 @@ public class WriteCardListBySequence extends Door8800Command {
         if (mBufs == null) {
             return;
         }
-        int iCardSize=0;
+        int iCardSize = 0;
         ArrayList<CardDetail> CardList = new ArrayList<>(10000);
-        
+
         WriteCardListBySequence_Result r = (WriteCardListBySequence_Result) _Result;
-        
-        
+
+
         while (mBufs.peek() != null) {
             ByteBuf buf = mBufs.poll();
             iCardSize = buf.readInt();
@@ -150,20 +176,20 @@ public class WriteCardListBySequence extends Door8800Command {
             }
             buf.release();
         }
-        r.CardList=CardList;
-        r.FailTotal=CardList.size();
-        
+        r.CardList = CardList;
+        r.FailTotal = CardList.size();
+
     }
-    
+
     protected void SaveBuf(ByteBuf buf) {
         if (mBufs == null) {
             mBufs = new ConcurrentLinkedQueue<>();
         }
-        
+
         buf.retain();
         mBufs.add(buf);
     }
-    
+
     protected void ClearBuf() {
         if (mBufs == null) {
             return;
@@ -173,5 +199,5 @@ public class WriteCardListBySequence extends Door8800Command {
             buf.release();
         }
     }
-    
+
 }

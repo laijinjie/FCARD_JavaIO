@@ -85,13 +85,13 @@ public abstract class AbstractConnector implements INConnector {
     public synchronized void AddCommand(INCommand cmd) {
         _CommandList.offer(cmd);
         if (cmd.GetIdentity() != null) {
-            AddWatchDecompile(PacketDecompileAllocator.GetDecompile(cmd.GetIdentity().GetIdentityType()));
+            AddWatchDecompile(GetConnectorDetail(),PacketDecompileAllocator.GetDecompile(cmd.GetIdentity().GetIdentityType()));
         }
 
     }
 
     @Override
-    public synchronized void AddWatchDecompile(INWatchResponse decompile) {
+    public synchronized void AddWatchDecompile(ConnectorDetail detail,INWatchResponse decompile) {
         if (decompile == null) {
             return;
         }
@@ -276,6 +276,7 @@ public abstract class AbstractConnector implements INConnector {
      * 监控响应的处理
      */
     protected synchronized void CheckWatchResponse(ByteBuf msg) {
+        
         if (_DecompileList.size() == 0) {
             return;
         }

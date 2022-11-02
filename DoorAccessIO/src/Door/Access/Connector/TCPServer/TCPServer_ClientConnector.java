@@ -10,6 +10,7 @@ import Door.Access.Connector.ConnectorDetail;
 import Door.Access.Connector.E_ConnectorStatus;
 import Door.Access.Connector.E_ConnectorType;
 import Door.Access.Connector.INConnectorEvent;
+import Door.Access.Connector.TCPClient.TCPClientConnector;
 import Door.Access.Data.BytesData;
 import Door.Access.Data.INData;
 import Door.Access.Packet.INPacket;
@@ -304,6 +305,9 @@ public class TCPServer_ClientConnector extends AbstractConnector {
             IdleStateEvent state = (IdleStateEvent) evt;
             switch (state.state()) {
                 case READER_IDLE://读空闲
+                    ByteBuf sendBuf=_Client.alloc().buffer(TCPClientConnector.KeepAliveMsg.length);
+                    sendBuf.writeBytes(TCPClientConnector.KeepAliveMsg);
+                    _WriteFuture = _Client.writeAndFlush(sendBuf);
                     break;
                 case WRITER_IDLE: //写空闲
                     break;

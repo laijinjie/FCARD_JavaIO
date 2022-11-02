@@ -33,7 +33,7 @@ public class CloseAlarmType {
     /**
      * 获取指定序号的报警状态
      *
-     * @param iIndex 取值范围 1-80
+     * @param iIndex 取值范围 0-12
      * @return 是否需要关闭报警
      */
     public boolean GetValue(int iIndex) {
@@ -52,7 +52,7 @@ public class CloseAlarmType {
     /**
      * 设置指定序号的报警状态
      *
-     * @param iIndex 取值范围 1-80
+     * @param iIndex 取值范围 0-12
      * @param bUse 是否需要关闭报警
      */
     public void SetValue(int iIndex, boolean bUse) {

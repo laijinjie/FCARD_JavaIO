@@ -49,10 +49,10 @@ public class UInt32Util {
      * @return
      */
     public static long UInt32(int num) {
-        return (long)num & 0x00000000FFFFFFFFL;
+        return (long) num & 0x00000000FFFFFFFFL;
     }
-    
-        /**
+
+    /**
      * 返回一个整形的Uint32值
      *
      * @param num
@@ -78,13 +78,13 @@ public class UInt32Util {
         return buf;
     }
 
-    
     /**
      * 检查数值是否在指定范围内
+     *
      * @param Num 待检查的数值
      * @param iMin 最小数值
      * @param iMax 最大数值
-     * @return 
+     * @return
      */
     public static boolean CheckNum(int Num, int iMin, int iMax) {
         if (Num < iMin) {
@@ -94,7 +94,9 @@ public class UInt32Util {
         if (Num > iMax) {
             return false;
         }
-        
+
         return true;
     }
+
+
 }

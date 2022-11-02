@@ -18,7 +18,7 @@ public class TCPClientChannelInitializer extends ChannelInitializer<SocketChanne
 
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {
-        ch.pipeline().addLast(new IdleStateHandler(20, 20, 0));//超时检查
+        ch.pipeline().addLast(new IdleStateHandler(60, 20, 0));//超时检查
 
     }
 

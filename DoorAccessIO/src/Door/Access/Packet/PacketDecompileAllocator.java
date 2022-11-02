@@ -19,32 +19,36 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class PacketDecompileAllocator {
 
-    private static final ConcurrentHashMap<String, Class<? extends INWatchResponse>> DecompileMap;
+    private static  ConcurrentHashMap<E_ControllerType, Class<? extends INWatchResponse>> DecompileMap;
 
     static {
         DecompileMap = new ConcurrentHashMap<>();
         //初始化类型比较器
-        DecompileMap.put(E_ControllerType.Door8800.getClass().getCanonicalName(), Door8800CommandWatchResponse.class);
-        DecompileMap.put(E_ControllerType.Door8900.getClass().getCanonicalName(), Door89HCommandWatchResponse.class);
-        DecompileMap.put(E_ControllerType.Door5800.getClass().getCanonicalName(), Door8800CommandWatchResponse.class);
+        DecompileMap.put(E_ControllerType.Door8800, Door8800CommandWatchResponse.class);
+        DecompileMap.put(E_ControllerType.Door8900, Door89HCommandWatchResponse.class);
+        DecompileMap.put(E_ControllerType.Door5800, Door8800CommandWatchResponse.class);
+        
     }
 
     public static INWatchResponse GetDecompile(E_ControllerType type) {
         if (type == null) {
             return null;
         }
-        String sKey = type.getClass().getCanonicalName();
-        if (DecompileMap.containsKey(sKey)) {
+        if (DecompileMap.containsKey(type)) {
             INWatchResponse watch = null;
             try {
-                watch = DecompileMap.get(sKey).newInstance();
+                watch = DecompileMap.get(type).newInstance();
             } catch (IllegalAccessException | InstantiationException e) {
             }
-
             return watch;
         } else {
             return null;
         }
 
+    }
+    public static void AddDecompile(E_ControllerType type, Class<? extends INWatchResponse> decompile){
+     if (!DecompileMap.containsKey(type)) {
+        DecompileMap.put(type, decompile);
+     }
     }
 }

@@ -8,6 +8,7 @@ package Door.Access.Connector.UDP;
 import Door.Access.Command.CommandDetail;
 import Door.Access.Command.INCommand;
 import Door.Access.Command.INCommandParameter;
+import Door.Access.Command.INWatchResponse;
 import Door.Access.Connector.AbstractConnector;
 import Door.Access.Connector.ConnectorDetail;
 import Door.Access.Connector.E_ConnectorStatus;
@@ -42,12 +43,12 @@ public class UDPConnector extends AbstractConnector {
     /**
      * udp子通道
      */
-    private  ConcurrentHashMap<String, UDPClientConnector> _Clients;
+    private ConcurrentHashMap<String, UDPClientConnector> _Clients;
     
     private ConcurrentHashMap<Integer, UDPClientConnector> _BroadcastClients;
     private ChannelFuture _ConnectFuture;//连接的异步操作类
     private UDPNettyHandler _Handler; //客户端操作的操作类；
-   ArrayList<String> RemoveKeyList=new  ArrayList<>();
+    ArrayList<String> RemoveKeyList = new ArrayList<>();
     private ChannelFuture _WriteFuture;//写操作异步状态类
 
     public UDPConnector(UDPAllocator allocator, UDPDetail detail) throws CloneNotSupportedException {
@@ -74,16 +75,18 @@ public class UDPConnector extends AbstractConnector {
     
     @Override
     protected synchronized void CheckStatus() {
-     
+        
         for (String key : _Clients.keySet()) {
-           if(!_Clients.get(key).IsInvalid()){
-                 _Clients.get(key).CheckStatus();
-            }else{
+            if (!_Clients.get(key).IsInvalid()) {
+                _Clients.get(key).CheckStatus();
+            } else {
                 RemoveKeyList.add(key);
-            } 
+            }
         }
-        for(String key :RemoveKeyList){
+        for (String key : RemoveKeyList) {
+            UDPClientConnector uclient = _Clients.get(key);
             _Clients.remove(key);
+            _Event.ClientOffline(uclient.GetConnectorDetail());
         }
         RemoveKeyList.clear();
     }
@@ -96,7 +99,10 @@ public class UDPConnector extends AbstractConnector {
         keybuf.append(iPort);
         String key = keybuf.toString();
         if (!_Clients.containsKey(key)) {
-            _Clients.put(key, new UDPClientConnector(new UDPDetail(sIP, iPort, _RemoteDetail.LocalIP, _RemoteDetail.LocalPort), _UDPChannel, _Event));
+            UDPDetail uDetail = new UDPDetail(sIP, iPort, _RemoteDetail.LocalIP, _RemoteDetail.LocalPort);
+            UDPClientConnector uclient = new UDPClientConnector(uDetail, _UDPChannel, _Event);
+            _Clients.put(key, uclient);
+            _Event.ClientOnline(uDetail);
         }
         if (sIP.equals("255.255.255.255")) {
             _BroadcastClients.put(iPort, _Clients.get(key));
@@ -152,6 +158,16 @@ public class UDPConnector extends AbstractConnector {
         
     }
 
+    public  void UDPUnBind(){
+        try {
+
+            _UDPChannel.close();
+
+          //  _UDPAllocator.notify();
+        } catch (Exception e) {
+        }
+        _Status=E_ConnectorStatus.OnClosed;
+    }
     /**
      * 处理通讯连接回调；
      */
@@ -256,7 +272,6 @@ public class UDPConnector extends AbstractConnector {
             if (_BroadcastClients.containsKey(remotePort)) {
                 _BroadcastClients.get(remotePort).channelRead0(ctx, UDPmsg);
             }
-            
             getClient(sIP, remotePort).channelRead0(ctx, UDPmsg);
         }
     }
@@ -330,6 +345,17 @@ public class UDPConnector extends AbstractConnector {
     }
     
     @Override
+    public synchronized void AddWatchDecompile(ConnectorDetail detail, INWatchResponse decompile) {
+        if (decompile == null) {
+            return;
+        }
+        //首先遍历检查是否已添加过此命令解析类
+        UDPDetail connDetail = (UDPDetail) detail;
+        UDPClientConnector clt = getClient(connDetail.IP, connDetail.Port);
+        clt.AddWatchDecompile(detail, decompile);
+    }
+    
+    @Override
     public synchronized void AddCommand(INCommand cmd) {
         
         if (cmd == null) {
@@ -350,6 +376,8 @@ public class UDPConnector extends AbstractConnector {
         }
         
         UDPClientConnector clt = getClient(connDetail.IP, connDetail.Port);
-        clt.AddCommand(cmd);
+       // _CommandList.offer(cmd);
+        //clt.AddWatchDecompile(connDetail, decompile);
+       clt.AddCommand(cmd);
     }
 }

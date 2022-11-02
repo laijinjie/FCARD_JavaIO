@@ -5,6 +5,7 @@ import Door.Access.Connector.AbstractConnector;
 import Door.Access.Connector.ConnectorDetail;
 import Door.Access.Connector.E_ConnectorStatus;
 import Door.Access.Connector.E_ConnectorType;
+import Door.Access.Door8800.Command.KeepAlive;
 import Door.Access.Packet.INPacket;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
@@ -130,11 +131,13 @@ public class TCPClientConnector extends AbstractConnector {
                             //发送数据
                             INPacket send = _ActivityCommand.GetPacket();
                             ByteBuf packetBuf = send.GetPacketData();
+                         //   System.out.println(packetBuf);
+                         //   System.out.println(ByteBufUtil.hexDump(packetBuf));  
                             packetBuf.markReaderIndex();
                             ByteBuf sendBuf = _ClientChannel.alloc().buffer(packetBuf.readableBytes());
                             sendBuf.writeBytes(packetBuf);
                             packetBuf.resetReaderIndex();
-                            // System.out.println("发送指令：" + ByteBufUtil.hexDump(sendBuf));
+                           //  System.out.println("发送指令：" + ByteBufUtil.hexDump(sendBuf));
                             _WriteFuture = _ClientChannel.writeAndFlush(sendBuf);
                             _ActivityCommand.SendCommand(_Event);
                             _WriteFuture.addListener(new WriteCallback(this));
@@ -147,6 +150,7 @@ public class TCPClientConnector extends AbstractConnector {
                                 _CommandList.poll();
                                 //_ActivityCommand.Release();
                                 _ActivityCommand = null;
+                              //  System.out.println("已超时，发送超时消息");
                             }
                     }
                 } else {
@@ -400,7 +404,7 @@ public class TCPClientConnector extends AbstractConnector {
         }
 
     }
-
+   public static byte[] KeepAliveMsg="KeepAlive".getBytes();
     /**
      * 线路空闲超时触发
      *
@@ -413,6 +417,11 @@ public class TCPClientConnector extends AbstractConnector {
             IdleStateEvent state = (IdleStateEvent) evt;
             switch (state.state()) {
                 case READER_IDLE://读空闲
+
+                    ByteBuf sendBuf=_ClientChannel.alloc().buffer(KeepAliveMsg.length);
+                    sendBuf.writeBytes(KeepAliveMsg);
+                     _WriteFuture = _ClientChannel.writeAndFlush(sendBuf);
+                   //  _WriteFuture.addListener(new WriteKeepAliveCallback(this,ctx));
                     break;
                 case WRITER_IDLE: //写空闲
                     break;
@@ -421,6 +430,7 @@ public class TCPClientConnector extends AbstractConnector {
 
         }
     }
+    
 
     /**
      * 发生错误时，触发此事件

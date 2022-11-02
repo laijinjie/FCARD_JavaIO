@@ -34,7 +34,7 @@ public class ReadWorkStatus extends Door8800Command {
 
     @Override
     protected boolean _CommandStep(INConnectorEvent oEvent, Door8800PacketModel model) {
-        if (CheckResponse_Cmd(model, 1, 0xE, 0, 0x34)) {
+        if (CheckResponse_Cmd(model, 1, 0xE, 0)) {
             ByteBuf buf = model.GetDatabuff();
             //设定返回值
             ReadWorkStatus_Result ret = new ReadWorkStatus_Result();

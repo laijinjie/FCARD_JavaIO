@@ -6,9 +6,12 @@
 package Door.Access.Door89H.Command.Data;
 
 import Door.Access.Util.ByteUtil;
+import Door.Access.Util.StringUtil;
 import Door.Access.Util.TimeUtil;
 import io.netty.buffer.ByteBuf;
+
 import java.math.BigInteger;
+import java.util.HashSet;
 
 /**
  * 针对Door89H使用，刷卡记录<br>
@@ -67,28 +70,44 @@ import java.math.BigInteger;
  *
  * @author 徐铭康
  */
-public class CardTransaction extends Door.Access.Door8800.Command.Data.CardTransaction{
-    
+public class CardTransaction extends Door.Access.Door8800.Command.Data.CardTransaction {
+
+   static HashSet<Short> PasswordType=new HashSet<Short>();
+
+   public  CardTransaction(){
+       PasswordType.add((short) 2);
+       PasswordType.add((short) 17);
+       PasswordType.add((short) 20);
+       PasswordType.add((short) 27);
+       PasswordType.add((short) 28);
+       PasswordType.add((short) 30);
+       PasswordType.add((short) 35);
+       PasswordType.add((short) 37);
+       PasswordType.add((short) 42);
+       PasswordType.add((short) 44);
+   }
     /**
      * 卡号十六进制
      */
     public String CardDataHex;
-    
+
     @Override
     public void SetBytes(ByteBuf data) {
         try {
             byte[] btCardData = new byte[9];
             data.readBytes(btCardData, 0, 9);
-            BigInteger c=new BigInteger(btCardData);
-                    
-            CardData = c.toString();
-            CardDataHex = ByteUtil.ByteToHex(btCardData);
-
             byte[] btTime = new byte[6];
             data.readBytes(btTime, 0, 6);
             _TransactionDate = TimeUtil.BCDTimeToDate_yyMMddhhmmss(btTime);
             Reader = data.readUnsignedByte();
             _TransactionCode = data.readUnsignedByte();
+            CardDataHex = ByteUtil.ByteToHex(btCardData);
+            if(PasswordType.contains(_TransactionCode)){
+                CardData = CardDataHex.replace("F","");
+            }else {
+                BigInteger bigInteger=new BigInteger(btCardData);
+                CardData=bigInteger.toString();
+            }
             if (_TransactionCode == 0 || Reader == 0 || Reader > 8 || _TransactionDate == null) {
                 _IsNull = true;
             }

@@ -6,6 +6,9 @@
 package Door.Access.Door8800.Command.System.Result;
 
 import Door.Access.Command.INCommandResult;
+import Door.Access.Door8800.Command.Data.TCPDetail;
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 
 /**
@@ -26,9 +29,10 @@ public class SearchEquptOnNetNum_Result implements INCommandResult {
 
     public class SearchResult {
 
-        public SearchResult(String SN, byte[] ResultData) {
+        public SearchResult(String SN, ByteBuf data) {
             this.SN = SN;
-            this.ResultData = ResultData;
+            this.TCP = new TCPDetail();
+            this.TCP.SetBytes(data);
         }
         /**
          * 控制器SN
@@ -38,20 +42,22 @@ public class SearchEquptOnNetNum_Result implements INCommandResult {
         /**
          * 控制器返回数据
          */
-        public byte[] ResultData;
+        public TCPDetail TCP;
     }
 
     public SearchEquptOnNetNum_Result() {
         SearchTotal = 0;
     }
 
-    public synchronized void AddSearchResult(String SN, byte[] ResultData) {
+    public synchronized void AddSearchResult(String SN, ByteBuf data) {
 
         if (ResultList == null) {
-            ResultList = new ArrayList<>(10);
+            ResultList = new ArrayList<>();
         }
-        ResultList.add(new SearchResult(SN, ResultData));
-        SearchTotal++;
+        if(!ResultList.stream().filter(m -> m.SN.equals(SN)).findAny().isPresent()){
+            ResultList.add(new SearchResult(SN, data));
+            SearchTotal++;
+        }
     }
 
     @Override

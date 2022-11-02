@@ -29,8 +29,11 @@ public enum E_ConnectorType {
     /**
      * 将需要指令写入到指定的文件地址中，需要指定文件路径和名称，并确保有可写权限。
      */
-    OnFile(4);
-    
+    OnFile(4),
+    /**
+     * 使用 UDP 协议，在本地服务器中查询已连接到的客户端，需要指定客户端ID号。
+     */
+    OnUDPServer_Client(5);
     private final int value;
 
     //构造器默认也只能是private, 从而保证构造函数只能在内部使用

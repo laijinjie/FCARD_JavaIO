@@ -5,6 +5,7 @@
  */
 package Door.Access.Door8800.Command.System;
 
+import Door.Access.Command.CommandParameter;
 import Door.Access.Connector.INConnectorEvent;
 import Door.Access.Door8800.Command.Door8800Command;
 import Door.Access.Door8800.Command.System.Parameter.SearchEquptOnNetNum_Parameter;
@@ -22,16 +23,16 @@ import io.netty.buffer.ByteBuf;
  * }
  * </h3>
  *
- *
  * @author 赖金杰
  */
 public class SearchEquptOnNetNum extends Door8800Command {
 
-    public SearchEquptOnNetNum(SearchEquptOnNetNum_Parameter par) {
+    public SearchEquptOnNetNum(CommandParameter par) {
         _Parameter = par;
         ByteBuf dataBuf = ByteUtil.ALLOCATOR.buffer(2);
-        dataBuf.writeShort(par.NetNum);
-        CreatePacket(1, 0xFE, 0, 2, dataBuf);
+        int num=(int)(Math.random()*100);
+        dataBuf.writeShort(num);
+        CreatePacket(1, 0xFE, 0, 2, dataBuf);      
         _Result = new SearchEquptOnNetNum_Result();
     }
 
@@ -43,25 +44,19 @@ public class SearchEquptOnNetNum extends Door8800Command {
     @Override
     protected boolean _CommandStep(INConnectorEvent oEvent, Door8800PacketModel model) {
         if (CheckResponse_Cmd(model, 1, 0xFE, 0)) {
-
             //设定返回值
             SearchEquptOnNetNum_Result ret = (SearchEquptOnNetNum_Result) _Result;
-
             String SN;
-            byte[] ResultData=null;
             SN = model.GetSN();
+            System.out.println(SN);
             if (model.GetDataLen() > 0) {
                 ByteBuf buf = model.GetDatabuff();
-                ResultData = new byte[buf.readableBytes()];
-                buf.readBytes(ResultData);
+                ret.AddSearchResult(SN, buf);
             }
-
-            ret.AddSearchResult(SN, ResultData);
-            //RaiseCommandCompleteEvent(oEvent);
-            return false;
-        } else {
-            return false;
+            CommandWaitResponse();
         }
+        return false;
+
     }
 
 }

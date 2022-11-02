@@ -34,12 +34,17 @@ public class WriteCardListBySequence extends Door.Access.Door8800.Command.Card.W
         _List = par.CardList;
         _ProcessMax = par.CardList.size();
         mIndex = 0;
-         int iLen = (5 * 0x25) + 4;
-        ByteBuf dataBuf = ByteUtil.ALLOCATOR.buffer(iLen);
-        CreatePacket(7, 4, 0, iLen, dataBuf);
+        CreatePacket(7, 1);//查询容量信息
+    }
+
+    protected void _CreatePacket() {
+        if(mIndex==0){
+            int iLen = (5 * 0x25) + 4;
+            ByteBuf dataBuf = ByteUtil.ALLOCATOR.buffer(iLen);
+            CreatePacket(7, 4, 0, iLen, dataBuf);
+        }
         WriteNext();
     }
-    
     /**
      * 写入下一个卡号
      */

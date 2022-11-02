@@ -106,7 +106,9 @@ public class ReadTimeGroup extends Door8800Command {
         /**/
         while (mBufs.peek() != null) {
             ByteBuf buf = mBufs.poll();
+           // System.out.println(io.netty.buffer.ByteBufUtil.hexDump(buf));
             WeekTimeGroup wtg = new WeekTimeGroup(8);
+            wtg.SetIndex(buf.readShort());
             wtg.SetBytes(buf);
             list.add(wtg);
             buf.release();

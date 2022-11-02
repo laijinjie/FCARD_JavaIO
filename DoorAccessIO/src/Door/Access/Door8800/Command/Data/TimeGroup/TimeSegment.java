@@ -109,11 +109,25 @@ public class TimeSegment {
      * @param bBuf
      */
     public void SetBytes(ByteBuf bBuf) {
+//        byte begin = bBuf.readByte();
+//        if (begin < 0) {
+//            mBeginTime[0] = 0;
+//            mBeginTime[1] = 0;
+//
+//            mEndTime[0] = 0;
+//            mEndTime[1] = 0;
+//            return;
+//        }
         mBeginTime[0] = ByteUtil.BCDToByte(bBuf.readByte());
         mBeginTime[1] = ByteUtil.BCDToByte(bBuf.readByte());
-
         mEndTime[0] = ByteUtil.BCDToByte(bBuf.readByte());
         mEndTime[1] = ByteUtil.BCDToByte(bBuf.readByte());
+        if (mBeginTime[0] < 0) {
+            mBeginTime[0] = 0;
+            mBeginTime[1] = 0;
+            mEndTime[0] = 0;
+            mEndTime[1] = 0;
+        }
     }
 
 }

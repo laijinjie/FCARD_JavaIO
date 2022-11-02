@@ -15,7 +15,8 @@ public enum E_ControllerType {
      */
     Door8900(0),
     Door8800(1),
-    Door5800(2)
+    Door5800(2),
+    Face_Fingerprint(3)
     ;
     
     private final int value;

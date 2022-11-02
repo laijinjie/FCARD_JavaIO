@@ -79,10 +79,10 @@ public interface INConnectorEvent {
     /**
      * 客户端上线
      */
-    public void ClientOnline(TCPServerClientDetail client);
+    public void ClientOnline(ConnectorDetail client);
     
     /**
      * 客户端离线
      */
-    public void ClientOffline(TCPServerClientDetail client);
+    public void ClientOffline(ConnectorDetail client);
 }

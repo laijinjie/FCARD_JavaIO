@@ -9,6 +9,7 @@ import Door.Access.Door8800.Command.Door.Parameter.WriteReaderWorkSetting_Parame
 import Door.Access.Door8800.Command.Door8800Command;
 import Door.Access.Util.ByteUtil;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 
 /**
  * 设置控制器单个门的读卡器验证方式参数<br>
@@ -16,14 +17,14 @@ import io.netty.buffer.ByteBuf;
  *
  * @author 赖金杰
  */
-public class WriteReaderWorkSetting extends Door8800Command {
+public class    WriteReaderWorkSetting extends Door8800Command {
 
     public WriteReaderWorkSetting(WriteReaderWorkSetting_Parameter par) {
         _Parameter = par;
         ByteBuf dataBuf = ByteUtil.ALLOCATOR.buffer(0x119);
         dataBuf.writeByte(par.DoorNum);
         par.ReaderWork.GetBytes(dataBuf);
-        
+     //  System.out.println(ByteBufUtil.hexDump(dataBuf));
         CreatePacket(3, 5, 1, 0x119, dataBuf);
     }
 

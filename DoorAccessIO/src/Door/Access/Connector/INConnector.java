@@ -43,7 +43,7 @@ public interface INConnector extends Runnable {
      *
      * @param decompile 数据包解析器
      */
-    public void AddWatchDecompile(INWatchResponse decompile);
+    public void AddWatchDecompile(ConnectorDetail detail,INWatchResponse decompile);
 
     /**
      * 释放连接器所使用的资源。 包括断开连接，释放命令队列，释放缓冲区。

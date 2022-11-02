@@ -26,6 +26,7 @@ import Door.Access.Util.ByteUtil;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
+
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
@@ -46,7 +47,7 @@ public class ConnectorAllocator {
 
     private static ConnectorAllocator staticConnectorAllocator;
 
-    public   static boolean IsUDPBind;
+    public static boolean IsUDPBind;
 
     public synchronized static ConnectorAllocator GetAllocator() {
         if (staticConnectorAllocator == null) {
@@ -281,7 +282,7 @@ public class ConnectorAllocator {
         }
 
         @Override
-        public void ClientOnline(TCPServerClientDetail client) {
+        public void ClientOnline(ConnectorDetail client) {
             IOEvent event = new IOEvent();
             event.EventType = IOEvent.eEventType.eClientOnline;
             event.connectorDetail = client;
@@ -289,7 +290,7 @@ public class ConnectorAllocator {
         }
 
         @Override
-        public void ClientOffline(TCPServerClientDetail client) {
+        public void ClientOffline(ConnectorDetail client) {
             IOEvent event = new IOEvent();
             event.EventType = IOEvent.eEventType.eClientOffline;
             event.connectorDetail = client;
@@ -399,38 +400,51 @@ public class ConnectorAllocator {
         }
     }
 
-    public void UDPBind(String ip ,int port) {
-        if(IsUDPBind){
+    public void UDPBind(String ip, int port) {
+        if (IsUDPBind) {
             return;
         }
-        if(!isPortUsing(ip,port)){
-             throw new UnsupportedOperationException("UDPBind ip or port error ");
-        }
-        UDPDetail detail=new UDPDetail ("",1,ip,port);
-        UDPConnector connector = (UDPConnector)SearchUDPClient(detail, true);
+//        if(!isPortUsing(ip,port)){
+//             throw new UnsupportedOperationException("UDPBind ip or port error ");
+//        }
+        UDPDetail detail = new UDPDetail("", 1, ip, port);
+        UDPConnector connector = (UDPConnector) SearchUDPClient(detail, true);
         connector.UDPBind();
-        IsUDPBind=true;
+        IsUDPBind = true;
     }
-     /**
-      * 检测Ip和端口是否可用
-      * @param host
-      * @param port
-      * @return 
-      */
-     public static boolean isPortUsing(String host,int port){
-         boolean flag = false;
-         try {
-             InetAddress theAddress = InetAddress.getByName(host);
-             ServerSocket server= new ServerSocket(port,10,theAddress);
-             server.close();
-             flag = true;
-         } catch (Exception e) {
 
-         }
-         return flag;
-     }
+    public void UDPUnBind(String ip, int port) {
+        if (!IsUDPBind) {
+            return;
+        }
+        UDPDetail detail = new UDPDetail("", 1, ip, port);
+        UDPConnector connector = (UDPConnector) SearchUDPClient(detail, true);
+        connector.UDPUnBind();
+        IsUDPBind = false;
+    }
+
+    /**
+     * 检测Ip和端口是否可用
+     *
+     * @param host
+     * @param port
+     * @return
+     */
+    public static boolean isPortUsing(String host, int port) {
+        boolean flag = false;
+        try {
+            InetAddress theAddress = InetAddress.getByName(host);
+            ServerSocket server = new ServerSocket(port, 10, theAddress);
+            server.close();
+            flag = true;
+        } catch (Exception e) {
+
+        }
+        return flag;
+    }
+
     protected INConnector SearchUDPClient(UDPDetail detail, boolean bNew) {
-        if(detail.Port <=0 || detail.LocalPort <=0) return null;
+        if (detail.Port <= 0 || detail.LocalPort <= 0) return null;
         String sKey = detail.ToString();
         if (_ConnectorMap.containsKey(sKey)) {
             return _ConnectorMap.get(sKey);
@@ -572,16 +586,17 @@ public class ConnectorAllocator {
                                         } else {
                                             Listener.ConnectorErrorEvent(event.connectorDetail);
                                         }
-
+                                        if (staticConnectorAllocator.IsForciblyConnect(event.connectorDetail))
+                                            staticConnectorAllocator.CloseForciblyConnect(event.connectorDetail);
                                         break;
                                     case eWatchEvent:
                                         Listener.WatchEvent(event.connectorDetail, event.EventData);
                                         break;
                                     case eClientOnline:
-                                        Listener.ClientOnline((TCPServerClientDetail) event.connectorDetail);
+                                        Listener.ClientOnline(event.connectorDetail);
                                         break;
                                     case eClientOffline:
-                                        Listener.ClientOffline((TCPServerClientDetail) event.connectorDetail);
+                                        Listener.ClientOffline(event.connectorDetail);
                                         break;
                                 }
                             } catch (Exception e) {
@@ -789,7 +804,7 @@ public class ConnectorAllocator {
         if (connector == null) {
             return false;
         }
-        connector.AddWatchDecompile(decompile);
+        connector.AddWatchDecompile(detail, decompile);
         return true;
     }
 

@@ -13,7 +13,7 @@ import java.util.ArrayList;
  *
  * @author 英泽电子
  */
-public class ReadTimeGroup_Result <T> implements INCommandResult {
+public class ReadTimeGroup_Result  implements INCommandResult {
 
     /**
      * 读取到的时段列表
