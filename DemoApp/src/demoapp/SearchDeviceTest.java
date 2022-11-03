@@ -95,20 +95,26 @@ public class SearchDeviceTest implements INConnectorEvent {
 
     public void RunTest() {
         InputTestPar();
+        SearchTimes = 0;//搜索次数;
         BeginSearch();
-
+        
         //syn();//阻塞进程
     }
     private int SearchNetFlag;
     private int SearchTimes;
 
     public void BeginSearch() {
+        if(SearchTimes>5) 
+        {
+            System.out.println("搜索结束！");
+            return;
+        }
         CommandDetail dt = new CommandDetail();
 
         UDPDetail udp = new UDPDetail("255.255.255.255", _RemotePort, _LocalIP, _LocalPort);
 
         //首先打开UDP端口绑定
-        _Allocator.UDPBind(_LocalIP, _LocalPort);
+        //_Allocator.UDPBind(_LocalIP, _LocalPort);
 
         dt.Connector = udp;
         dt.Identity = new Door8800Identity("0000000000000000", Door8800Command.NULLPassword, E_ControllerType.Door8900);
@@ -123,7 +129,7 @@ public class SearchDeviceTest implements INConnectorEvent {
         //网络标记就是一个随机数
         SearchNetFlag = rnd.nextInt(max) % (max - min + 1) + min;//网络标记
 
-        SearchTimes = 1;//搜索次数;
+        SearchTimes += 1;//搜索次数;
 
         SearchEquptOnNetNum_Parameter par = new SearchEquptOnNetNum_Parameter(dt, SearchNetFlag);
         SearchEquptOnNetNum cmd = new SearchEquptOnNetNum(par);

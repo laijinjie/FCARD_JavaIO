@@ -18,6 +18,7 @@ import Door.Access.Connector.TCPServer.IPEndPoint;
 import Door.Access.Connector.TCPServer.TCPServerAllocator;
 import Door.Access.Connector.TCPServer.TCPServerClientDetail;
 import Door.Access.Connector.TCPServer.TCPServer_ClientConnector;
+import Door.Access.Connector.UDP.UDPClientConnector;
 import Door.Access.Connector.UDP.UDPDetail;
 import Door.Access.Connector.UDP.UDPConnector;
 import Door.Access.Data.INData;
@@ -363,6 +364,16 @@ public class ConnectorAllocator {
     }
 
     /**
+     * 根据通讯详情，在动态库中查询已创建的连接器
+     *
+     * @param detail
+     * @return
+     */
+    public INConnector GetConnector(ConnectorDetail detail) {
+        return GetConnector(detail, false);
+    }
+
+    /**
      * 搜索TCP客户端的连接通道,没有就新建一个通道
      *
      * @param detail
@@ -439,17 +450,29 @@ public class ConnectorAllocator {
     }
 
     protected INConnector SearchUDPClient(UDPDetail detail, boolean bNew) {
-        if (detail.Port <= 0 || detail.LocalPort <= 0) return null;
+        if (detail.Port <= 0 || detail.LocalPort <= 0) {
+            return null;
+        }
         String sKey = detail.getLocalKey();
+        UDPConnector UDPMaster;
         if (_ConnectorMap.containsKey(sKey)) {
-            return _ConnectorMap.get(sKey);
+            UDPMaster = (UDPConnector) _ConnectorMap.get(sKey);
+            //在 master 中找子通道
+            UDPClientConnector node = UDPMaster.SearchClient(detail);
+            if (node != null) {
+                return node;
+            } else {
+                return UDPMaster;
+            }
         } else {
             if (bNew) {
                 try {
                     UDPConnector Connector = new UDPConnector(detail);
                     Connector.SetEventHandle(_EventHeandler);
                     AddConnector(sKey, Connector);
-                    return _ConnectorMap.get(sKey);
+                    UDPMaster = (UDPConnector) _ConnectorMap.get(sKey);
+
+                    return UDPMaster;
                 } catch (Exception ex) {
                     return null;
                 }
@@ -581,8 +604,9 @@ public class ConnectorAllocator {
                                         } else {
                                             Listener.ConnectorErrorEvent(event.connectorDetail);
                                         }
-                                        if (staticConnectorAllocator.IsForciblyConnect(event.connectorDetail))
+                                        if (staticConnectorAllocator.IsForciblyConnect(event.connectorDetail)) {
                                             staticConnectorAllocator.CloseForciblyConnect(event.connectorDetail);
+                                        }
                                         break;
                                     case eWatchEvent:
                                         Listener.WatchEvent(event.connectorDetail, event.EventData);

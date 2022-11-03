@@ -32,6 +32,7 @@ import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.handler.timeout.IdleStateEvent;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
@@ -55,7 +56,6 @@ public class UDPConnector extends AbstractConnector {
     private UDPNettyHandler _Handler; //客户端操作的操作类；
     ArrayList<String> RemoveKeyList = new ArrayList<>();
     private ChannelFuture _WriteFuture;//写操作异步状态类
-    EventLoopGroup workerGroup;
 
     public UDPConnector(UDPDetail detail) throws CloneNotSupportedException {
         _RemoteDetail = detail.clone();
@@ -84,7 +84,7 @@ public class UDPConnector extends AbstractConnector {
             case OnConnectTimeout:
             case OnError:
             case OnClosed:
-                if ((_CommandList.peek() != null) || _IsForcibly) {
+                if ((_Clients.size() != 0) || _IsForcibly) {
                     UpdateActivityTime();
                     UDPBind();
                 } else {
@@ -100,17 +100,44 @@ public class UDPConnector extends AbstractConnector {
 
     }
 
+    /**
+     * 检查通道是否已失效 1分钟无连接，无命令任务则自动失效
+     */
+    @Override
+    protected void CheckChanelIsInvalid() {
+        if (_isRelease) {
+            return;
+        }
+        if (_isInvalid) {
+            return;
+        }
+        if (_IsForcibly || _Clients.size() != 0) {
+            _isInvalid = false;
+            return;
+        }
+        long lConnectMillis = _ActivityDate.getTimeInMillis();
+        long lNowMillis = Calendar.getInstance().getTimeInMillis();
+        long lElapse = lNowMillis - lConnectMillis;//已经过事件
+        long InvalidTime = 60 * 1000;//1分钟无连接，无命令任务则自动失效
+        _isInvalid = (lElapse > InvalidTime);
+    }
+
     private void CheckSubClient() {
+        RemoveKeyList.clear();
         for (String key : _Clients.keySet()) {
             try {
                 UDPClientConnector uclient = _Clients.get(key);
+                if (uclient.GetStatus() == E_ConnectorStatus.OnClosed) {
+                    uclient.SetUDPChannel(_UDPChannel);
+                }
+
                 if (!uclient.IsInvalid()) {
                     uclient.CheckStatus();
                 } else {
                     RemoveKeyList.add(key);
                 }
             } catch (Exception e) {
-                System.out.println("Door.Access.Connector.UDP.UDPConnector.CheckStatus()" + e.getLocalizedMessage());
+                System.out.println("Door.Access.Connector.UDP.UDPConnector.CheckStatus()--" + e.getLocalizedMessage());
             }
 
         }
@@ -120,6 +147,10 @@ public class UDPConnector extends AbstractConnector {
             _Event.ClientOffline(uclient.GetConnectorDetail());
         }
         RemoveKeyList.clear();
+
+        if (_Clients.size() == 0) {
+            CheckChanelIsInvalid();
+        }
     }
 
     private class getClientResult {
@@ -132,6 +163,28 @@ public class UDPConnector extends AbstractConnector {
             IsNew = n;
         }
 
+    }
+
+    /**
+     * 搜索在此UDP连接点下创建的子链接通道
+     *
+     * @param clientDTL
+     * @return
+     */
+    public UDPClientConnector SearchClient(UDPDetail clientDTL) {
+        if (this._isRelease) {
+            return null;
+        }
+        if (_Clients == null) {
+            return null;
+        }
+
+        String sKey = clientDTL.getClientKey();
+        if (_Clients.containsKey(sKey)) {
+            return _Clients.get(sKey);
+        }
+
+        return null;
     }
 
     private getClientResult getClient(String sIP, int iPort) {
@@ -177,12 +230,10 @@ public class UDPConnector extends AbstractConnector {
         _Status = E_ConnectorStatus.OnConnecting;
         try {
             ChannelFuture future;
-            if (workerGroup == null) {
-                workerGroup = new NioEventLoopGroup();
-            }
+
             Bootstrap UDPBootstrap = new Bootstrap();
             _Handler = new UDPNettyHandler(this);
-            UDPBootstrap.group(workerGroup)
+            UDPBootstrap.group(NettyAllocator.GetClientEventLoopGroup())
                     .channel(NioDatagramChannel.class)
                     .option(ChannelOption.SO_BROADCAST, true)
                     .option(ChannelOption.SO_REUSEADDR, true)
@@ -234,6 +285,7 @@ public class UDPConnector extends AbstractConnector {
             _UDPChannel.close();
             _IsForcibly = false;
             //  _UDPAllocator.notify();
+            ClearNodeClient();
         } catch (Exception e) {
         }
         _Status = E_ConnectorStatus.OnClosed;
@@ -362,15 +414,11 @@ public class UDPConnector extends AbstractConnector {
             }
             _Handler = null;
 
-            if (workerGroup != null) {
-                workerGroup.shutdownGracefully().sync();
-                workerGroup = null;
-            }
-
         } catch (Exception e) {
         }
 
         try {
+            ClearNodeClient();
             if (_UDPChannel != null) {
                 if (_UDPChannel.isActive()) {
                     //通道未关闭的，立刻关闭！
@@ -383,6 +431,32 @@ public class UDPConnector extends AbstractConnector {
 
         _RemoteDetail = null;
         return;
+    }
+
+    /**
+     * 清空下属所有的子节点
+     */
+    private void ClearNodeClient() {
+        RemoveKeyList.clear();
+        for (String key : _Clients.keySet()) {
+
+            UDPClientConnector uclient = _Clients.get(key);
+            uclient.SetUDPChannel(null);
+            uclient.StopCommand(null);
+            uclient.CloseForciblyConnect();
+            RemoveKeyList.add(key);
+        }
+        for (String key : RemoveKeyList) {
+            UDPClientConnector uclient = _Clients.get(key);
+            _Clients.remove(key);
+            _Event.ClientOffline(uclient.GetConnectorDetail());
+        }
+        RemoveKeyList.clear();
+
+        if (_Clients.size() == 0) {
+            CheckChanelIsInvalid();
+        }
+
     }
 
     @Override

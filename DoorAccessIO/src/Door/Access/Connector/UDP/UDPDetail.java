@@ -34,6 +34,11 @@ public class UDPDetail extends ConnectorDetail {
      * 本地绑定端口
      */
     public int LocalPort;
+    
+    /**
+     * UDP客户端的准确客户端键值
+     */
+    public String ClientKey;
 
     public UDPDetail(String sRemoteIP, int iRemotePort,
             String sLocalIP, int iLocalPort) {

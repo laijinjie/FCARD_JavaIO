@@ -251,14 +251,14 @@ public abstract class AbstractConnector implements INConnector {
             _ActivityCommand = null;
 
             for (Object obj : cmds) {
-                INCommandRuntime cmd = (INCommandRuntime) obj;
+                INCommand cmd = (INCommand) obj;
                 RaiseConnectorErrorEvent((INCommand) cmd, true);
                 //cmd.Release();
             }
 
         } else {
             for (Object obj : cmds) {
-                INCommandRuntime cmd = (INCommandRuntime) obj;
+                INCommand cmd = (INCommand) obj;
                 INIdentity cmdIdentity = cmd.GetIdentity();
                 if (idt.equals(cmdIdentity)) {
                     RaiseConnectorErrorEvent((INCommand) cmd, true);

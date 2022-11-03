@@ -10,6 +10,7 @@ import Door.Access.Connector.E_ControllerType;
 import Door.Access.Door8800.Command.Door8800CommandWatchResponse;
 import Door.Access.Door8800.Packet.Door8800Decompile;
 import Door.Access.Door89H.Command.Door89HCommandWatchResponse;
+import Face.Data.FaceCommandWatchResponse;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -27,7 +28,7 @@ public class PacketDecompileAllocator {
         DecompileMap.put(E_ControllerType.Door8800, Door8800CommandWatchResponse.class);
         DecompileMap.put(E_ControllerType.Door8900, Door89HCommandWatchResponse.class);
         DecompileMap.put(E_ControllerType.Door5800, Door8800CommandWatchResponse.class);
-        
+        DecompileMap.put(E_ControllerType.Face_Fingerprint, FaceCommandWatchResponse.class); //增加解析器
     }
 
     public static INWatchResponse GetDecompile(E_ControllerType type) {

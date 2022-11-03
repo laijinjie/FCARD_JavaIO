@@ -7,6 +7,7 @@ package demoapp;
 
 import Door.Access.Connector.UDP.UDPConnector;
 import Door.Access.Connector.UDP.UDPDetail;
+import NettyTCPServer.NettyTCPServerTest;
 import NettyUDPServer.UDPServerHelper;
 import java.util.concurrent.Semaphore;
 
@@ -23,9 +24,23 @@ public class DemoApp {
         TestSearchDevice();
         //TestUDPServer();
         //TestLibUDP();
+        //TestTCPServer();
 
         Semaphore available = new Semaphore(0, true);
         available.acquire();
+    }
+    
+    public static void TestTCPServer()
+    {
+        NettyTCPServerTest tcpserver = new NettyTCPServerTest();
+        System.out.println("准备运行TCP服务器");
+
+        java.util.Scanner sc = new java.util.Scanner(System.in);
+        System.out.println("请输入本机绑定的IP：");
+        String sLocalIP = sc.nextLine();//接收字符串
+        System.out.println("请输入本机绑定的端口号：");
+        int iLocalPort = sc.nextInt();
+       tcpserver.bind(sLocalIP, iLocalPort);
     }
 
     public static void TestUDPServer() {

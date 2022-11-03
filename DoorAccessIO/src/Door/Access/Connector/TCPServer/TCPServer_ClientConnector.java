@@ -279,11 +279,11 @@ public class TCPServer_ClientConnector extends AbstractConnector {
                 if (_DecompileList.size() > 0) {
                     CheckWatchResponse(msg);
                 } else {
-                    if (_Event != null) {
-                        INData bd = new BytesData();
-                        bd.SetBytes(msg);
-                        _Event.WatchEvent(_RemoteDetail, bd);
-                    }
+//                    if (_Event != null) {
+//                        INData bd = new BytesData();
+//                        bd.SetBytes(msg);
+//                        _Event.WatchEvent(_RemoteDetail, bd);
+//                    }
                 }
 
             } catch (Exception e) {

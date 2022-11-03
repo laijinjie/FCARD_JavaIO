@@ -25,38 +25,60 @@ import io.netty.channel.socket.DatagramPacket;
 import java.net.InetSocketAddress;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.UUID;
 
 /**
  *
  * @author F
  */
 public class UDPClientConnector extends AbstractConnector {
+
     private UDPDetail _RemoteDetail; //UDP本地端口和本地绑定IP
     private Channel _UDPChannel;//通道
     private ChannelFuture _WriteFuture;//写操作异步状态类
+    private String ConnectorKey;
+
     /**
      * 本通道的身份标识
      */
-
     public UDPClientConnector(UDPDetail detail, Channel _Channel, INConnectorEvent ev) {
-      
-        try {           
+        UUID uuid = UUID.randomUUID();
+        ConnectorKey = uuid.toString();
+        try {
             _RemoteDetail = detail.clone();
+            _RemoteDetail.ClientKey = ConnectorKey;
         } catch (Exception e) {
         }
         _UDPChannel = _Channel;
-        _Status = E_ConnectorStatus.OnConnected;
+        CheckChannel();
         _Event = ev;
-      //  _IsForcibly=true;
+        //  _IsForcibly=true;
+    }
+
+    public void SetUDPChannel(Channel udpChannel) {
+        _UDPChannel = udpChannel;
+        CheckChannel();
+    }
+
+    private void CheckChannel() {
+        if (_UDPChannel != null) {
+            _Status = E_ConnectorStatus.OnConnected;
+        } else {
+            _Status = E_ConnectorStatus.OnClosed;
+        }
     }
 
     @Override
     protected void Release0() {
-       // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     protected void CheckStatus() {
+        if (_UDPChannel == null) {
+            return;
+        }
+        
         switch (_Status) {
             case OnConnectTimeout:
             case OnClosed:
@@ -75,7 +97,7 @@ public class UDPClientConnector extends AbstractConnector {
                             INPacket send = _ActivityCommand.GetPacket();
                             ByteBuf packetBuf = send.GetPacketData();
                             packetBuf.markReaderIndex();
-                            ByteBuf sendBuf = _UDPChannel.alloc().buffer(packetBuf.readableBytes());                          
+                            ByteBuf sendBuf = _UDPChannel.alloc().buffer(packetBuf.readableBytes());
                             sendBuf.writeBytes(packetBuf);
                             packetBuf.resetReaderIndex();
                             //System.out.println("发送指令：" + ByteBufUtil.hexDump(sendBuf));
@@ -127,6 +149,9 @@ public class UDPClientConnector extends AbstractConnector {
         if (_isRelease) {
             return;
         }
+        if (_UDPChannel == null) {
+            return;
+        }
         synchronized (this) {
             ByteBuf msg = UDPmsg.content();
             try {
@@ -168,11 +193,12 @@ public class UDPClientConnector extends AbstractConnector {
     protected ConnectorDetail GetConnectorDetail() {
         return _RemoteDetail;
     }
-    
-    public String GetKey(){
+
+    public String GetKey() {
         return _RemoteDetail.getClientKey();
     }
-  /**
+
+    /**
      * 强制关闭通道
      */
     public void Close() {
@@ -183,6 +209,7 @@ public class UDPClientConnector extends AbstractConnector {
         }
 
     }
+
     @Override
     public E_ConnectorType GetConnectorType() {
         return E_ConnectorType.OnUDP;
@@ -230,5 +257,5 @@ public class UDPClientConnector extends AbstractConnector {
             }
         }
     }
-    
+
 }

@@ -23,7 +23,7 @@ import java.util.logging.Logger;
  *
  * @author kaifa
  */
-public class UDPServerHelper {
+public class UDPServerTest {
 
     private final Semaphore available = new Semaphore(0, true);
     private ExecutorService workService;
@@ -37,7 +37,7 @@ public class UDPServerHelper {
     }
 
     public static void main(String[] args) {
-        UDPServerHelper test = new UDPServerHelper();
+        UDPServerTest test = new UDPServerTest();
 
         test.RunTest();
 
