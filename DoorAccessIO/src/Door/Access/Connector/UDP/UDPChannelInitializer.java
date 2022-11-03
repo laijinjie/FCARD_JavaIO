@@ -19,8 +19,8 @@ public class UDPChannelInitializer
 
     @Override
     protected void initChannel(NioDatagramChannel ch) throws Exception {
-        ch.pipeline().addLast(new IdleStateHandler(20, 20, 0));//超时检查
-        ch.config().setOption(ChannelOption.SO_BROADCAST, true);
+//        ch.pipeline().addLast(new IdleStateHandler(20, 20, 0));//超时检查
+//        ch.config().setOption(ChannelOption.SO_BROADCAST, true);
     }
     
 }

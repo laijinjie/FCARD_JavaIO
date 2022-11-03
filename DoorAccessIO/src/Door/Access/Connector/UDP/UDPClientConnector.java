@@ -151,11 +151,11 @@ public class UDPClientConnector extends AbstractConnector {
                 if (_DecompileList.size() > 0) {
                     CheckWatchResponse(msg);
                 } else {
-                    if (_Event != null) {
-                        INData bd = new BytesData();
-                        bd.SetBytes(msg);
-                        _Event.WatchEvent(_RemoteDetail, bd);
-                    }
+//                    if (_Event != null) {
+//                        INData bd = new BytesData();
+//                        bd.SetBytes(msg);
+//                        _Event.WatchEvent(_RemoteDetail, bd);
+//                    }
                 }
             } catch (Exception e) {
                 //System.out.println(" channelRead0 --2 发生错误：\n" + e.toString());

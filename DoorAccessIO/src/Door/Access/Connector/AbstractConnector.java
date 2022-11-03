@@ -44,7 +44,7 @@ public abstract class AbstractConnector implements INConnector {
         _isRelease = false;
         _isInvalid = false;
         _ActivityDate = Calendar.getInstance();
-        _IsRuning=false;
+        _IsRuning = false;
     }
 
     @Override
@@ -63,12 +63,16 @@ public abstract class AbstractConnector implements INConnector {
      * 检查通道是否已失效 1分钟无连接，无命令任务则自动失效
      */
     protected void CheckChanelIsInvalid() {
-        if(_isRelease) return;
-        if(_isInvalid)return;
-        if(_IsForcibly||!_CommandList.isEmpty()){
-            _isInvalid=false;
+        if (_isRelease) {
             return;
-        }       
+        }
+        if (_isInvalid) {
+            return;
+        }
+        if (_IsForcibly || !_CommandList.isEmpty()) {
+            _isInvalid = false;
+            return;
+        }
         long lConnectMillis = _ActivityDate.getTimeInMillis();
         long lNowMillis = Calendar.getInstance().getTimeInMillis();
         long lElapse = lNowMillis - lConnectMillis;//已经过事件
@@ -85,13 +89,13 @@ public abstract class AbstractConnector implements INConnector {
     public synchronized void AddCommand(INCommand cmd) {
         _CommandList.offer(cmd);
         if (cmd.GetIdentity() != null) {
-            AddWatchDecompile(GetConnectorDetail(),PacketDecompileAllocator.GetDecompile(cmd.GetIdentity().GetIdentityType()));
+            AddWatchDecompile(GetConnectorDetail(), PacketDecompileAllocator.GetDecompile(cmd.GetIdentity().GetIdentityType()));
         }
 
     }
 
     @Override
-    public synchronized void AddWatchDecompile(ConnectorDetail detail,INWatchResponse decompile) {
+    public synchronized void AddWatchDecompile(ConnectorDetail detail, INWatchResponse decompile) {
         if (decompile == null) {
             return;
         }
@@ -153,11 +157,14 @@ public abstract class AbstractConnector implements INConnector {
 
     @Override
     public void run() {
-        _IsRuning=true;
-        
-        CheckStatus();
-        
-        _IsRuning=false;
+        _IsRuning = true;
+        try {
+            CheckStatus();
+        } catch (Exception e) {
+             System.out.println("Door.Access.Connector.Connector.CheckStatus() 发生错误\r\n" + e.getLocalizedMessage());
+        }
+
+        _IsRuning = false;
     }
 
     /**
@@ -172,8 +179,9 @@ public abstract class AbstractConnector implements INConnector {
 
     /**
      * 连接错误时，触发此回到函数
+     *
      * @param cmd
-     * @param bIsStopCommand 
+     * @param bIsStopCommand
      */
     protected void RaiseConnectorErrorEvent(INCommand cmd, boolean bIsStopCommand) {
         if (!bIsStopCommand) {
@@ -228,9 +236,8 @@ public abstract class AbstractConnector implements INConnector {
             RaiseConnectorErrorEvent(null, false);
         } else {
             for (Object obj : cmds) {
-                INCommandRuntime cmd = (INCommandRuntime) obj;
-                RaiseConnectorErrorEvent((INCommand) cmd, false);
-                //cmd.Release();
+                INCommand cmd = (INCommand) obj;
+                RaiseConnectorErrorEvent(cmd, false);
             }
         }
 
@@ -276,7 +283,7 @@ public abstract class AbstractConnector implements INConnector {
      * 监控响应的处理
      */
     protected synchronized void CheckWatchResponse(ByteBuf msg) {
-        
+
         if (_DecompileList.size() == 0) {
             return;
         }
@@ -286,24 +293,23 @@ public abstract class AbstractConnector implements INConnector {
         }
 
     }
-    
+
     /**
      * 用来指示任务是否已经加入任务队列，正在排队等待或者正在执行中
-     * @return 
+     *
+     * @return
      */
     @Override
-    public boolean TaskIsBegin()
-    {
+    public boolean TaskIsBegin() {
         return _IsRuning;
     }
-    
+
     /**
      * 当此通道已加入任务队列时，需要调用此函数来改变此通道的任务状态
      */
     @Override
-    public void SetTaskIsBegin()
-    {
-        _IsRuning=true;
+    public void SetTaskIsBegin() {
+        _IsRuning = true;
     }
 
 }

@@ -5,24 +5,25 @@
  */
 package testio;
 
-import Net.PC15.FC8800.Command.System.Parameter.WriteSN_Parameter;
-import Net.PC15.Command.CommandDetail;
-import Net.PC15.Command.INCommandRuntime;
+import Door.Access.Door8800.Command.System.Parameter.WriteSN_Parameter;
+import Door.Access.Command.CommandDetail;
+import Door.Access.Command.INCommandRuntime;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
-import Net.PC15.Util.StringUtil;
-import Net.PC15.FC8800.FC8800Identity;
-import Net.PC15.Connector.E_ControllerType;
-import Net.PC15.Connector.TCPClient.TCPClientDetail;
-import Net.PC15.FC8800.Command.*;
-import Net.PC15.FC8800.Command.Data.*;
-import Net.PC15.FC8800.Packet.*;
-import Net.PC15.Packet.INPacketDecompile;
-import Net.PC15.Packet.INPacketModel;
-import Net.PC15.Util.ByteUtil;
-import Net.PC15.Util.TimeUtil;
-import Net.PC15.Util.UInt32Util;
+import Door.Access.Util.StringUtil;
+import Door.Access.Door8800.Door8800Identity;
+import Door.Access.Connector.E_ControllerType;
+import Door.Access.Connector.TCPClient.TCPClientDetail;
+import Door.Access.Door8800.Command.*;
+import Door.Access.Door8800.Command.Data.*;
+import Door.Access.Door8800.Packet.*;
+import Door.Access.Packet.INPacketDecompile;
+import Door.Access.Door8800.Command.Data.CardDetail;
+import Door.Access.Packet.INPacketModel;
+import Door.Access.Util.ByteUtil;
+import Door.Access.Util.TimeUtil;
+import Door.Access.Util.UInt32Util;
 import java.lang.StringBuilder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -112,7 +113,7 @@ public class TestIO {
         }
         System.out.println(ByteUtil.BytesToString(WeekList));
          */
-         /*
+ /*
          long lpwd = Long.parseLong("9999ffff", 16);
          int pwd = (int)lpwd;
          System.out.println(lpwd);
@@ -125,11 +126,9 @@ public class TestIO {
         //System.out.println(Math.pow(2, 8));
 
         //TestCommand();
-        
-        
     }
 
-    public static void TestSearchCard() {
+    public static void TestSearchCard() throws Exception {
         int iArrSize = 2002995;
         ArrayList<CardDetail> CardList = new ArrayList<CardDetail>(iArrSize);
         Random rnd = new Random();
@@ -139,7 +138,9 @@ public class TestIO {
         for (int i = 0; i < iArrSize; i++) {
             long card = rnd.nextInt(max) % (max - min + 1) + min;
             //System.out.println("卡号：" + card);
-            CardList.add(new CardDetail(card));
+            CardDetail oCard=new CardDetail();
+            oCard.SetCardData(Long.toString(card));
+            CardList.add(oCard);
         }
 
         Collections.sort(CardList);
@@ -149,10 +150,10 @@ public class TestIO {
         int len = CardList.size();
         for (int i = 0; i < len; i++) {
             CardDetail cd = CardList.get(i);
-            iSearch = CardDetail.SearchCardDetail(CardList, cd.CardData);
+            iSearch = CardDetail.SearchCardDetail(CardList, cd.GetCardData());
             if (iSearch != i) {
                 CardDetail cd1 = CardList.get(iSearch);
-                if (cd1.CardData == cd.CardData) {
+                if (cd1.GetCardData().equals(cd.GetCardData())) {
                     iSearch = i;//检查是否值重复
                 }
                 //可能是由于有重复
@@ -192,7 +193,7 @@ public class TestIO {
 
     public static void TestDecompile() {
         byte[] bDataHex = StringUtil.HexToByte("7e0496440946432d38393430413436303630303037ffffffff3703000000014e0000000a0000ce98d348768287171115000001010101fffff800ffffffff000000000000000000ceb79845734321171115000001010101fffff800ffffffff000000000000000000cede6435936599171115000001010101fffff800ffffffff000000000000000000cf42ba43677987171115000001010101fffff800ffffffff000000000000000000cfaf1621048578171115000001010101fffff800ffffffff000000000000000000cfd5e211250856171115000001010101fffff800ffffffff000000000000000000d03a3818992244171115000001010101fffff800ffffffff000000000000000000d07f02c995049445171115000001010101fffff800ffffffff000000000000000000d0cd6051846960171115000001010101fffff800ffffffff000000000000000000d131b759588347171115000001010101fffff800ffffffff00000000000000dd7e");
-        FC8800Decompile decompile = new FC8800Decompile();
+        Door8800Decompile decompile = new Door8800Decompile();
         ByteBuf dataBuf = ByteUtil.ALLOCATOR.buffer(bDataHex.length);
         dataBuf.writeBytes(bDataHex);
         ArrayList<INPacketModel> oRetPack = new ArrayList<INPacketModel>(10);
@@ -214,7 +215,7 @@ public class TestIO {
         cd.SetBytes(bBuf);
         StringBuilder builder = new StringBuilder(1000);
         builder.append("卡号：");
-        builder.append(cd.CardData);
+        builder.append(cd.GetCardData());
         builder.append("，密码：");
         builder.append(cd.Password.replaceAll("F", ""));
         builder.append("，有效期：");
@@ -298,30 +299,30 @@ public class TestIO {
     public static void TestCommand() {
         String newSN = "FC-8920A27060010";
         WriteSN_Parameter par = new WriteSN_Parameter(GetConnInfo(), newSN);
-        FC8800Command cmd = new Net.PC15.FC8800.Command.System.WriteSN(par);
+        Door8800Command cmd = new Door.Access.Door8800.Command.System.WriteSN(par);
         cmd.Release();
     }
 
     public static CommandDetail GetConnInfo() {
         CommandDetail detial = new CommandDetail();
-        detial.Identity = new FC8800Identity("FC-8920A27060010", "ffffffff", E_ControllerType.FC8900);
+        detial.Identity = new Door8800Identity("FC-8920A27060010", "ffffffff", E_ControllerType.Door8900);
         TCPClientDetail tcp = new TCPClientDetail("192.168.1.30", 8000);
 
         detial.Connector = tcp;
         return detial;
     }
 
-    public static void TestFC8800Packet() {
-        FC8800PacketCompile packetCompile;
+    public static void TestDoor8800Packet() {
+        Door8800PacketCompile packetCompile;
         String sn = "FC-8940A46060007";
         long PWD = UInt32Util.UINT32_MAX;
-        packetCompile = new FC8800PacketCompile(sn, PWD, (short) 1, (short) 2, (short) 0);
+        packetCompile = new Door8800PacketCompile(sn, PWD, (short) 1, (short) 2, (short) 0);
         System.out.println(ByteBufUtil.hexDump(packetCompile.GetPacketData()));
         packetCompile.Release();
 
         ByteBuf dataBuf = ByteUtil.ALLOCATOR.buffer(4);
         dataBuf.writeInt(0x01010001);
-        packetCompile = new FC8800PacketCompile(sn, PWD, (short) 3, (short) 3, (short) 0, (short) 4, dataBuf);
+        packetCompile = new Door8800PacketCompile(sn, PWD, (short) 3, (short) 3, (short) 0, (short) 4, dataBuf);
         System.out.println(ByteBufUtil.hexDump(packetCompile.GetPacketData()));
         packetCompile.Release();
         dataBuf = ByteUtil.ALLOCATOR.buffer(4);
@@ -341,7 +342,7 @@ public class TestIO {
 
         byte[] bDataHex = StringUtil.HexToByte(DataHex.toString());
 
-        FC8800Decompile decompile = new FC8800Decompile();
+        Door8800Decompile decompile = new Door8800Decompile();
         dataBuf = ByteUtil.ALLOCATOR.buffer(bDataHex.length);
         dataBuf.writeBytes(bDataHex);
         ArrayList<INPacketModel> oRetPack = new ArrayList<INPacketModel>(10);

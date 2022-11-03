@@ -18,7 +18,6 @@ import Door.Access.Connector.TCPServer.IPEndPoint;
 import Door.Access.Connector.TCPServer.TCPServerAllocator;
 import Door.Access.Connector.TCPServer.TCPServerClientDetail;
 import Door.Access.Connector.TCPServer.TCPServer_ClientConnector;
-import Door.Access.Connector.UDP.UDPAllocator;
 import Door.Access.Connector.UDP.UDPDetail;
 import Door.Access.Connector.UDP.UDPConnector;
 import Door.Access.Data.INData;
@@ -62,7 +61,6 @@ public class ConnectorAllocator {
     public static final ByteBufAllocator ALLOCATOR = ByteUtil.ALLOCATOR;
 
     protected TCPClientAllocator _TCPClientAllocator;
-    protected UDPAllocator _UDPAllocator;
     protected TCPServerAllocator _ServerAllocator;
 
     protected ConcurrentHashMap<String, INConnector> _ConnectorMap;
@@ -80,13 +78,12 @@ public class ConnectorAllocator {
 
         _EventListener = new ArrayList<>(10);
         _EventList = new ConcurrentLinkedQueue<IOEvent>();
-        workService = Executors.newFixedThreadPool(60);
+        workService = Executors.newFixedThreadPool(4);
         mainService = Executors.newFixedThreadPool(2);
         _EventHeandler = new ConnectorAllocatorEventCallback(this);
         _IsRelease = false;
 
         _TCPClientAllocator = new TCPClientAllocator();
-        _UDPAllocator = new UDPAllocator();
         _ServerAllocator = new TCPServerAllocator(_EventHeandler);
 
         mainService.submit(() -> { //开始通讯连接器工作线程轮询
@@ -155,9 +152,6 @@ public class ConnectorAllocator {
 
         _TCPClientAllocator.shutdownGracefully();
         _TCPClientAllocator = null;
-
-        _UDPAllocator.shutdownGracefully();
-        _UDPAllocator = null;
 
         NettyAllocator.shutdownGracefully();
 
@@ -409,7 +403,7 @@ public class ConnectorAllocator {
 //        }
         UDPDetail detail = new UDPDetail("", 1, ip, port);
         UDPConnector connector = (UDPConnector) SearchUDPClient(detail, true);
-        connector.UDPBind();
+        connector.OpenForciblyConnect();
         IsUDPBind = true;
     }
 
@@ -420,6 +414,7 @@ public class ConnectorAllocator {
         UDPDetail detail = new UDPDetail("", 1, ip, port);
         UDPConnector connector = (UDPConnector) SearchUDPClient(detail, true);
         connector.UDPUnBind();
+        connector.CloseForciblyConnect();
         IsUDPBind = false;
     }
 
@@ -445,13 +440,13 @@ public class ConnectorAllocator {
 
     protected INConnector SearchUDPClient(UDPDetail detail, boolean bNew) {
         if (detail.Port <= 0 || detail.LocalPort <= 0) return null;
-        String sKey = detail.ToString();
+        String sKey = detail.getLocalKey();
         if (_ConnectorMap.containsKey(sKey)) {
             return _ConnectorMap.get(sKey);
         } else {
             if (bNew) {
                 try {
-                    UDPConnector Connector = new UDPConnector(_UDPAllocator, detail);
+                    UDPConnector Connector = new UDPConnector(detail);
                     Connector.SetEventHandle(_EventHeandler);
                     AddConnector(sKey, Connector);
                     return _ConnectorMap.get(sKey);

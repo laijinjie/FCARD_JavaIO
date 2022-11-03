@@ -35,10 +35,8 @@ public class UDPDetail extends ConnectorDetail {
      */
     public int LocalPort;
 
-
-
     public UDPDetail(String sRemoteIP, int iRemotePort,
-            String sLocalIP,int iLocalPort) {
+            String sLocalIP, int iLocalPort) {
         IP = sRemoteIP;
         Port = iRemotePort;
         LocalIP = sLocalIP;
@@ -61,10 +59,28 @@ public class UDPDetail extends ConnectorDetail {
         return c;
     }
 
-    public String ToString() {
+    @Override
+    public String toString() {
+        StringBuilder keybuf = new StringBuilder(200);
+        keybuf.append("UDPDetail: Local:");
+        if (LocalIP != null && !LocalIP.isEmpty()) {
+            keybuf.append(LocalIP);
+        }
+        keybuf.append(":");
+        keybuf.append(LocalPort);
+        keybuf.append("----: Remote:");
+        keybuf.append(IP);
+        keybuf.append(":");
+        keybuf.append(Port);
+        return keybuf.toString();
+    }
+
+    public String getLocalKey() {
         StringBuilder keybuf = new StringBuilder(100);
         keybuf.append("UDPLocal:");
-        keybuf.append(LocalIP);
+        if (LocalIP != null && !LocalIP.isEmpty()) {
+            keybuf.append(LocalIP);
+        }
         keybuf.append(":");
         keybuf.append(LocalPort);
         return keybuf.toString();

@@ -9,13 +9,15 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.DatagramPacket;
+import java.net.InetSocketAddress;
 
 /**
  *
  * @author 赖金杰
  */
-public class UDPNettyHandler  extends
+public class UDPNettyHandler extends
         SimpleChannelInboundHandler<DatagramPacket> {
+
     private UDPConnector _Client;
 
     public UDPNettyHandler(UDPConnector client) {
@@ -43,6 +45,11 @@ public class UDPNettyHandler  extends
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, DatagramPacket msg) throws Exception {
+//        InetSocketAddress skt = msg.sender();
+//        int remotePort = skt.getPort();
+//        String sIP = skt.getAddress().getHostAddress();
+//        System.out.println(" 收到UDP包，客户端IP：" + sIP + ":" + remotePort + ",包长度：" + msg.content().readableBytes());
+
         if (_Client == null) {
             return;
         }

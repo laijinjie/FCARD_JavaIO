@@ -8,7 +8,9 @@ package Door.Access.Connector.UDP;
 import Door.Access.Connector.NettyAllocator;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
+import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 
 /**
@@ -19,15 +21,22 @@ import io.netty.channel.socket.nio.NioDatagramChannel;
 public class UDPAllocator {
 
     private Bootstrap UDPBootstrap;
+
     public UDPAllocator() {
-        
+
         UDPBootstrap = new Bootstrap(); //初始化客户端快速构造器
         //设定此 Bootstrap 为 UDP 数据报
-        UDPBootstrap.group(NettyAllocator.GetClientEventLoopGroup()).channel(NioDatagramChannel.class)
-                .option(ChannelOption.SO_BROADCAST, false)
-                .handler(new UDPChannelInitializer());
+        UDPBootstrap.group(NettyAllocator.GetClientEventLoopGroup())
+                .channel(NioDatagramChannel.class)
+                .option(ChannelOption.SO_BROADCAST, true)
+                .option(ChannelOption.SO_REUSEADDR, true)
+                .handler(new ChannelInitializer<NioDatagramChannel>() {
+                    @Override
+                    protected void initChannel(NioDatagramChannel ch) throws Exception {
+                    }
+                });
     }
-    
+
     /**
      * 分配一个连接通道以用于连接到指定服务器
      *
@@ -38,17 +47,17 @@ public class UDPAllocator {
     public ChannelFuture Bind(String IP, int Port) {
         return UDPBootstrap.bind(IP, Port);
     }
-    
+
     public ChannelFuture Bind(int Port) {
         return UDPBootstrap.bind(Port);
     }
-    
+
     public void shutdownGracefully() {
         try {
             UDPBootstrap = null;
-            
+
         } catch (Exception e) {
         }
-        
+
     }
 }

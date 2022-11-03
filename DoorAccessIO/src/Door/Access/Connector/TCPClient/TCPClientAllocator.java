@@ -32,7 +32,9 @@ public class TCPClientAllocator {
         TCPBootstrap = new Bootstrap(); //初始化客户端快速构造器
         TCPInitializer = new TCPClientChannelInitializer();//初始化通道初始化工具
         //设定此 Bootstrap 为 TCP Client 
-        TCPBootstrap.group(NettyAllocator.GetClientEventLoopGroup()).channel(NioSocketChannel.class).option(ChannelOption.SO_KEEPALIVE, true)
+        TCPBootstrap.group(NettyAllocator.GetClientEventLoopGroup())
+                .channel(NioSocketChannel.class)
+                .option(ChannelOption.SO_KEEPALIVE, true)
                 .option(ChannelOption.TCP_NODELAY, true)
                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, CONNECT_TIMEOUT_MILLIS_MAX)//最大30秒连接超时
                 .handler(TCPInitializer);

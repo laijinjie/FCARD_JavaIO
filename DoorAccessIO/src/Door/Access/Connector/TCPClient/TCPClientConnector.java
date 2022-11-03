@@ -5,7 +5,6 @@ import Door.Access.Connector.AbstractConnector;
 import Door.Access.Connector.ConnectorDetail;
 import Door.Access.Connector.E_ConnectorStatus;
 import Door.Access.Connector.E_ConnectorType;
-import Door.Access.Door8800.Command.KeepAlive;
 import Door.Access.Packet.INPacket;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;

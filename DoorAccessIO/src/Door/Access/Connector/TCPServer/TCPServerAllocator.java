@@ -63,7 +63,8 @@ public class TCPServerAllocator {
         TCPServerBootstrap.group(NettyAllocator.GetEventLoopGroup(), NettyAllocator.GetClientEventLoopGroup())
                 .channel(NioServerSocketChannel.class)
                 //.handler(new LoggingHandler(LogLevel.INFO)) //设定日志记录
-                .option(ChannelOption.SO_BACKLOG, 1024).childHandler(new TCPServer_ClientChannelInitializer(event, this));
+                .option(ChannelOption.SO_BACKLOG, 1024)
+                .childHandler(new TCPServer_ClientChannelInitializer(event, this));
     }
 
     /**

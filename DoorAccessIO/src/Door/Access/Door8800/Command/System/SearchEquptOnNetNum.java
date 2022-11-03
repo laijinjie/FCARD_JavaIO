@@ -48,7 +48,7 @@ public class SearchEquptOnNetNum extends Door8800Command {
             SearchEquptOnNetNum_Result ret = (SearchEquptOnNetNum_Result) _Result;
             String SN;
             SN = model.GetSN();
-            System.out.println(SN);
+            //System.out.println(SN);
             if (model.GetDataLen() > 0) {
                 ByteBuf buf = model.GetDatabuff();
                 ret.AddSearchResult(SN, buf);

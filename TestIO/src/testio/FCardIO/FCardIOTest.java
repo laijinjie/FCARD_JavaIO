@@ -5,46 +5,46 @@
  */
 package testio.FCardIO;
 
-import Net.PC15.FC8800.Command.Door.Parameter.OpenDoor_Parameter;
-import Net.PC15.Command.CommandDetail;
-import Net.PC15.Command.CommandParameter;
+import Door.Access.Door8800.Command.Door.Parameter.OpenDoor_Parameter;
+import Door.Access.Command.CommandDetail;
+import Door.Access.Command.CommandParameter;
 import java.util.concurrent.Semaphore;
-import Net.PC15.Connector.ConnectorAllocator;
-import Net.PC15.FC8800.Command.FC8800Command;
-import Net.PC15.Command.INCommand;
-import Net.PC15.Command.INCommandResult;
-import Net.PC15.Connector.ConnectorDetail;
-import Net.PC15.Connector.E_ControllerType;
-import Net.PC15.Connector.INConnectorEvent;
-import Net.PC15.Connector.TCPClient.TCPClientDetail;
-import Net.PC15.Connector.TCPServer.IPEndPoint;
-import Net.PC15.Connector.TCPServer.TCPServerClientDetail;
-import Net.PC15.Data.AbstractTransaction;
-import Net.PC15.Data.BytesData;
-import Net.PC15.Data.INData;
-import Net.PC15.FC8800.Command.Card.Parameter.*;
-import Net.PC15.FC8800.Command.Card.*;
-import Net.PC15.FC8800.Command.Card.Result.*;
-import Net.PC15.FC8800.Command.Data.AlarmTransaction;
-import Net.PC15.FC8800.Command.Data.ButtonTransaction;
-import Net.PC15.FC8800.Command.Data.CardDetail;
-import Net.PC15.FC8800.Command.Data.CardTransaction;
-import Net.PC15.FC8800.Command.Data.DefinedTransaction;
-import Net.PC15.FC8800.Command.Data.DoorSensorTransaction;
-import Net.PC15.FC8800.Command.Data.FC8800WatchTransaction;
-import Net.PC15.FC8800.Command.Data.SoftwareTransaction;
-import Net.PC15.FC8800.Command.Data.SystemTransaction;
-import Net.PC15.FC8800.Command.Door.OpenDoor;
-import Net.PC15.FC8800.Command.Door.ReadRelayOption;
-import Net.PC15.FC8800.Command.FC8800CommandWatchResponse;
-import Net.PC15.FC8800.Command.System.ReadWorkStatus;
-import Net.PC15.FC8800.FC8800Identity;
-import Net.PC15.FC8800.Packet.FC8800Decompile;
-import Net.PC15.FC8800.Packet.FC8800PacketModel;
-import Net.PC15.Packet.INPacketModel;
-import Net.PC15.Packet.PacketDecompileAllocator;
-import Net.PC15.Util.ByteUtil;
-import Net.PC15.Util.StringUtil;
+import Door.Access.Connector.ConnectorAllocator;
+import Door.Access.Door8800.Command.Door8800Command;
+import Door.Access.Command.INCommand;
+import Door.Access.Command.INCommandResult;
+import Door.Access.Connector.ConnectorDetail;
+import Door.Access.Connector.E_ControllerType;
+import Door.Access.Connector.INConnectorEvent;
+import Door.Access.Connector.TCPClient.TCPClientDetail;
+import Door.Access.Connector.TCPServer.IPEndPoint;
+import Door.Access.Connector.TCPServer.TCPServerClientDetail;
+import Door.Access.Data.AbstractTransaction;
+import Door.Access.Data.BytesData;
+import Door.Access.Data.INData;
+import Door.Access.Door8800.Command.Card.Parameter.*;
+import Door.Access.Door8800.Command.Card.*;
+import Door.Access.Door8800.Command.Card.Result.*;
+import Door.Access.Door8800.Command.Data.AlarmTransaction;
+import Door.Access.Door8800.Command.Data.ButtonTransaction;
+import Door.Access.Door8800.Command.Data.CardDetail;
+import Door.Access.Door8800.Command.Data.CardTransaction;
+import Door.Access.Door8800.Command.Data.DefinedTransaction;
+import Door.Access.Door8800.Command.Data.DoorSensorTransaction;
+import Door.Access.Door8800.Command.Data.Door8800WatchTransaction;
+import Door.Access.Door8800.Command.Data.SoftwareTransaction;
+import Door.Access.Door8800.Command.Data.SystemTransaction;
+import Door.Access.Door8800.Command.Door.OpenDoor;
+import Door.Access.Door8800.Command.Door.ReadRelayOption;
+import Door.Access.Door8800.Command.Door8800CommandWatchResponse;
+import Door.Access.Door8800.Command.System.ReadWorkStatus;
+import Door.Access.Door8800.Door8800Identity;
+import Door.Access.Door8800.Packet.Door8800Decompile;
+import Door.Access.Door8800.Packet.Door8800PacketModel;
+import Door.Access.Packet.INPacketModel;
+import Door.Access.Packet.PacketDecompileAllocator;
+import Door.Access.Util.ByteUtil;
+import Door.Access.Util.StringUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import java.util.ArrayList;
@@ -100,7 +100,7 @@ public class FCardIOTest implements INConnectorEvent {
     }
 
     public void TestReadAllCard() {
-        Net.PC15.Command.CommandDetail detial = getCommandDetail();
+        Door.Access.Command.CommandDetail detial = getCommandDetail();
         detial.Timeout = 1000;
         ReadCardDataBase_Parameter par = new ReadCardDataBase_Parameter(detial, 1);
         INCommand cmd = new ReadCardDataBase(par);
@@ -116,10 +116,10 @@ public class FCardIOTest implements INConnectorEvent {
         _Allocator.AddCommand(cmd);
     }
 
-    private Net.PC15.Command.CommandDetail getCommandDetail() {
-        Net.PC15.Command.CommandDetail detial = new Net.PC15.Command.CommandDetail();
+    private Door.Access.Command.CommandDetail getCommandDetail() {
+        Door.Access.Command.CommandDetail detial = new Door.Access.Command.CommandDetail();
         detial.Connector = new TCPClientDetail("192.168.1.169", 8000);
-        detial.Identity = new FC8800Identity("FC-8940A46060007", "FFFFFFFF", E_ControllerType.FC8900);
+        detial.Identity = new Door8800Identity("FC-8940A46060007", "FFFFFFFF", E_ControllerType.Door8900);
         return detial;
     }
 
@@ -197,15 +197,15 @@ public class FCardIOTest implements INConnectorEvent {
 
             ByteBuf dBuf = b.GetBytes();
 
-            //检查是否为FC8800、FC8900数据包
+            //检查是否为Door8800、Door8900数据包
             if (dBuf.getByte(0) == 0x7e) {
-                FC8800Decompile decompile = new FC8800Decompile();
+                Door8800Decompile decompile = new Door8800Decompile();
 
                 ArrayList<INPacketModel> oRetPack = new ArrayList<>(10);
                 if (decompile.Decompile(dBuf, oRetPack)) {
                     //给客户端通道添加解析器
-                    _Allocator.AddWatchDecompile(cd, PacketDecompileAllocator.GetDecompile(E_ControllerType.FC8900));
-                    FC8800PacketModel m = (FC8800PacketModel) oRetPack.get(0);
+                    _Allocator.AddWatchDecompile(cd, PacketDecompileAllocator.GetDecompile(E_ControllerType.Door8900));
+                    Door8800PacketModel m = (Door8800PacketModel) oRetPack.get(0);
 
                     System.out.println("客户端ID:" + cd.ClientID + "(" + m.GetSN() + ")，收到数据包：" + ByteBufUtil.hexDump(dBuf));
                 }
@@ -214,8 +214,8 @@ public class FCardIOTest implements INConnectorEvent {
                 //System.out.println("客户端ID:" + cd.ClientID + "，收到数据包：" + ByteBufUtil.hexDump( dBuf));
             }
         } else {
-            if (event instanceof FC8800WatchTransaction) {
-                FC8800WatchTransaction watchevent = (FC8800WatchTransaction) event;
+            if (event instanceof Door8800WatchTransaction) {
+                Door8800WatchTransaction watchevent = (Door8800WatchTransaction) event;
                 AbstractTransaction tr = (AbstractTransaction) watchevent.EventData;
                 System.out.println("收到监控事件：" + tr.getClass().toString());
                 switch (watchevent.CmdIndex) {
@@ -255,31 +255,34 @@ public class FCardIOTest implements INConnectorEvent {
     }
 
     @Override
-    public void ClientOnline(TCPServerClientDetail client) {
-        System.out.println("有客户端上线：" + client.Remote.toString() + "，客户端ID：" + client.ClientID);
-        workService.submit(() -> {
-            try {
-                CommandDetail detial = getCommandDetail();
-                detial.Connector = client;
-                CommandParameter par = new CommandParameter(detial);
-
-                INCommand cmd = new ReadRelayOption(par);
-                _Allocator.AddCommand(cmd);
-
-                cmd = new ReadWorkStatus(par);
-                _Allocator.AddCommand(cmd);
-
-                Thread.sleep(30000);//设定30秒后自动短线
-                _Allocator.CloseConnector(client);
-            } catch (Exception e) {
-            }
-
-        });
+    public void ClientOnline(ConnectorDetail client) {
+//        
+//        System.out.println("有客户端上线：" + client.Remote.toString() + "，客户端ID：" + client.ClientID);
+//        workService.submit(() -> {
+//            try {
+//                CommandDetail detial = getCommandDetail();
+//                detial.Connector = client;
+//                CommandParameter par = new CommandParameter(detial);
+//
+//                INCommand cmd = new ReadRelayOption(par);
+//                _Allocator.AddCommand(cmd);
+//
+//                cmd = new ReadWorkStatus(par);
+//                _Allocator.AddCommand(cmd);
+//
+//                Thread.sleep(30000);//设定30秒后自动短线
+//                _Allocator.CloseConnector(client);
+//            } catch (Exception e) {
+//            }
+//
+//        });
 
     }
 
     @Override
-    public void ClientOffline(TCPServerClientDetail client) {
-        System.out.println("有客户端离线：" + client.Remote.toString() + "，客户端ID：" + client.ClientID);
+    public void ClientOffline(ConnectorDetail client) {
+//        System.out.println("有客户端离线：" + client.Remote.toString() + "，客户端ID：" + client.ClientID);
     }
+
+
 }
