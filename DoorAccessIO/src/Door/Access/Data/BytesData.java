@@ -6,7 +6,9 @@
 package Door.Access.Data;
 
 import Door.Access.Util.ByteUtil;
+import Door.Access.Util.UInt32Util;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.UnpooledHeapByteBuf;
 
 /**
@@ -33,5 +35,13 @@ public class BytesData implements INData{
     public ByteBuf GetBytes() {
         return _Buf;
     }
-    
+    @Override
+    public String toString() {
+        StringBuilder keybuf = new StringBuilder(200);
+        keybuf.append("BytesData: Len:")
+                .append(_Buf.readableBytes())
+                .append(",HEX:0x")
+                .append(ByteBufUtil.hexDump(_Buf));
+        return keybuf.toString();
+    }
 }
