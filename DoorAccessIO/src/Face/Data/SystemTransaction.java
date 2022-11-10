@@ -80,4 +80,18 @@ public class SystemTransaction extends AbstractTransaction {
     public ByteBuf GetBytes() {
         return null;
     }
+    
+    
+    @Override
+    public String toString() {
+        StringBuilder keybuf = new StringBuilder(200);
+        
+        keybuf.append("TransactionDate:")
+            .append(TimeUtil.FormatTime(_TransactionDate))
+            .append(",TransactionCode:")
+            .append(_TransactionCode)
+            .append(",Door:")
+            .append(Door);
+        return keybuf.toString();
+    }
 }

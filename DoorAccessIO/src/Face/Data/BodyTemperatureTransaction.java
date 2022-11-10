@@ -1,6 +1,7 @@
 package Face.Data;
 
 import Door.Access.Data.AbstractTransaction;
+import Door.Access.Util.TimeUtil;
 import io.netty.buffer.ByteBuf;
 
 import java.util.Calendar;
@@ -49,5 +50,20 @@ public class BodyTemperatureTransaction extends AbstractTransaction {
     @Override
     public ByteBuf GetBytes() {
         return null;
+    }
+    
+    
+    @Override
+    public String toString() {
+        StringBuilder keybuf = new StringBuilder(200);
+        
+        keybuf.append("BodyTemperatureTransaction:")
+             .append("SerialNumber:")
+            .append(SerialNumber)
+            .append("TransactionDate:")
+            .append(TimeUtil.FormatTime(_TransactionDate))
+            .append(",Temperature:")
+            .append(_Temperature);
+        return keybuf.toString();
     }
 }

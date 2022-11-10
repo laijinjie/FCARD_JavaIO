@@ -98,5 +98,25 @@ public class UInt32Util {
         return true;
     }
 
+    public static String ToHex(int value, int iLen) {
+        String sHex = Integer.toHexString(value);
+        int iHexLen = sHex.length();
+        if (iHexLen > iLen) {
+            return sHex.substring(iHexLen-iLen-1, iHexLen);
+        }
+        if (iHexLen == iLen) {
+            return sHex;
+        }
+        if (iHexLen < iLen) {
+            StringBuilder sHexbuf = new StringBuilder(iLen);
+            int iAddCount = iLen-iHexLen;
+            for (int i = 0; i < iAddCount; i++) {
+                sHexbuf.append("0");
+            }
+            sHexbuf.append(sHex);
+            return sHexbuf.toString();
+        }
+        return sHex;
+    }
 
 }

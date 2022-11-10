@@ -14,6 +14,7 @@ import Door.Access.Connector.E_ConnectorType;
  * @author 赖金杰
  */
 public class TCPServerClientDetail extends ConnectorDetail {
+
     /**
      * 客户端通道ID
      */
@@ -35,12 +36,28 @@ public class TCPServerClientDetail extends ConnectorDetail {
     public E_ConnectorType GetConnectorType() {
         return E_ConnectorType.OnTCPServer_Client;
     }
-    
+
     @Override
-    public TCPServerClientDetail clone() throws CloneNotSupportedException
-    {
+    public TCPServerClientDetail clone() throws CloneNotSupportedException {
         TCPServerClientDetail c = (TCPServerClientDetail) super.clone();
         c.ClientID = ClientID;
+        c.Remote = Remote;
+        c.Local = Local;
         return c;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder keybuf = new StringBuilder(200);
+        keybuf.append("TCPServer_Client: ClientID:").append(ClientID);
+        if (Local != null) {
+            keybuf.append(",Local:");
+            keybuf.append(Local.toString());
+        }
+        if (Remote != null) {
+            keybuf.append(",Remote:");
+            keybuf.append(Remote.toString());
+        }
+        return keybuf.toString();
     }
 }

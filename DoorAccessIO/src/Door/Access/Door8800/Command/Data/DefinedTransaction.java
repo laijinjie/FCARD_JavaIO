@@ -7,6 +7,7 @@ package Door.Access.Door8800.Command.Data;
 
 import Door.Access.Data.AbstractTransaction;
 import Door.Access.Util.TimeUtil;
+import Door.Access.Util.UInt32Util;
 import io.netty.buffer.ByteBuf;
 import java.util.Calendar;
 
@@ -69,4 +70,16 @@ public class DefinedTransaction extends AbstractTransaction {
         return null;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder keybuf = new StringBuilder(200);
+
+        keybuf.append("TransactionDate:")
+                .append(TimeUtil.FormatTime(_TransactionDate))
+                .append(",TransactionCode:0x")
+                .append(UInt32Util.ToHex(_TransactionCode,2))
+                .append(",TransactionType:0x")
+                .append(UInt32Util.ToHex(_TransactionType,2));
+        return keybuf.toString();
+    }
 }

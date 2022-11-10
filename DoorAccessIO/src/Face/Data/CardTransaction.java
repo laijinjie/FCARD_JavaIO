@@ -109,4 +109,22 @@ public class CardTransaction extends AbstractTransaction {
     public CardTransaction() {
         _TransactionType = 1;
     }
+    
+    @Override
+    public String toString() {
+        StringBuilder keybuf = new StringBuilder(200);
+        keybuf.append("RecordSerialNumber:")
+                .append(RecordSerialNumber)
+                .append(",UserCode:")
+                .append(UserCode)
+                .append(",TransactionDate:")
+                .append(TimeUtil.FormatTime(_TransactionDate))
+                .append(",AccessType:")
+                .append(AccessType)
+                .append(",TransactionCode:")
+                .append(_TransactionCode)
+                .append(",Photo:")
+                .append(Photo);
+        return keybuf.toString();
+    }
 }

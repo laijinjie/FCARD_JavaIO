@@ -1,5 +1,7 @@
 package Face.Data;
 
+import Door.Access.Util.TimeUtil;
+
 /**
  *门磁记录<br>
  * TransactionCode 事件代码含义表：<br>

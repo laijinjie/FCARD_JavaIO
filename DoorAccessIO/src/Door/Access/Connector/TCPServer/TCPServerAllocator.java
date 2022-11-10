@@ -147,6 +147,13 @@ public class TCPServerAllocator {
         }
 
         ChannelFuture future;
+        if (IP == null) {
+            IP = "0.0.0.0";
+        }
+        if (IP.isEmpty()) {
+            IP = "0.0.0.0";
+        }
+
         if (IP.equals("0.0.0.0")) {
             future = TCPServerBootstrap.bind(Port);
         } else {
@@ -244,7 +251,7 @@ public class TCPServerAllocator {
             _ClientMap.entrySet().forEach((value) -> {
                 INConnector connector = value.getValue();
                 workService.submit(() -> connector.run());
-            }); 
+            });
         }
     }
 }

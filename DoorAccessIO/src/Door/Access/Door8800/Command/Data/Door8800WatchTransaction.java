@@ -7,6 +7,7 @@ package Door.Access.Door8800.Command.Data;
 
 import Door.Access.Data.AbstractTransaction;
 import Door.Access.Data.INData;
+import Door.Access.Util.UInt32Util;
 import io.netty.buffer.ByteBuf;
 
 /**
@@ -51,5 +52,20 @@ public class Door8800WatchTransaction implements INData {
      * 记录数据结构
      */
     public AbstractTransaction EventData;
+    
+    
+    @Override
+    public String toString() {
+        StringBuilder keybuf = new StringBuilder(200);
+        keybuf.append("WatchTransaction: Cmd:0x")
+                .append(UInt32Util.ToHex(CmdType,2))
+                .append(UInt32Util.ToHex(CmdIndex,2))
+                .append(UInt32Util.ToHex(CmdPar,2));
+         keybuf.append(",SN:").append(SN);
+         if(EventData != null)
+            keybuf.append(",Detail:").append(EventData.toString());
+        
+        return keybuf.toString();
+    }
 
 }

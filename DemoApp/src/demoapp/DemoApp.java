@@ -21,17 +21,17 @@ public class DemoApp {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws InterruptedException {
-        TestSearchDevice();
+        //TestSearchDevice();
         //TestUDPServer();
         //TestLibUDP();
         //TestTCPServer();
+        TestLibTCPServer();
 
         Semaphore available = new Semaphore(0, true);
         available.acquire();
     }
-    
-    public static void TestTCPServer()
-    {
+
+    public static void TestTCPServer() {
         NettyTCPServerTest tcpserver = new NettyTCPServerTest();
         System.out.println("准备运行TCP服务器");
 
@@ -40,7 +40,13 @@ public class DemoApp {
         String sLocalIP = sc.nextLine();//接收字符串
         System.out.println("请输入本机绑定的端口号：");
         int iLocalPort = sc.nextInt();
-       tcpserver.bind(sLocalIP, iLocalPort);
+        tcpserver.bind(sLocalIP, iLocalPort);
+    }
+
+    public static void TestLibTCPServer() {
+        TCPServerMonitor tcpserver = new TCPServerMonitor();
+        System.out.println("准备运行动态库的TCP服务器");
+        tcpserver.BeginMonitor();
     }
 
     public static void TestUDPServer() {
