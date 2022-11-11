@@ -23,16 +23,18 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class RegisterIdentificationData extends Door8800Command {
 
     private int mStep;
-    private int UserCode;
+    private long UserCode;
     private ReadFile_Result mReadFileResult;
     private int FileType;
     private int _FileStep;
 
     private byte[] _FileDatas;
-/**
- * 注册人员指纹特征码或注册人员头像
- * @param parameter 注册人员指纹特征码或注册人员头像参数
- */
+
+    /**
+     * 注册人员指纹特征码或注册人员头像
+     *
+     * @param parameter 注册人员指纹特征码或注册人员头像参数
+     */
     public RegisterIdentificationData(RegisterIdentificationData_Parameter parameter) {
         _Parameter = parameter;
         _Result = new RegisterIdentificationData_Result(parameter.PersonDetail, parameter.DataType, parameter.DataNum);
@@ -58,13 +60,8 @@ public class RegisterIdentificationData extends Door8800Command {
     @Override
     protected boolean _CommandStep(INConnectorEvent oEvent, Door8800PacketModel model) {
         /**
-         * 注册流程
-         * 1、注册人员信息
-         * 2、人脸机拍照注册开始命令（判断之前是否存在图片，如果存在先删除旧图片）
-         * 3、注册命令反馈
-         * 4、注册命令结果
-         * 5、读取人员信息
-         * 6、读取文件信息
+         * 注册流程 1、注册人员信息 2、人脸机拍照注册开始命令（判断之前是否存在图片，如果存在先删除旧图片） 3、注册命令反馈 4、注册命令结果
+         * 5、读取人员信息 6、读取文件信息
          */
         RegisterIdentificationData_Parameter parameter = (RegisterIdentificationData_Parameter) _Parameter;
         boolean result = false;
@@ -80,7 +77,7 @@ public class RegisterIdentificationData extends Door8800Command {
                     if (parameter.DataType < 4) {
                         result = DeleteFile(parameter);
                     } else {
-                        result= BeginReg(parameter);
+                        result = BeginReg(parameter);
                     }
                     RaiseCommandProcessEvent(oEvent);
                 }
@@ -97,7 +94,7 @@ public class RegisterIdentificationData extends Door8800Command {
              */
             case 2:
                 if (CheckResponseOK(model)) {
-                    result= BeginReg(parameter);
+                    result = BeginReg(parameter);
                 }
                 break;
             /**
@@ -124,7 +121,7 @@ public class RegisterIdentificationData extends Door8800Command {
 
                         ReadIdentificationData(parameter);
                         RaiseCommandProcessEvent(oEvent);
-                        result=true;
+                        result = true;
                     }
                 }
                 break;
@@ -151,7 +148,6 @@ public class RegisterIdentificationData extends Door8800Command {
         return result;
     }
 
-
     /**
      * 删除文件
      *
@@ -162,7 +158,7 @@ public class RegisterIdentificationData extends Door8800Command {
         try {
             int iBufLen = 20;
             ByteBuf buf = ByteUtil.ALLOCATOR.buffer(iBufLen);
-            buf.writeInt(parameter.PersonDetail.UserCode);
+            buf.writeInt((int) parameter.PersonDetail.UserCode);
             buf.writeByte(parameter.DataType == 3 ? 1 : 0);
             buf.writeInt(0);
             int iLen = 10;
@@ -197,7 +193,7 @@ public class RegisterIdentificationData extends Door8800Command {
         int iBufLen = 6;
         ByteBuf buf = ByteUtil.ALLOCATOR.buffer(iBufLen);
         buf.writeByte(parameter.DataType);
-        buf.writeInt(parameter.PersonDetail.UserCode);
+        buf.writeInt((int) parameter.PersonDetail.UserCode);
         buf.writeByte(parameter.DataNum);
         mStep = 3;
         _ProcessStep = 3;
@@ -205,7 +201,7 @@ public class RegisterIdentificationData extends Door8800Command {
         commandDetail.Timeout = 4000;
         commandDetail.RestartCount = 0;
         CreatePacket(0x07, 0x20, 0x00, iBufLen, buf);
-        return true ;
+        return true;
     }
 
     /**
@@ -261,7 +257,7 @@ public class RegisterIdentificationData extends Door8800Command {
             mStep = 5;
             iBufLen = 4;
             buf = ByteUtil.ALLOCATOR.buffer(iBufLen);
-            buf.writeInt(UserCode);
+            buf.writeInt((int) UserCode);
             CreatePacket(0x07, 0x03, 0x01, iBufLen, buf);
         } else {
             iBufLen = 6;
@@ -280,7 +276,7 @@ public class RegisterIdentificationData extends Door8800Command {
             buf = ByteUtil.ALLOCATOR.buffer(iBufLen);
             buf.writeByte(FileType);
             buf.writeByte(parameter.DataNum);
-            buf.writeInt(UserCode);
+            buf.writeInt((int) UserCode);
             CreatePacket(0x0B, 0x15, 0x00, iBufLen, buf);
         }
     }
@@ -316,7 +312,6 @@ public class RegisterIdentificationData extends Door8800Command {
         return result;
     }
 
-
     /**
      * 开始读取文件句柄
      *
@@ -343,7 +338,7 @@ public class RegisterIdentificationData extends Door8800Command {
             _ProcessMax = mReadFileResult.FileSize;
             int iBufLen = 10;
             ByteBuf buf = ByteUtil.ALLOCATOR.buffer(iBufLen);
-            buf.writeInt(mReadFileResult.FileHandle);
+            buf.writeInt((int)mReadFileResult.FileHandle);
             buf.writeInt(0);
             buf.writeShort(iPackSize.get());
             CreatePacket(0x0b, 0x015, 0x02, iBufLen, buf);
@@ -370,7 +365,7 @@ public class RegisterIdentificationData extends Door8800Command {
             long crc = buf.readUnsignedInt();
             _ProcessStep = iDataIndex + iSize;
             buf.readBytes(_FileDatas, iDataIndex, iSize);
-            long filecrc=ByteUtil.CreateCRC32(_FileDatas,iDataIndex, iSize);
+            long filecrc = ByteUtil.CreateCRC32(_FileDatas, iDataIndex, iSize);
             if (crc == filecrc) {
                 int iPackSize = 1024;
                 iDataIndex += iPackSize;
@@ -403,7 +398,7 @@ public class RegisterIdentificationData extends Door8800Command {
      */
     private boolean CheckReadFile(Door8800PacketModel model) {
         if (CheckResponse_Cmd(model, 0x0B, 0x15, 3)) {
-            long crc = ByteUtil.CreateCRC32(_FileDatas,0,_FileDatas.length);
+            long crc = ByteUtil.CreateCRC32(_FileDatas, 0, _FileDatas.length);
             mReadFileResult.Result = (crc == mReadFileResult.FileCRC);
             _ProcessStep = _ProcessMax;
             if (mReadFileResult.Result) {

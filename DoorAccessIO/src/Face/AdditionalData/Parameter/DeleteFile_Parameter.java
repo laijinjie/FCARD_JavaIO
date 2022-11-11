@@ -7,6 +7,7 @@ package Face.AdditionalData.Parameter;
 
 import Door.Access.Command.CommandDetail;
 import Door.Access.Command.CommandParameter;
+import Door.Access.Util.UInt32Util;
 import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 
@@ -19,7 +20,7 @@ public class DeleteFile_Parameter extends CommandParameter {
     /**
      * 用户号
      */
-    public int UserCode;
+    public long UserCode;
     /**
      * 人脸序号 长度为10的boolean集合 索引号为人脸文件序号
      *
@@ -34,7 +35,7 @@ public class DeleteFile_Parameter extends CommandParameter {
      */
     public Boolean FeatureNum;
 
-    public DeleteFile_Parameter(CommandDetail detail, int UserCode, ArrayList<Boolean> FaceNums, ArrayList<Boolean> FingerprintNums, boolean FeatureNum) {
+    public DeleteFile_Parameter(CommandDetail detail, long UserCode, ArrayList<Boolean> FaceNums, ArrayList<Boolean> FingerprintNums, boolean FeatureNum) {
         super(detail);
         this.UserCode = UserCode;
         this.FaceNums = FaceNums;
@@ -55,7 +56,7 @@ public class DeleteFile_Parameter extends CommandParameter {
                 new Exception("指纹序号列表超出范围");
             }
         }
-        if (UserCode == 0) {
+        if (!UInt32Util.Check(UserCode)) {
             new Exception("用户号错误");
         }
     }
@@ -79,7 +80,7 @@ public class DeleteFile_Parameter extends CommandParameter {
                 }
             }
         }
-        buf.writeInt(UserCode);
+        buf.writeInt((int) UserCode);
         buf.writeBytes(bFaceNums);
         buf.writeBytes(bFingerprintNums);
         buf.writeBoolean(FeatureNum);

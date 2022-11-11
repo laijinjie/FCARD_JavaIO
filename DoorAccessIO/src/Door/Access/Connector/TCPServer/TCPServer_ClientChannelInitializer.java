@@ -28,7 +28,8 @@ public class TCPServer_ClientChannelInitializer extends ChannelInitializer<Socke
 
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {
-        ch.pipeline().addLast(new IdleStateHandler(90, 90, 0));//超时检查
+        if(TCPServerAllocator.IdleStateTime_Second>0)
+            ch.pipeline().addLast(new IdleStateHandler(TCPServerAllocator.IdleStateTime_Second, TCPServerAllocator.IdleStateTime_Second, 0));//超时检查
         
         //创建通道处理程序
         TCPServer_ClientNettyHandler handler = new TCPServer_ClientNettyHandler();

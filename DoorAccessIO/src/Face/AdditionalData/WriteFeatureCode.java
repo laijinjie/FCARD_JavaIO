@@ -30,7 +30,7 @@ public class WriteFeatureCode extends Door8800Command {
     /**
      * 文件句柄
      */
-    private int _FileHandle = 0;
+    private long _FileHandle = 0;
 
     /**
      * 操作步骤
@@ -51,13 +51,13 @@ public class WriteFeatureCode extends Door8800Command {
         _Parameter = par;
         int iLen = 6;
         ByteBuf dataBuf = ByteUtil.ALLOCATOR.buffer(iLen);
-        dataBuf.writeInt(par.getUserCode());
+        dataBuf.writeInt((int) par.getUserCode());
         dataBuf.writeByte(par.getType());
         dataBuf.writeByte(par.getSerialNumber());
         //分类 0x0B,命令0x01,参数0x00,数据用户号（4字节）文件类型（1字节）序号（1字节）
         CreatePacket(0x0B, 1, 0, iLen, dataBuf);
-        mResult=new WriteFeatureCode_Result();
-        _Result=mResult;
+        mResult = new WriteFeatureCode_Result();
+        _Result = mResult;
     }
 
     @Override
@@ -152,7 +152,7 @@ public class WriteFeatureCode extends Door8800Command {
         int iLen = 7 + iPackSize;
         ByteBuf dataBuf = ByteUtil.ALLOCATOR.buffer(iLen);
 
-        dataBuf.writeInt(_FileHandle);
+        dataBuf.writeInt((int) _FileHandle);
         _WriteIndex = 0;
         dataBuf.writeMedium(_WriteIndex);
         dataBuf.writeBytes(par.getDatas(), _WriteIndex, iPackSize);
@@ -172,8 +172,8 @@ public class WriteFeatureCode extends Door8800Command {
             }
             if (iDataLen <= 0) {
                 _ProcessStep = _ProcessMax;
-                int dataLen=par.getDatas().length;
-                long crc32 = ByteUtil.CreateCRC32(par.getDatas(), 0,dataLen);
+                int dataLen = par.getDatas().length;
+                long crc32 = ByteUtil.CreateCRC32(par.getDatas(), 0, dataLen);
                 int iLen = 4;
                 ByteBuf dataBuf = ByteUtil.ALLOCATOR.buffer(iLen);
                 dataBuf.writeInt((int) crc32);
@@ -181,7 +181,7 @@ public class WriteFeatureCode extends Door8800Command {
                 CreatePacket(0x0b, 0x03, 0x00, iLen, dataBuf);
             } else {
                 ByteBuf dataBuf = model.GetDatabuff().clear();
-                dataBuf.writeInt(_FileHandle);
+                dataBuf.writeInt((int) _FileHandle);
                 dataBuf.writeMedium(_WriteIndex);
                 dataBuf.writeBytes(par.getDatas(), _WriteIndex, iPackSize);
                 model.SetDatabuff(dataBuf);

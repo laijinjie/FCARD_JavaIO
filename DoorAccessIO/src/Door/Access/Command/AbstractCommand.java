@@ -28,7 +28,7 @@ public abstract class AbstractCommand implements INCommand {
     protected INCommandResult _Result;
     /**
      * 最大进度数<br>
-     * 当有发生变化时，应调用  RaiseCommandProcessEvent
+     * 当有发生变化时，应调用 RaiseCommandProcessEvent
      */
     protected int _ProcessMax;
     /**
@@ -166,7 +166,7 @@ public abstract class AbstractCommand implements INCommand {
         synchronized (this) {
             try {
                 ArrayList<INPacketModel> oRetPack = new ArrayList<INPacketModel>(10);
-                
+
                 decompile = _Decompile.Decompile(bData, oRetPack);
 
                 if (decompile) {
@@ -341,6 +341,7 @@ public abstract class AbstractCommand implements INCommand {
         CommandOver();
         RaiseCommandCompleteEvent1(oEvent);
     }
+
     /**
      * 当命令完成时，会触发此函数回调
      *
@@ -349,7 +350,7 @@ public abstract class AbstractCommand implements INCommand {
     public void RaiseCommandCompleteEvent1(INConnectorEvent oEvent) {
 //        INCommand cmd,INCommandResult result
         //System.out.println("Door.Access.Command.AbstractCommand.RaiseCommandCompleteEvent() -- 发送命令完成事件");
-      //  CommandOver();
+        //  CommandOver();
         if (oEvent != null) {
             oEvent.CommandCompleteEvent(this, _Result);
         }
@@ -358,6 +359,7 @@ public abstract class AbstractCommand implements INCommand {
             cmdEvent.CommandCompleteEvent(this, _Result);
         }
     }
+
     /**
      * 命令发生进程发生变化
      *

@@ -14,14 +14,14 @@ public class DeletePerson_Parameter extends CommandParameter {
     /**
      * 用户号列表
      */
-   public ArrayList<Integer> UserCodeList;
+   public ArrayList<Long> UserCodeList;
 
     /**
      * 删除人员信息参数
      * @param detail 命令详情
      * @param userCodeList 待删除人员编号列表
      */
-    public DeletePerson_Parameter(CommandDetail detail, ArrayList<Integer> userCodeList ) {
+    public DeletePerson_Parameter(CommandDetail detail, ArrayList<Long> userCodeList ) {
         super(detail);
         UserCodeList=userCodeList;
     }

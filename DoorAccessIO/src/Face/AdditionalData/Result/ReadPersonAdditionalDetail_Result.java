@@ -7,7 +7,7 @@ public class ReadPersonAdditionalDetail_Result implements INCommandResult {
     /**
      * 用户号
      */
-    public int UserCode;
+    public long UserCode;
 
     /**
      * 人员头像列表 1表示有，0表示无
@@ -36,7 +36,7 @@ public class ReadPersonAdditionalDetail_Result implements INCommandResult {
      */
     public void setBytes(ByteBuf buf)
     {
-        UserCode = buf.readInt();
+        UserCode = buf.readUnsignedInt();
         PhotoList = new byte[5];
         buf.readBytes(PhotoList, 0, 5);
 

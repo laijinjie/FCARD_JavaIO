@@ -18,7 +18,7 @@ public class WriteFeatureCode_Parameter extends CommandParameter {
     /**
      * 用户号或者记录序号
      */
-    private int _UserCode;
+    private long _UserCode;
     /**
      * 文件类型
      */
@@ -44,7 +44,7 @@ public class WriteFeatureCode_Parameter extends CommandParameter {
      * @param serialNumber 序号
      * @param data 待写入数据
      */
-    public WriteFeatureCode_Parameter(CommandDetail detail, int userCode, int type, int serialNumber, byte[] data) {
+    public WriteFeatureCode_Parameter(CommandDetail detail, long userCode, int type, int serialNumber, byte[] data) {
         super(detail);
         _UserCode = userCode;
         _Type = type;
@@ -57,7 +57,7 @@ public class WriteFeatureCode_Parameter extends CommandParameter {
      *
      * @return 用户号
      */
-    public int getUserCode() {
+    public long getUserCode() {
         return _UserCode;
     }
 

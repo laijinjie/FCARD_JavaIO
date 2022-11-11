@@ -20,35 +20,36 @@ public class ReadPersonDetail extends Door8800Command {
 
     /**
      * 查询人员数据详情
+     *
      * @param parameter 查询参数
      */
     public ReadPersonDetail(ReadPersonDetail_Parameter parameter) {
-        _Parameter =parameter;
-        ByteBuf buf= ByteUtil.ALLOCATOR.buffer(4);
-        buf.writeInt(parameter.UserCode);
-        CreatePacket(0x07, 0x03, 0x01,4,buf);
+        _Parameter = parameter;
+        ByteBuf buf = ByteUtil.ALLOCATOR.buffer(4);
+        buf.writeInt((int) parameter.UserCode);
+        CreatePacket(0x07, 0x03, 0x01, 4, buf);
     }
 
     @Override
     protected boolean _CommandStep(INConnectorEvent oEvent, Door8800PacketModel model) {
-        boolean bResult=false;
-       if(CheckResponse_Cmd(model,0xA1)){
-           ByteBuf buf=model.GetDatabuff();
-           ReadPersonDetail_Result result = new ReadPersonDetail_Result();
-           result.isReady = buf.getByte(0) != 0xff;
-           if(result.isReady){
-               try {
-                   result.person=new Person();
-                   result.person.setBytes(buf);
-               } catch (UnsupportedEncodingException e) {
-                   e.printStackTrace();
-               }
-           }
-            bResult=true;
-           _Result=result;
-       }
-       RaiseCommandCompleteEvent(oEvent);
-       return  bResult;
+        boolean bResult = false;
+        if (CheckResponse_Cmd(model, 0xA1)) {
+            ByteBuf buf = model.GetDatabuff();
+            ReadPersonDetail_Result result = new ReadPersonDetail_Result();
+            result.isReady = buf.getByte(0) != 0xff;
+            if (result.isReady) {
+                try {
+                    result.person = new Person();
+                    result.person.setBytes(buf);
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }
+            bResult = true;
+            _Result = result;
+        }
+        RaiseCommandCompleteEvent(oEvent);
+        return bResult;
     }
 
     @Override

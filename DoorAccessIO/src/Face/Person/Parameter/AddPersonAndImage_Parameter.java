@@ -2,6 +2,7 @@ package Face.Person.Parameter;
 
 import Door.Access.Command.CommandDetail;
 import Door.Access.Command.CommandParameter;
+import Door.Access.Util.UInt32Util;
 import Face.Data.IdentificationData;
 import Face.Data.Person;
 import io.netty.buffer.ByteBuf;
@@ -81,8 +82,8 @@ public class AddPersonAndImage_Parameter extends CommandParameter {
         if (PersonDetail == null) {
             new Exception("PersonDetail is null");
         }
-        if (PersonDetail.UserCode == 0 || PersonDetail.UserCode > Integer.MAX_VALUE) {
-            new Exception("PersonDetail.EnterStatus Must be between 1 and " + Integer.MAX_VALUE);
+        if (PersonDetail.UserCode == 0 || PersonDetail.UserCode > UInt32Util.UINT32_MAX) {
+            new Exception("PersonDetail.EnterStatus Must be between 1 and " + UInt32Util.UINT32_MAX);
         }
         if (PersonDetail.TimeGroup > 64 || PersonDetail.TimeGroup < 1) {
             new Exception("PersonDetail.EnterStatus Must be between 0 and 64");

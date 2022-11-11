@@ -30,6 +30,17 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class TCPServerAllocator {
 
     /**
+     * 线路空闲时发送 keepalive 字符串的等待时间，单位是秒
+     */
+    public static int IdleStateTime_Second = 90;
+    
+    /**
+     * 线路空闲时处于空闲状态时发送的 keepalive 消息内容
+     */
+    public static byte[] KeepAliveMsg="KeepAlive".getBytes();
+    
+    
+    /**
      * 存储本地绑定的服务器信息
      */
     protected ConcurrentHashMap<String, Channel> _ServerMap;

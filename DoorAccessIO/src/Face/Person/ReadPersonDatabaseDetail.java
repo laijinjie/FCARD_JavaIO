@@ -18,10 +18,12 @@ import io.netty.buffer.ByteBuf;
  * @author F
  */
 public class ReadPersonDatabaseDetail extends Door8800Command {
-/**
- * 读取人员存储详情
- * @param par 命令参数
- */
+
+    /**
+     * 读取人员存储详情
+     *
+     * @param par 命令参数
+     */
     public ReadPersonDatabaseDetail(CommandParameter par) {
         _Parameter = par;
         CreatePacket(7, 1, 0, 0, null);
@@ -34,7 +36,7 @@ public class ReadPersonDatabaseDetail extends Door8800Command {
 
     @Override
     protected boolean _CommandStep(INConnectorEvent oEvent, Door8800PacketModel model) {
-        if (CheckResponse_Cmd(model,7,1,0,0x18)) {
+        if (CheckResponse_Cmd(model, 7, 1, 0, 0x18)) {
             ByteBuf buf = model.GetDatabuff();
             ReadPersonDatabaseDetail_Result result = new ReadPersonDatabaseDetail_Result();
             result.SortDataBaseSize = buf.readUnsignedInt();

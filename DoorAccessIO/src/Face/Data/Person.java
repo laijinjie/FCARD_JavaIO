@@ -16,7 +16,7 @@ public class Person implements Comparable<Person> {
     /**
      *用户号
      */
-    public int UserCode;
+    public long UserCode;
     /**
      *卡号，取值范围 0x1-0xFFFFFFFF
      */
@@ -209,7 +209,7 @@ public class Person implements Comparable<Person> {
      * @throws UnsupportedEncodingException 
      */
     public void getBytes(ByteBuf buf) throws UnsupportedEncodingException {
-        buf.writeInt(UserCode);
+        buf.writeInt((int)UserCode);
         buf.writeLong(CardData);
         Password = StringUtil.FillHexString(Password, 8, "F", true);
         long pwd = Long.parseLong(Password, 16);
@@ -239,7 +239,7 @@ public class Person implements Comparable<Person> {
      * @throws UnsupportedEncodingException 
      */
     public  void setBytes(ByteBuf buf) throws UnsupportedEncodingException {
-        UserCode = buf.readInt();
+        UserCode = buf.readUnsignedInt();
         CardData = buf.readLong();
         byte[] btData = new byte[4];
         buf.readBytes(btData, 0, 4);

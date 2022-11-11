@@ -19,10 +19,12 @@ public class ReadFile extends Door8800Command {
     int _Step = 0;
     ReadFile_Result mResult;
     ReadFile_Parameter mPar;
-/**
- * 读取大型文件
- * @param parameter 文件类型参数
- */
+
+    /**
+     * 读取大型文件
+     *
+     * @param parameter 文件类型参数
+     */
     public ReadFile(ReadFile_Parameter parameter) {
         _Parameter = parameter;
 
@@ -38,7 +40,7 @@ public class ReadFile extends Door8800Command {
         ByteBuf buf = ByteUtil.ALLOCATOR.buffer();
         buf.writeByte(mPar.Type);
         buf.writeByte(mPar.SerialNumber);
-        buf.writeInt(mPar.UserCode);
+        buf.writeInt((int) mPar.UserCode);
         CreatePacket(0x0B, 0x15, 0x00, 6, buf);
     }
 
@@ -63,11 +65,12 @@ public class ReadFile extends Door8800Command {
             default:
                 break;
         }
-        return getResult(false,oEvent);
+        return getResult(false, oEvent);
     }
 
     /**
      * 句柄返回结果
+     *
      * @param oEvent
      * @param model
      * @return
@@ -77,16 +80,22 @@ public class ReadFile extends Door8800Command {
         if (CheckResponse_Cmd(model, 0x0b, 0x15, 0x01, 17)) {
             ByteBuf buf = model.GetDatabuff();
             int iFileType = buf.readByte();
-            int iFileUserCode = buf.readInt();
+            long iFileUserCode = buf.readUnsignedInt();
             long iFileHandle = buf.readUnsignedInt();
             int iFileSize = buf.readInt();
+            long iFileCRC = buf.readUnsignedInt();
+            
             if (iFileSize < 0) {
                 return getResult(false, oEvent);
             }
-            long iFileCRC = buf.readUnsignedInt();
+
             if (iFileUserCode != mPar.UserCode || mPar.Type != iFileType || iFileHandle == 0) {
                 return getResult(false, oEvent);
             }
+            
+            mResult.FileCRC = iFileCRC;
+            mResult.FileHandle = iFileHandle;
+            
             if (iFileHandle == Integer.MAX_VALUE) {
                 CommandDetail detail = mPar.getCommandDetail();
                 detail.Timeout = 150000;
@@ -98,8 +107,7 @@ public class ReadFile extends Door8800Command {
                 beginRead();
             } else {
                 _ProcessMax = iFileSize;
-                mResult.FileCRC = iFileCRC;
-                mResult.FileHandle = (int) iFileHandle;
+
                 mResult.FileDatas = new byte[iFileSize];
                 _Step = 1;
                 mResult.FileSize = iFileSize;
@@ -113,6 +121,7 @@ public class ReadFile extends Door8800Command {
 
     /**
      * 设置发送包内容
+     *
      * @param bufSize
      * @param iIndex
      * @param packSize
@@ -120,14 +129,15 @@ public class ReadFile extends Door8800Command {
      */
     private ByteBuf setBuf(int bufSize, int iIndex, int packSize) {
         ByteBuf buf = ByteUtil.ALLOCATOR.buffer(bufSize);
-        buf.writeInt(mResult.FileHandle);
+        buf.writeInt((int)mResult.FileHandle);
         buf.writeInt(iIndex);
         buf.writeShort(packSize);
         return buf;
     }
 
     /**
-     * 文件快内容返回结果
+     * 文件块内容返回结果
+     *
      * @param oEvent
      * @param model
      * @return
@@ -139,7 +149,7 @@ public class ReadFile extends Door8800Command {
             int iDataIndex;
             int iSize = 0;
 
-            mResult.FileHandle = buf.readInt();
+            mResult.FileHandle = buf.readUnsignedInt();
             iDataIndex = buf.readInt();
             iSize = buf.readUnsignedShort();
             long crc = buf.readUnsignedInt();
@@ -164,15 +174,15 @@ public class ReadFile extends Door8800Command {
              * 还有文件继续读
              */
             if (iDataLen > 0) {
-                _ProcessStep=iDataIndex;
+                _ProcessStep = iDataIndex;
                 CreatePacket(0x0B, 0x15, 2, 10, setBuf(10, iDataIndex, iDataLen));
 
                 return true;
             }
             /* 读取文件完成，关闭句柄*/
             buf = ByteUtil.ALLOCATOR.buffer(4);
-            buf.writeInt(mResult.FileHandle);
-            _Step=2;
+            buf.writeInt((int)mResult.FileHandle);
+            _Step = 2;
             CreatePacket(0x0B, 0x15, 0x03, 4, buf);
             _ProcessStep = _ProcessMax;
             return true;
@@ -182,6 +192,7 @@ public class ReadFile extends Door8800Command {
 
     /**
      * 关闭句柄返回结果
+     *
      * @param oEvent
      * @param model
      * @return
@@ -189,7 +200,7 @@ public class ReadFile extends Door8800Command {
     private boolean closeFileResult(INConnectorEvent oEvent, Door8800PacketModel model) {
         if (CheckResponse_Cmd(model, 0x0B, 0x15, 0x03)) {
             long crc = ByteUtil.CreateCRC32(mResult.FileDatas, 0, mResult.FileSize);
-            mResult.Result=crc == mResult.FileCRC;
+            mResult.Result = crc == mResult.FileCRC;
             return getResult(mResult.Result, oEvent);
         }
         return false;
@@ -197,6 +208,7 @@ public class ReadFile extends Door8800Command {
 
     /**
      * 获取返回值
+     *
      * @param result
      * @param oEvent
      * @return

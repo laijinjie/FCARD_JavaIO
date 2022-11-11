@@ -305,8 +305,8 @@ public class TCPServer_ClientConnector extends AbstractConnector {
             IdleStateEvent state = (IdleStateEvent) evt;
             switch (state.state()) {
                 case READER_IDLE://读空闲
-                    ByteBuf sendBuf=_Client.alloc().buffer(TCPClientConnector.KeepAliveMsg.length);
-                    sendBuf.writeBytes(TCPClientConnector.KeepAliveMsg);
+                    ByteBuf sendBuf=_Client.alloc().buffer(TCPServerAllocator.KeepAliveMsg.length);
+                    sendBuf.writeBytes(TCPServerAllocator.KeepAliveMsg);
                     _WriteFuture = _Client.writeAndFlush(sendBuf);
                     break;
                 case WRITER_IDLE: //写空闲

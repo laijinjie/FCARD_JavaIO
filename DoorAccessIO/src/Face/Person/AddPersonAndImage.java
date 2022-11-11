@@ -18,7 +18,7 @@ public class AddPersonAndImage extends Door8800Command {
 
     AddPersonAndImage_Result mResult;
     AddPersonAndImage_Parameter mPar;
-    private int UserCode;
+    private long UserCode;
     private int _FileIndex = 0;
     private int _Step = 0;
     private int IdentSize = 0;

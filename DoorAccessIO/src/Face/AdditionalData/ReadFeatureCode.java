@@ -14,6 +14,7 @@ import io.netty.buffer.ByteBuf;
  * @author F
  */
 public class ReadFeatureCode extends Door8800Command {
+
     /**
      * 命令分类
      */
@@ -34,12 +35,13 @@ public class ReadFeatureCode extends Door8800Command {
      * 参数
      */
     ReadFeatureCode_Parameter mPar;
-/**
- * @param parameter
- */
+
+    /**
+     * @param parameter
+     */
     public ReadFeatureCode(ReadFeatureCode_Parameter parameter) {
         _Parameter = parameter;
-        mPar=parameter;
+        mPar = parameter;
         ByteBuf buf = ByteUtil.ALLOCATOR.buffer(6);
         parameter.getBytes(buf);
         CreatePacket(0x0b, 0x05, 0x00, 6, buf);
@@ -63,7 +65,7 @@ public class ReadFeatureCode extends Door8800Command {
          * 返回CRC32校验码
          */
         if (CheckResponse_Cmd(model, CMD_TYPE, CMD_INDEX, 0x03)) {
-            return CheckCrc32(oEvent,model);
+            return CheckCrc32(oEvent, model);
         }
         return false;
     }
@@ -71,17 +73,19 @@ public class ReadFeatureCode extends Door8800Command {
     /**
      * 检查句柄
      *
-     * @param oEvent 
+     * @param oEvent
      * @param model
      */
     private boolean CheckFileHandle(INConnectorEvent oEvent, Door8800PacketModel model) {
-if(mResult==null){
-    mResult=new ReadFeatureCode_Result();
-}
+        if (mResult == null) {
+            mResult = new ReadFeatureCode_Result();
+            _Result = mResult;
+        }
         mResult.setBytes(model.GetDatabuff());
         if (mResult.UserCode != mPar.UserCode || mResult.FileType != mPar.Type
                 || mResult.FileHandle == 0 || mResult.FileSize == 0) {
             mResult.Result = false;
+            
             RaiseCommandCompleteEvent(oEvent);
             return true;
         }
@@ -117,16 +121,16 @@ if(mResult==null){
         long crc32 = ByteUtil.CreateCRC32(_FileDatas, 0, _FileDatas.length);
         mResult.FileCRC = fileCrc32;
         _ProcessStep = _ProcessMax;
+
         if (crc32 == fileCrc32) {
             mResult.FileDatas = _FileDatas;
             mResult.Result = true;
         }
-       // _FileDatas = null;
-        _Result=mResult;
+        // _FileDatas = null;
+        
         RaiseCommandCompleteEvent(oEvent);
         return mResult.Result;
     }
-
 
     @Override
     protected void Release0() {

@@ -15,6 +15,7 @@ import Door.Access.Connector.ConnectorDetail;
 import Door.Access.Connector.E_ControllerType;
 import Door.Access.Connector.INConnector;
 import Door.Access.Connector.INConnectorEvent;
+import Door.Access.Connector.TCPServer.TCPServerAllocator;
 import Door.Access.Connector.TCPServer.TCPServerClientDetail;
 import Door.Access.Data.INData;
 import Door.Access.Door8800.Command.Data.Door8800WatchTransaction;
@@ -23,6 +24,10 @@ import Door.Access.Door8800.Command.System.SearchEquptOnNetNum;
 import Door.Access.Door8800.Door8800Identity;
 import Door.Access.Packet.PacketDecompileAllocator;
 import Door.Access.Util.TimeUtil;
+import Face.AdditionalData.Parameter.ReadFeatureCode_Parameter;
+import Face.AdditionalData.Parameter.ReadFile_Parameter;
+import Face.AdditionalData.Result.ReadFeatureCode_Result;
+import Face.AdditionalData.Result.ReadFile_Result;
 import io.netty.buffer.ByteBuf;
 import java.util.Calendar;
 import java.util.concurrent.ConcurrentHashMap;
@@ -44,13 +49,15 @@ public class TCPServerMonitor implements INConnectorEvent {
         public INConnector Connector;
         public String SN;
         public boolean IsOpenWatch;
+        public ConnectorDetail ConnectorDTL;
 
-        public ConnectContext(int id, INConnector c) {
+        public ConnectContext(int id, INConnector c, ConnectorDetail dtl) {
             ClientID = id;
             MapKey = GetConnectKey(id);
             Connector = c;
             IsOpenWatch = false;
             SN = null;
+            ConnectorDTL = dtl;
         }
 
     }
@@ -78,6 +85,14 @@ public class TCPServerMonitor implements INConnectorEvent {
 
     public void BeginMonitor() {
         InputTestPar();
+
+        //开始监听前，配置电脑端的 keepalive 参数
+        
+        //读空闲时间，就是多少时间没有读到消息时会发送keepalive消息进行保活，单位是秒
+        TCPServerAllocator.IdleStateTime_Second = 5;
+        //自定义keepalive保活包消息内容
+        TCPServerAllocator.KeepAliveMsg = new byte[]{0x7E};
+
         _Allocator.Listen(_LocalIP, _LocalPort);
         printLog("动态库的TCP服务器已启动：" + _LocalIP + ":" + _LocalPort);
 
@@ -87,11 +102,18 @@ public class TCPServerMonitor implements INConnectorEvent {
     public void CommandCompleteEvent(INCommand cmd, INCommandResult result) {
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         printLog("CommandCompleteEvent -- " + cmd.getClass().getName());
+        if (cmd instanceof Face.AdditionalData.ReadFile) {
+            ReadFile_Result fileResult = (ReadFile_Result) result;
+            //处理读取照片返回值
+            printLog("照片读取完毕，读取结果：" + fileResult.Result + ",文件大小： " + fileResult.FileSize + "，CRC32：" + fileResult.FileCRC);
+            //将照片保存一下，代码略
+        }
     }
+    
 
     @Override
     public void CommandProcessEvent(INCommand cmd) {
-        printLog("CommandProcessEvent:" + cmd.getClass().getName());
+        //printLog("CommandProcessEvent:" + cmd.getClass().getName());
     }
 
     @Override
@@ -122,7 +144,7 @@ public class TCPServerMonitor implements INConnectorEvent {
     @Override
     public void WatchEvent(ConnectorDetail detail, INData event) {
         TCPServerClientDetail tcpclientDTL = (TCPServerClientDetail) detail;
-
+        CommandDetail cmdDTL;
         String key = GetConnectKey(tcpclientDTL.ClientID);
         if (_ConnectorMap.containsKey(key)) {
             ConnectContext ct = _ConnectorMap.get(key);
@@ -132,12 +154,23 @@ public class TCPServerMonitor implements INConnectorEvent {
                 if (ct.SN == null) {
                     ct.SN = watchEvent.SN;
                 }
+
+                if (watchEvent.EventData instanceof Face.Data.CardTransaction) {
+                    Face.Data.CardTransaction faceRecord = (Face.Data.CardTransaction) watchEvent.EventData;
+                    if (faceRecord.getPhoto() == 1) {
+                        //有照片，需要读取照片
+                        cmdDTL = GetCommandDetail(ct);
+                        Face.AdditionalData.ReadFile cmdReadFile
+                                = new Face.AdditionalData.ReadFile(
+                                        new ReadFile_Parameter(cmdDTL, faceRecord.getUserCode(), 3, faceRecord.SerialNumber)
+                                );
+                        ct.Connector.AddCommand(cmdReadFile);
+                    }
+                }
             }
             if (ct.SN != null && ct.IsOpenWatch == false) {
                 //发送开启监控命令
-                CommandDetail cmdDTL = new CommandDetail();
-                cmdDTL.Connector = detail;
-                cmdDTL.Identity = new Door8800Identity(ct.SN, "FFFFFFFF", E_ControllerType.Face_Fingerprint);
+                cmdDTL = GetCommandDetail(ct);
                 Face.System.BeginWatch cmdBeginWatch = new Face.System.BeginWatch(new CommandParameter(cmdDTL));
                 ct.Connector.AddCommand(cmdBeginWatch);
                 ct.IsOpenWatch = true;
@@ -150,34 +183,39 @@ public class TCPServerMonitor implements INConnectorEvent {
 
     }
 
+    private CommandDetail GetCommandDetail(ConnectContext ct) {
+        CommandDetail cmdDTL = new CommandDetail();
+        cmdDTL.Connector = ct.ConnectorDTL;
+        cmdDTL.Identity = new Door8800Identity(ct.SN, "FFFFFFFF", E_ControllerType.Face_Fingerprint);
+        return cmdDTL;
+    }
+
     @Override
-    public void ClientOnline(ConnectorDetail client) {
-        printLog("ClientOnline " + client.toString());
-        TCPServerClientDetail tcpclientDTL = (TCPServerClientDetail) client;
+    public void ClientOnline(ConnectorDetail clientDTL) {
+        printLog("ClientOnline " + clientDTL.toString());
+        TCPServerClientDetail tcpclientDTL = (TCPServerClientDetail) clientDTL;
 
-        INConnector conn = _Allocator.GetConnector(client);
+        INConnector conn = _Allocator.GetConnector(clientDTL);
 
-        ConnectContext ct = new ConnectContext(tcpclientDTL.ClientID, conn);
+        ConnectContext ct = new ConnectContext(tcpclientDTL.ClientID, conn, clientDTL);
 
         conn.OpenForciblyConnect();
-        conn.AddWatchDecompile(client, PacketDecompileAllocator.GetDecompile(E_ControllerType.Face_Fingerprint));
+        conn.AddWatchDecompile(clientDTL, PacketDecompileAllocator.GetDecompile(E_ControllerType.Face_Fingerprint));
 
         //暂时加入 连接列表
         String key = "ClientID:" + tcpclientDTL.ClientID;
         _ConnectorMap.put(key, ct);
-
     }
 
     @Override
-    public void ClientOffline(ConnectorDetail client) {
-        printLog("ClientOffline " + client.toString());
-        TCPServerClientDetail tcpclientDTL = (TCPServerClientDetail) client;
+    public void ClientOffline(ConnectorDetail clientDTL) {
+        printLog("ClientOffline " + clientDTL.toString());
+        TCPServerClientDetail tcpclientDTL = (TCPServerClientDetail) clientDTL;
         String key = "ClientID:" + tcpclientDTL.ClientID;
 
         if (_ConnectorMap.containsKey(key)) {
             _ConnectorMap.remove(key);
         }
-
     }
 
     private void printLog(String sLog) {

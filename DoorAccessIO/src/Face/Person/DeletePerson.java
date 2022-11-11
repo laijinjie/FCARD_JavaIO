@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class DeletePerson extends Door8800Command {
 
     int mStep, mWriteIndex = 0, mPacketMax;
-    ArrayList<Integer> UserCodeList;
+    ArrayList<Long> UserCodeList;
     int ListSize;
 
     /**
@@ -44,7 +44,8 @@ public class DeletePerson extends Door8800Command {
         buf.writeByte(iCount);
         int len=iCount+mWriteIndex;
         for (int i = mWriteIndex; i < len; i++) {
-            buf.writeInt(UserCodeList.get(mWriteIndex));
+            long UserCode=UserCodeList.get(mWriteIndex);
+            buf.writeInt((int)UserCode);
             mWriteIndex++;
         }
         CreatePacket(0x07, 0x05, 0x00, bufSize, buf);

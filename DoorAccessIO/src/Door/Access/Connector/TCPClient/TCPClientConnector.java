@@ -5,6 +5,7 @@ import Door.Access.Connector.AbstractConnector;
 import Door.Access.Connector.ConnectorDetail;
 import Door.Access.Connector.E_ConnectorStatus;
 import Door.Access.Connector.E_ConnectorType;
+import Door.Access.Connector.TCPServer.TCPServerAllocator;
 import Door.Access.Packet.INPacket;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
@@ -403,7 +404,7 @@ public class TCPClientConnector extends AbstractConnector {
         }
 
     }
-   public static byte[] KeepAliveMsg="KeepAlive".getBytes();
+   
     /**
      * 线路空闲超时触发
      *
@@ -417,8 +418,8 @@ public class TCPClientConnector extends AbstractConnector {
             switch (state.state()) {
                 case READER_IDLE://读空闲
 
-                    ByteBuf sendBuf=_ClientChannel.alloc().buffer(KeepAliveMsg.length);
-                    sendBuf.writeBytes(KeepAliveMsg);
+                    ByteBuf sendBuf=_ClientChannel.alloc().buffer(TCPServerAllocator.KeepAliveMsg.length);
+                    sendBuf.writeBytes(TCPServerAllocator.KeepAliveMsg);
                      _WriteFuture = _ClientChannel.writeAndFlush(sendBuf);
                    //  _WriteFuture.addListener(new WriteKeepAliveCallback(this,ctx));
                     break;
