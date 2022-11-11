@@ -23,12 +23,16 @@ import Door.Access.Door8800.Command.System.Result.SearchEquptOnNetNum_Result;
 import Door.Access.Door8800.Command.System.SearchEquptOnNetNum;
 import Door.Access.Door8800.Door8800Identity;
 import Door.Access.Packet.PacketDecompileAllocator;
+import Door.Access.Util.StringUtil;
 import Door.Access.Util.TimeUtil;
 import Face.AdditionalData.Parameter.ReadFeatureCode_Parameter;
 import Face.AdditionalData.Parameter.ReadFile_Parameter;
 import Face.AdditionalData.Result.ReadFeatureCode_Result;
 import Face.AdditionalData.Result.ReadFile_Result;
 import io.netty.buffer.ByteBuf;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -50,6 +54,11 @@ public class TCPServerMonitor implements INConnectorEvent {
         public String SN;
         public boolean IsOpenWatch;
         public ConnectorDetail ConnectorDTL;
+        public boolean Online;
+
+        public ConnectContext(ConnectContext src) {
+            SetNewContext(src);
+        }
 
         public ConnectContext(int id, INConnector c, ConnectorDetail dtl) {
             ClientID = id;
@@ -58,8 +67,31 @@ public class TCPServerMonitor implements INConnectorEvent {
             IsOpenWatch = false;
             SN = null;
             ConnectorDTL = dtl;
+            Online = true;
         }
 
+        public void SetNewContext(ConnectContext ct) {
+            ClientID = ct.ClientID;
+            MapKey = ct.MapKey;
+            Connector = ct.Connector;
+            IsOpenWatch = ct.IsOpenWatch;
+            SN = ct.SN;
+            ConnectorDTL = ct.ConnectorDTL;
+            Online = ct.Online;
+        }
+
+        public void SetOffline() {
+            ClientID = 0;
+            MapKey = null;
+            Connector = null;
+            IsOpenWatch = false;
+            ConnectorDTL = null;
+            Online = false;
+        }
+
+        public boolean IsOnline() {
+            return Online;
+        }
     }
 
     private ConnectorAllocator _Allocator;
@@ -67,10 +99,13 @@ public class TCPServerMonitor implements INConnectorEvent {
     private int _LocalPort = 8686;
     protected ConcurrentHashMap<String, ConnectContext> _ConnectorMap;
 
+    protected ConcurrentHashMap<String, ConnectContext> _SNMap;
+
     public TCPServerMonitor() {
         _Allocator = ConnectorAllocator.GetAllocator();
         _Allocator.AddListener(this);
-        _ConnectorMap = new ConcurrentHashMap<String, ConnectContext>();
+        _ConnectorMap = new ConcurrentHashMap<String, ConnectContext>(1024);
+        _SNMap = new ConcurrentHashMap<String, ConnectContext>(1024);
     }
 
     private void InputTestPar() {
@@ -87,11 +122,11 @@ public class TCPServerMonitor implements INConnectorEvent {
         InputTestPar();
 
         //开始监听前，配置电脑端的 keepalive 参数
-        
         //读空闲时间，就是多少时间没有读到消息时会发送keepalive消息进行保活，单位是秒
-        TCPServerAllocator.IdleStateTime_Second = 5;
+        //此值不能设置太小
+        TCPServerAllocator.IdleStateTime_Second = 90;
         //自定义keepalive保活包消息内容
-        TCPServerAllocator.KeepAliveMsg = new byte[]{0x7E};
+        TCPServerAllocator.KeepAliveMsg = StringUtil.HexToByte("7E30303030303030303030303030303030FFFFFFFF630B6AAC01020000000000837E");
 
         _Allocator.Listen(_LocalIP, _LocalPort);
         printLog("动态库的TCP服务器已启动：" + _LocalIP + ":" + _LocalPort);
@@ -106,10 +141,17 @@ public class TCPServerMonitor implements INConnectorEvent {
             ReadFile_Result fileResult = (ReadFile_Result) result;
             //处理读取照片返回值
             printLog("照片读取完毕，读取结果：" + fileResult.Result + ",文件大小： " + fileResult.FileSize + "，CRC32：" + fileResult.FileCRC);
-            //将照片保存一下，代码略
+            //将照片保存一下
+            try {
+                FileOutputStream fileout = new FileOutputStream("test.jpg");
+                fileout.write(fileResult.FileDatas);
+            } catch (FileNotFoundException fex) {
+                printLog("照片读取完毕，但是保存文件时发生错误1 " + fex.getMessage());
+            } catch (IOException ioex) {
+                printLog("照片读取完毕，但是保存文件时发生错误2 " + ioex.getMessage());
+            }
         }
     }
-    
 
     @Override
     public void CommandProcessEvent(INCommand cmd) {
@@ -153,40 +195,106 @@ public class TCPServerMonitor implements INConnectorEvent {
                 Door8800WatchTransaction watchEvent = (Door8800WatchTransaction) event;
                 if (ct.SN == null) {
                     ct.SN = watchEvent.SN;
+                    AddSN(ct);
                 }
 
                 if (watchEvent.EventData instanceof Face.Data.CardTransaction) {
                     Face.Data.CardTransaction faceRecord = (Face.Data.CardTransaction) watchEvent.EventData;
-                    if (faceRecord.getPhoto() == 1) {
-                        //有照片，需要读取照片
-                        cmdDTL = GetCommandDetail(ct);
-                        Face.AdditionalData.ReadFile cmdReadFile
-                                = new Face.AdditionalData.ReadFile(
-                                        new ReadFile_Parameter(cmdDTL, faceRecord.getUserCode(), 3, faceRecord.SerialNumber)
-                                );
-                        ct.Connector.AddCommand(cmdReadFile);
-                    }
+                    BeginReadFile(ct.SN, faceRecord);
                 }
-            }
-            if (ct.SN != null && ct.IsOpenWatch == false) {
-                //发送开启监控命令
-                cmdDTL = GetCommandDetail(ct);
-                Face.System.BeginWatch cmdBeginWatch = new Face.System.BeginWatch(new CommandParameter(cmdDTL));
-                ct.Connector.AddCommand(cmdBeginWatch);
-                ct.IsOpenWatch = true;
-                //离线消息开关
-                Face.System.WriteOfflineRecordPush cmdPush = new Face.System.WriteOfflineRecordPush(new Face.System.Parameter.WriteOfflineRecordPush_Parameter(cmdDTL, true));
-                ct.Connector.AddCommand(cmdPush);
+
+                BeginOpenWatch(ct.SN);
             }
             printLog("WatchEvent " + event.toString());
         }
 
     }
 
+    /**
+     * 打开设备的实时监控功能
+     *
+     * @param SN
+     */
+    private void BeginOpenWatch(String SN) {
+        CommandDetail cmdDTL;
+        ConnectContext ct = GetConnectContext(SN);
+        if (ct == null) {
+            return;
+        }
+
+        if (ct.SN != null && ct.IsOpenWatch == false) {
+            //发送开启监控命令
+            cmdDTL = GetCommandDetail(ct);
+            Face.System.BeginWatch cmdBeginWatch = new Face.System.BeginWatch(new CommandParameter(cmdDTL));
+            ct.Connector.AddCommand(cmdBeginWatch);
+            ct.IsOpenWatch = true;
+            //离线消息开关
+            Face.System.WriteOfflineRecordPush cmdPush = new Face.System.WriteOfflineRecordPush(new Face.System.Parameter.WriteOfflineRecordPush_Parameter(cmdDTL, true));
+            ct.Connector.AddCommand(cmdPush);
+        }
+    }
+
+    /**
+     * 开始读取打卡现场照片
+     *
+     * @param SN
+     * @param record
+     */
+    private void BeginReadFile(String SN, Face.Data.CardTransaction faceRecord) {
+        CommandDetail cmdDTL;
+        ConnectContext ct = GetConnectContext(SN);
+        if (ct == null) {
+            return;
+        }
+
+        if (faceRecord.getPhoto() == 1) {
+            //有照片，需要读取照片
+            cmdDTL = GetCommandDetail(ct);//演示如何通过SN获取命令详情
+            if (cmdDTL == null) {
+                return;//可能存在找不到的情况
+            }
+            Face.AdditionalData.ReadFile cmdReadFile
+                    = new Face.AdditionalData.ReadFile(
+                            new ReadFile_Parameter(cmdDTL, faceRecord.SerialNumber, 3, 1)
+                    );
+
+            ct.Connector.AddCommand(cmdReadFile);
+        }
+    }
+
+    private CommandDetail GetCommandDetail(String SN) {
+        CommandDetail result = null;
+
+        ConnectContext ct = GetConnectContext(SN);
+        if (ct != null) {
+            result = GetCommandDetail(ct);
+        }
+        return result;
+    }
+
+    /**
+     * 根据SN寻找连接上下文
+     *
+     * @param SN
+     * @return
+     */
+    private ConnectContext GetConnectContext(String SN) {
+        ConnectContext result = null;
+        if (_SNMap.containsKey(SN)) {
+            ConnectContext ct = _SNMap.get(SN);
+            if (ct.IsOnline()) {
+                result = ct;
+            }
+        }
+        return result;
+    }
+
     private CommandDetail GetCommandDetail(ConnectContext ct) {
         CommandDetail cmdDTL = new CommandDetail();
         cmdDTL.Connector = ct.ConnectorDTL;
         cmdDTL.Identity = new Door8800Identity(ct.SN, "FFFFFFFF", E_ControllerType.Face_Fingerprint);
+        cmdDTL.Timeout = 3000;
+        cmdDTL.RestartCount = 5;
         return cmdDTL;
     }
 
@@ -214,8 +322,35 @@ public class TCPServerMonitor implements INConnectorEvent {
         String key = "ClientID:" + tcpclientDTL.ClientID;
 
         if (_ConnectorMap.containsKey(key)) {
+            ConnectContext ct = _ConnectorMap.get(key);
+            RemoveSN(ct);
             _ConnectorMap.remove(key);
         }
+    }
+
+    private void AddSN(ConnectContext ct) {
+        String sKey = ct.SN;
+        ConnectContext snCT;
+        if (_SNMap.containsKey(ct.SN)) {
+            snCT = _SNMap.get(sKey);
+            snCT.SetNewContext(ct);
+        } else {
+            snCT = new ConnectContext(ct);
+        }
+
+        _SNMap.put(sKey, snCT);
+    }
+
+    private void RemoveSN(ConnectContext ct) {
+        String sKey = ct.SN;
+        ConnectContext snCT;
+        if (_SNMap.containsKey(ct.SN)) {
+            snCT = _SNMap.get(sKey);
+            if (snCT.ClientID == ct.ClientID) {
+                snCT.SetOffline();
+            }
+        }
+
     }
 
     private void printLog(String sLog) {
