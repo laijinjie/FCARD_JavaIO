@@ -113,7 +113,7 @@ public class CardTransaction extends AbstractTransaction {
     @Override
     public String toString() {
         StringBuilder keybuf = new StringBuilder(200);
-        keybuf.append("RecordSerialNumber:")
+        keybuf.append("CardTransaction -- RecordSerialNumber:")
                 .append(RecordSerialNumber)
                 .append(",UserCode:")
                 .append(UserCode)

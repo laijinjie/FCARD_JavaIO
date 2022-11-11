@@ -29,6 +29,7 @@ import Face.AdditionalData.Parameter.ReadFeatureCode_Parameter;
 import Face.AdditionalData.Parameter.ReadFile_Parameter;
 import Face.AdditionalData.Result.ReadFeatureCode_Result;
 import Face.AdditionalData.Result.ReadFile_Result;
+import Face.Data.ConnectTestTransaction;
 import io.netty.buffer.ByteBuf;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -196,6 +197,8 @@ public class TCPServerMonitor implements INConnectorEvent {
                 if (ct.SN == null) {
                     ct.SN = watchEvent.SN;
                     AddSN(ct);
+
+                    BeginOpenWatch(ct.SN);
                 }
 
                 if (watchEvent.EventData instanceof Face.Data.CardTransaction) {
@@ -203,11 +206,26 @@ public class TCPServerMonitor implements INConnectorEvent {
                     BeginReadFile(ct.SN, faceRecord);
                 }
 
-                BeginOpenWatch(ct.SN);
+                //在此处理设备发来的连接测试消息
+                if (watchEvent.EventData instanceof Face.Data.ConnectTestTransaction) {
+                    //发送测试连接回复
+                    SendConnectTestResult(ct.SN);
+                }
             }
             printLog("WatchEvent " + event.toString());
         }
 
+    }
+
+    private void SendConnectTestResult(String SN) {
+        CommandDetail cmdDTL;
+        ConnectContext ct = GetConnectContext(SN);
+        if (ct == null) {
+            return;
+        }
+        cmdDTL = GetCommandDetail(ct);
+        Face.System.SendConnectTestResponse cmdSendResult = new Face.System.SendConnectTestResponse(new CommandParameter(cmdDTL));
+        ct.Connector.AddCommand(cmdSendResult);
     }
 
     /**

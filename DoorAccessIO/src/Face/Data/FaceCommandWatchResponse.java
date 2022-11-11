@@ -2,6 +2,7 @@ package Face.Data;
 
 import Door.Access.Connector.ConnectorDetail;
 import Door.Access.Connector.INConnectorEvent;
+import Door.Access.Data.KeepAliveTransaction;
 import Door.Access.Door8800.Command.Data.DefinedTransaction;
 import Door.Access.Door8800.Command.Data.Door8800WatchTransaction;
 import Door.Access.Door8800.Command.Door8800CommandWatchResponse;
@@ -54,6 +55,14 @@ public class FaceCommandWatchResponse extends Door8800CommandWatchResponse {
                         BodyTemperatureTransaction BodyTemp = new BodyTemperatureTransaction();
                         BodyTemp.SetBytes(packet.GetDatabuff());
                         watchEvent.EventData = BodyTemp;
+                        break;
+                    case 0x22://连接保活包
+                        KeepAliveTransaction kp = new KeepAliveTransaction();
+                        watchEvent.EventData = kp;
+                        break;
+                    case 0xA0://网络测试包
+                        ConnectTestTransaction testTrn = new ConnectTestTransaction();
+                        watchEvent.EventData = testTrn;
                         break;
                     default:
                         dt = new DefinedTransaction(watchEvent.CmdIndex, 0, Calendar.getInstance());

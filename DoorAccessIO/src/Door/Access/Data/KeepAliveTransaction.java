@@ -1,20 +1,25 @@
-package Face.Data;
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package Door.Access.Data;
 
-import Door.Access.Data.AbstractTransaction;
 import Door.Access.Util.TimeUtil;
 import io.netty.buffer.ByteBuf;
-
 import java.util.Calendar;
 
 /**
- * 连接测试消息
+ * 保活包消息
+ * @author kaifa
  */
-public class ConnectTestTransaction extends AbstractTransaction {
+public class KeepAliveTransaction extends AbstractTransaction {
+
     /**
-     * 连接测试消息
+     * 保活包消息
      */
-    public ConnectTestTransaction() {
-        _TransactionType = 0xA0;
+    public KeepAliveTransaction() {
+        _TransactionType = 0x22;
         SetBytes(null);
     }
 
@@ -35,11 +40,11 @@ public class ConnectTestTransaction extends AbstractTransaction {
     public ByteBuf GetBytes() {
         return null;
     }
-    
+
     @Override
     public String toString() {
         StringBuilder keybuf = new StringBuilder(200);
-        keybuf.append("ConnectTestTransaction -- ")
+        keybuf.append("KeepAliveTransaction -- ")
                 .append("TransactionDate:")
                 .append(TimeUtil.FormatTime(_TransactionDate));
         return keybuf.toString();

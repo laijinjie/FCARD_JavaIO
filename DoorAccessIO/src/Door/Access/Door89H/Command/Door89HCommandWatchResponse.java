@@ -8,6 +8,7 @@ package Door.Access.Door89H.Command;
 import Door.Access.Command.AbstractWatchResponse;
 import Door.Access.Connector.ConnectorDetail;
 import Door.Access.Connector.INConnectorEvent;
+import Door.Access.Data.KeepAliveTransaction;
 import Door.Access.Door8800.Command.Data.AlarmTransaction;
 import Door.Access.Door8800.Command.Data.ButtonTransaction;
 import Door.Access.Door89H.Command.Data.CardTransaction;
@@ -26,12 +27,13 @@ import java.util.Calendar;
  *
  * @author 英泽电子
  */
-public class Door89HCommandWatchResponse extends AbstractWatchResponse{
-    public Door89HCommandWatchResponse(){
+public class Door89HCommandWatchResponse extends AbstractWatchResponse {
+
+    public Door89HCommandWatchResponse() {
         super(new Door8800Decompile());
     }
-    
-     @Override
+
+    @Override
     protected void fireWatchEvent(ConnectorDetail connectorDetail, INConnectorEvent oEvent, INPacketModel model) {
         Door8800PacketModel packet = (Door8800PacketModel) model;
         if (packet.GetCode() == UInt32Util.UINT32_MAX) {
@@ -79,12 +81,15 @@ public class Door89HCommandWatchResponse extends AbstractWatchResponse{
 
                         watchevent.EventData = SystemTrn;
                         break;
+                    case 0x22://连接保活包
+                        KeepAliveTransaction kp = new KeepAliveTransaction();
+                        watchevent.EventData = kp;
+                        break;
                     default:
                         dt = new DefinedTransaction(watchevent.CmdIndex, 0, Calendar.getInstance());
-                        if(packet.GetDataLen()>0)
-                        {
+                        if (packet.GetDataLen() > 0) {
                             dt.SetWatchData(packet.GetDatabuff());
-                        }                        
+                        }
                         watchevent.EventData = dt;
                 }
                 oEvent.WatchEvent(connectorDetail, watchevent);
