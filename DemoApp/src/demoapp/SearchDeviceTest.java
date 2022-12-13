@@ -56,7 +56,7 @@ public class SearchDeviceTest implements INConnectorEvent {
 
     private void InputTestPar() {
         java.util.Scanner sc = new java.util.Scanner(System.in);
-        System.out.println("请输入本机绑定的IP：");
+        System.out.println("请输入本机绑定的IP(Linux 系统中本机绑定IP建议为空，否则可能搜索不到设备)：");
         _LocalIP = sc.nextLine();//接收字符串
         System.out.println("请输入本机绑定的端口号：");
         _LocalPort = sc.nextInt();

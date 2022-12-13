@@ -21,16 +21,40 @@ public class DemoApp {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws InterruptedException {
+        System.out.println("设备通讯库测试示例");
+        java.util.Scanner sc = new java.util.Scanner(System.in);
+        System.out.println("1、UDP广播搜索设备；");
+        System.out.println("2、人脸机设备的TCPServer示例");
+        System.out.println("3、门禁控制板设备的TCPServer示例");
+        System.out.println("请输入进行的操作：");
+        String sInput = sc.nextLine();//接收字符串
+        switch(sInput)
+        {
+            case "1":
+                TestUDPServer();
+                break;
+            case "2":
+                TestLibTCPServerrByFace();
+                break;
+            case "3":
+                TestLibTCPServerByDoorController();
+                break;
+            default:
+                System.out.println("无效输入，退出程序！");
+                return;
+        }
         //TestSearchDevice();
-        //TestUDPServer();
+        //
         //TestLibUDP();
         //TestTCPServer();
-        TestLibTCPServer();
 
         Semaphore available = new Semaphore(0, true);
         available.acquire();
     }
 
+    /**
+     * 开启netty的TCP监控
+     */
     public static void TestTCPServer() {
         NettyTCPServerTest tcpserver = new NettyTCPServerTest();
         System.out.println("准备运行TCP服务器");
@@ -43,12 +67,27 @@ public class DemoApp {
         tcpserver.bind(sLocalIP, iLocalPort);
     }
 
-    public static void TestLibTCPServer() {
-        TCPServerMonitor tcpserver = new TCPServerMonitor();
-        System.out.println("准备运行动态库的TCP服务器");
+    /**
+     * 开启人脸机的tcp监控
+     */
+    public static void TestLibTCPServerrByFace() {
+        
+        TCPServerMonitorByFace tcpserver = new TCPServerMonitorByFace();
+
         tcpserver.BeginMonitor();
     }
+    /**
+     * 开启控制板的tcp监控
+     */
+    public static void TestLibTCPServerByDoorController() {
+        TCPServerMonitorByDoorController tcpserver = new TCPServerMonitorByDoorController();
 
+        tcpserver.BeginMonitor();
+    }
+    
+    /**
+     * 开启Netty的UDP Server
+     */
     public static void TestUDPServer() {
         System.out.println("准备运行UDP服务器");
 
@@ -69,6 +108,9 @@ public class DemoApp {
         test.RunTest(sLocalIP, iLocalPort, iRemotePort);
     }
 
+    /**
+     * UDP搜索设备
+     */
     public static void TestSearchDevice() {
         System.out.println("准备测试搜索设备");
         // TODO code application logic here
